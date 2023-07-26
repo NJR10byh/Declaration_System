@@ -1,46 +1,80 @@
 <template>
   <div :class="layoutCls">
-    <t-head-menu :class="menuCls" :theme="menuTheme" expand-type="popup" :value="active">
+    <t-head-menu
+      :class="menuCls"
+      :theme="theme"
+      expand-type="popup"
+      :value="active"
+      style="z-index: 999"
+    >
       <template #logo>
-        <span v-if="showLogo" class="header-logo-container" @click="handleNav('/dashboard/base')">
-          <logo-full class="t-logo" />
+        <span v-if="showLogo" class="header-logo-container">
+          <img src="@/assets/assets-njupt-full-logo.png" class="logo" />
         </span>
         <div v-else class="header-operate-left">
-          <t-button theme="default" shape="square" variant="text" @click="changeCollapsed">
-            <t-icon class="collapsed-icon" name="view-list" />
+          <t-button
+            theme="default"
+            shape="square"
+            variant="text"
+            @click="changeCollapsed"
+          >
+            <template #icon>
+              <t-icon v-if="settingStore.isSidebarCompact" class="collapsed-icon" name="menu-fold" />
+              <t-icon v-else class="collapsed-icon" name="menu-unfold" />
+            </template>
           </t-button>
-          <search :layout="layout" />
+          <!--          <search :layout="layout" />-->
         </div>
       </template>
-      <template v-if="layout !== 'side'" #default>
-        <menu-content class="header-menu" :nav-data="menu" />
-      </template>
+      <!--      <menu-content-->
+      <!--        v-show="layout !== 'side'"-->
+      <!--        class="header-menu"-->
+      <!--        :nav-data="menu"-->
+      <!--      />-->
       <template #operations>
         <div class="operations-container">
           <!-- 搜索框 -->
-          <search v-if="layout !== 'side'" :layout="layout" />
+          <!--          <search v-if="layout !== 'side'" :layout="layout" />-->
 
           <!-- 全局通知 -->
-          <notice />
+          <!--          <notice />-->
 
-          <t-tooltip placement="bottom" content="代码仓库">
-            <t-button theme="default" shape="square" variant="text" @click="navToGitHub">
-              <t-icon name="logo-github" />
-            </t-button>
-          </t-tooltip>
-          <t-tooltip placement="bottom" content="帮助文档">
-            <t-button theme="default" shape="square" variant="text" @click="navToHelper">
-              <t-icon name="help-circle" />
-            </t-button>
-          </t-tooltip>
-          <t-dropdown :min-column-width="120" trigger="click">
+          <!--          <t-tooltip placement="bottom" content="代码仓库">-->
+          <!--            <t-button-->
+          <!--              theme="default"-->
+          <!--              shape="square"-->
+          <!--              variant="text"-->
+          <!--              @click="navToGitHub"-->
+          <!--            >-->
+          <!--              <t-icon name="logo-github" />-->
+          <!--            </t-button>-->
+          <!--          </t-tooltip>-->
+          <!--          <t-tooltip placement="bottom" content="帮助文档">-->
+          <!--            <t-button-->
+          <!--              theme="default"-->
+          <!--              shape="square"-->
+          <!--              variant="text"-->
+          <!--              @click="navToHelper"-->
+          <!--            >-->
+          <!--              <t-icon name="help-circle" />-->
+          <!--            </t-button>-->
+          <!--          </t-tooltip>-->
+          <t-dropdown :min-column-width="135" trigger="click">
             <template #dropdown>
               <t-dropdown-menu>
-                <t-dropdown-item class="operations-dropdown-container-item" @click="handleNav('/user/index')">
-                  <t-icon name="user-circle"></t-icon>个人中心
+                <t-dropdown-item
+                  class="operations-dropdown-container-item"
+                  @click="toUser"
+                >
+                  <t-icon name="user-circle"></t-icon>
+                  个人中心
                 </t-dropdown-item>
-                <t-dropdown-item class="operations-dropdown-container-item" @click="handleLogout">
-                  <t-icon name="poweroff"></t-icon>退出登录
+                <t-dropdown-item
+                  class="operations-dropdown-container-item"
+                  @click="handleLogout"
+                >
+                  <t-icon name="poweroff"></t-icon>
+                  退出登录
                 </t-dropdown-item>
               </t-dropdown-menu>
             </template>
@@ -48,15 +82,23 @@
               <template #icon>
                 <t-icon class="header-user-avatar" name="user-circle" />
               </template>
-              <div class="header-user-account">{{ user.userInfo.name }}</div>
-              <template #suffix><t-icon name="chevron-down" /></template>
+              <div class="header-user-account">
+                你好，
+                <span style="color: var(--td-brand-color);font-weight: bold">{{ userStore.userInfo.userName }}</span>
+                <t-icon name="chevron-down" />
+              </div>
             </t-button>
           </t-dropdown>
-          <t-tooltip placement="bottom" content="系统设置">
-            <t-button theme="default" shape="square" variant="text" @click="toggleSettingPanel">
-              <t-icon name="setting" />
-            </t-button>
-          </t-tooltip>
+          <!--          <t-tooltip placement="bottom" content="系统设置">-->
+          <!--            <t-button-->
+          <!--              theme="default"-->
+          <!--              shape="square"-->
+          <!--              variant="text"-->
+          <!--              @click="toggleSettingPanel"-->
+          <!--            >-->
+          <!--              <t-icon name="setting" />-->
+          <!--            </t-button>-->
+          <!--          </t-tooltip>-->
         </div>
       </template>
     </t-head-menu>
@@ -64,59 +106,58 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
-
-import LogoFull from '@/assets/assets-logo-full.svg?component';
-import { prefix } from '@/config/global';
-import { getActive } from '@/router';
-import { useSettingStore, useUserStore } from '@/store';
-import type { MenuRoute } from '@/types/interface';
-
-import MenuContent from './MenuContent.vue';
-import Notice from './Notice.vue';
-import Search from './Search.vue';
+import { computed, PropType } from "vue";
+import { useRouter } from "vue-router";
+import { getPermissionStore, useSettingStore, useUserStore } from "@/store";
+import { getActive } from "@/router";
+import { prefix } from "@/config/global";
+import { MenuRoute } from "@/types/interface";
 
 const props = defineProps({
   theme: {
     type: String,
-    default: 'light',
+    default: ""
   },
   layout: {
     type: String,
-    default: 'top',
+    default: "top"
   },
   showLogo: {
     type: Boolean,
-    default: true,
+    default: true
   },
   menu: {
     type: Array as PropType<MenuRoute[]>,
-    default: () => [],
+    default: () => []
   },
   isFixed: {
     type: Boolean,
-    default: false,
+    default: false
   },
   isCompact: {
     type: Boolean,
-    default: false,
+    default: false
   },
   maxLevel: {
     type: Number,
-    default: 3,
-  },
+    default: 3
+  }
 });
 
 const router = useRouter();
 const settingStore = useSettingStore();
-const user = useUserStore();
+const userStore = useUserStore();
+const permissionStore = getPermissionStore();
+
 
 const toggleSettingPanel = () => {
   settingStore.updateConfig({
-    showSettingPanel: true,
+    showSettingPanel: true
   });
+};
+
+const toUser = () => {
+  router.push("/userCenter/userInfo");
 };
 
 const active = computed(() => getActive());
@@ -129,47 +170,43 @@ const menuCls = computed(() => {
     {
       [`${prefix}-header-menu`]: !isFixed,
       [`${prefix}-header-menu-fixed`]: isFixed,
-      [`${prefix}-header-menu-fixed-side`]: layout === 'side' && isFixed,
-      [`${prefix}-header-menu-fixed-side-compact`]: layout === 'side' && isFixed && isCompact,
-    },
+      [`${prefix}-header-menu-fixed-side`]: layout === "side" && isFixed,
+      [`${prefix}-header-menu-fixed-side-compact`]:
+      layout === "side" && isFixed && isCompact
+    }
   ];
 });
-const menuTheme = computed(() => props.theme as 'light' | 'dark');
+
 const changeCollapsed = () => {
+  console.log(settingStore.isSidebarCompact);
   settingStore.updateConfig({
-    isSidebarCompact: !settingStore.isSidebarCompact,
+    isSidebarCompact: !settingStore.isSidebarCompact
   });
 };
 
-const handleNav = (url: string) => {
-  router.push(url);
-};
-
-const handleLogout = () => {
-  router.push({
-    path: '/login',
-    query: { redirect: encodeURIComponent(router.currentRoute.value.fullPath) },
-  });
+const handleLogout = async () => {
+  await router.push("/login");
+  window.location.reload();
 };
 
 const navToGitHub = () => {
-  window.open('https://github.com/tencent/tdesign-vue-next-starter');
+  window.open("https://github.com/applenjr/NJUPT_Patent_Collection_Frontend");
 };
 
 const navToHelper = () => {
-  window.open('http://tdesign.tencent.com/starter/docs/get-started');
+  window.open("https://tdesign.tencent.com/starter/docs/vue-next/get-started");
 };
 </script>
 <style lang="less" scoped>
 .@{starter-prefix}-header {
+  &-layout {
+    height: 64px;
+  }
+
   &-menu-fixed {
     position: fixed;
     top: 0;
     z-index: 1001;
-
-    :deep(.t-head-menu__inner) {
-      padding-right: var(--td-comp-margin-xl);
-    }
 
     &-side {
       left: 232px;
@@ -177,6 +214,7 @@ const navToHelper = () => {
       z-index: 10;
       width: auto;
       transition: all 0.3s;
+
       &-compact {
         left: 64px;
       }
@@ -186,20 +224,24 @@ const navToHelper = () => {
   &-logo-container {
     cursor: pointer;
     display: inline-flex;
+    height: 64px;
   }
 }
-.header-menu {
-  flex: 1 1 1;
-  display: inline-flex;
 
-  :deep(.t-menu__item) {
-    min-width: unset;
-  }
-}
+//.header-menu {
+//  flex: 1 1 1;
+//  display: inline-flex;
+//
+//  :deep(.t-menu__item) {
+//    min-width: unset;
+//    padding: 0px 16px;
+//  }
+//}
 
 .operations-container {
   display: flex;
   align-items: center;
+  margin-right: 12px;
 
   .t-popup__reference {
     display: flex;
@@ -208,34 +250,44 @@ const navToHelper = () => {
   }
 
   .t-button {
-    margin-left: var(--td-comp-margin-l);
+    margin: 0 8px;
+
+    &.header-user-btn {
+      margin: 0;
+    }
+  }
+
+  .t-icon {
+    font-size: 20px;
+
+    &.general {
+      margin-right: 16px;
+    }
   }
 }
 
 .header-operate-left {
   display: flex;
+  margin-left: 20px;
   align-items: normal;
   line-height: 0;
-  padding-left: var(--td-comp-margin-xl);
+
+  .collapsed-icon {
+    font-size: 20px;
+  }
 }
 
 .header-logo-container {
-  width: 184px;
-  height: 26px;
+  width: 180px;
+  height: 45px;
   display: flex;
-  margin-left: 24px;
+  margin-left: 20px;
   color: var(--td-text-color-primary);
+  //border: 1px solid red;
 
-  .t-logo {
+  .logo {
     width: 100%;
     height: 100%;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-
-  &:hover {
-    cursor: pointer;
   }
 }
 
@@ -243,10 +295,15 @@ const navToHelper = () => {
   display: inline-flex;
   align-items: center;
   color: var(--td-text-color-primary);
+
+  .t-icon {
+    margin-left: 4px;
+    font-size: 16px;
+  }
 }
 
 :deep(.t-head-menu__inner) {
-  border-bottom: 1px solid var(--td-component-stroke);
+  border-bottom: 1px solid var(--td-border-level-1-color);
 }
 
 .t-menu--light {
@@ -254,12 +311,22 @@ const navToHelper = () => {
     color: var(--td-text-color-primary);
   }
 }
+
 .t-menu--dark {
   .t-head-menu__inner {
     border-bottom: 1px solid var(--td-gray-color-10);
   }
+
   .header-user-account {
     color: rgba(255, 255, 255, 0.55);
+  }
+
+  .t-button {
+    --ripple-color: var(--td-gray-color-10) !important;
+
+    &:hover {
+      background: var(--td-gray-color-12) !important;
+    }
   }
 }
 
@@ -268,34 +335,32 @@ const navToHelper = () => {
   display: flex;
   align-items: center;
 
-  :deep(.t-dropdown__item-text) {
-    display: flex;
-    align-items: center;
+  .t-icon {
+    margin-right: 8px;
   }
 
-  .t-icon {
-    font-size: var(--td-comp-size-xxxs);
-    margin-right: var(--td-comp-margin-s);
+  :deep(.t-dropdown__item) {
+    .t-dropdown__item__content {
+      display: flex;
+      justify-content: center;
+    }
+
+    .t-dropdown__item__content__text {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+    }
   }
 
   :deep(.t-dropdown__item) {
     width: 100%;
     margin-bottom: 0px;
   }
+
   &:last-child {
     :deep(.t-dropdown__item) {
       margin-bottom: 8px;
     }
-  }
-}
-</style>
-
-<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
-<style lang="less">
-.operations-dropdown-container-item {
-  .t-dropdown__item-text {
-    display: flex;
-    align-items: center;
   }
 }
 </style>

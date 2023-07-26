@@ -1,7 +1,7 @@
 <template>
   <t-row :gutter="16" class="row-container">
     <t-col :xs="12" :xl="9">
-      <t-card title="统计数据" :subtitle="`(万元)${currentMonth}`" class="dashboard-chart-card" :bordered="false">
+      <t-card title="统计数据" :subtitle="`(万元)${currentMonth}`" class="dashboard-chart-card">
         <template #option>
           <div class="dashboard-chart-title-container">
             <t-date-range-picker
@@ -15,15 +15,17 @@
         </template>
         <div
           id="monitorContainer"
+          ref="monitorContainer"
           class="dashboard-chart-container"
           :style="{ width: '100%', height: `${resizeTime * 326}px` }"
         />
       </t-card>
     </t-col>
     <t-col :xs="12" :xl="3">
-      <t-card title="销售渠道" :subtitle="currentMonth" class="dashboard-chart-card" :bordered="false">
+      <t-card title="销售渠道" :subtitle="currentMonth" class="dashboard-chart-card">
         <div
           id="countContainer"
+          ref="countContainer"
           :style="{ width: `${resizeTime * 326}px`, height: `${resizeTime * 326}px`, margin: '0 auto' }"
           class="dashboard-chart-container"
         />
@@ -33,17 +35,17 @@
 </template>
 
 <script setup lang="ts">
-import { LineChart, PieChart } from 'echarts/charts';
-import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
+import { onMounted, watch, ref, onUnmounted, nextTick, computed, onDeactivated } from 'vue';
+
 import * as echarts from 'echarts/core';
+import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
+import { PieChart, LineChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
-import { computed, nextTick, onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue';
-
 import { useSettingStore } from '@/store';
-import { changeChartsTheme } from '@/utils/color';
 import { LAST_7_DAYS } from '@/utils/date';
+import { changeChartsTheme } from '@/utils/color';
 
-import { getLineChartDataSet, getPieChartDataSet } from '../index';
+import { getPieChartDataSet, getLineChartDataSet } from '../index';
 
 echarts.use([TooltipComponent, LegendComponent, PieChart, GridComponent, LineChart, CanvasRenderer]);
 
@@ -174,20 +176,15 @@ const onCurrencyChange = (checkedValues: string[]) => {
 
 <style lang="less" scoped>
 .dashboard-chart-card {
-  padding: var(--td-comp-paddingTB-xxl) var(--td-comp-paddingLR-xxl);
+  padding: 8px;
 
   :deep(.t-card__header) {
-    padding: 0;
-  }
-
-  :deep(.t-card__body) {
-    padding: 0;
-    margin-top: var(--td-comp-margin-xxl);
+    padding-bottom: 24px;
   }
 
   :deep(.t-card__title) {
-    font: var(--td-font-title-large);
-    font-weight: 400;
+    font-size: 20px;
+    font-weight: 500;
   }
 }
 </style>

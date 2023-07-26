@@ -1,6 +1,6 @@
 <template>
   <div class="detail-advanced">
-    <t-card title="基本信息" :bordered="false">
+    <t-card title="基本信息">
       <div class="info-block">
         <div v-for="(item, index) in BASE_INFO_DATA" :key="index" class="info-item">
           <h1>{{ item.name }}</h1>
@@ -18,19 +18,19 @@
     </t-card>
 
     <!-- 发票进度 -->
-    <t-card title="发票进度" class="container-base-margin-top" :bordered="false">
+    <t-card title="发票进度" class="container-base-margin-top">
       <t-row justify="space-between">
         <t-steps :current="updateCurrent">
           <t-step-item title="申请提交" content="已于12月21日提交" />
           <t-step-item title="电子发票" content="预计1～3个工作日" />
           <t-step-item title="发票已邮寄" content="电子发票开出后7个工作日联系" />
-          <t-step-item title="完成" content="" />
+          <t-step-item title="完成" content />
         </t-steps>
       </t-row>
     </t-card>
 
     <!-- 产品目录 -->
-    <t-card title="产品目录" class="container-base-margin-top" :bordered="false">
+    <t-card title="产品目录" class="container-base-margin-top">
       <template #option>
         <t-radio-group default-value="dateVal">
           <t-radio-button value="dateVal"> 季度 </t-radio-button>
@@ -53,13 +53,12 @@
     </t-card>
 
     <!-- 产品采购明细 -->
-    <t-card title="产品采购明细" class="container-base-margin-top" :bordered="false">
+    <t-card title="产品采购明细" class="container-base-margin-top">
       <t-table
         :columns="columns"
         :data="data"
         :pagination="pagination"
         :hover="true"
-        :stripe="true"
         row-key="index"
         size="large"
         @sort-change="sortChange"
@@ -68,29 +67,20 @@
         <template #pdName="{ row }">
           <span>
             {{ row.pdName }}
-            <t-tag v-if="row.pdType" size="medium" style="margin-left: var(--td-comp-margin-s)">{{ row.pdType }}</t-tag>
+            <t-tag v-if="row.pdType" size="small">{{ row.pdType }}</t-tag>
           </span>
         </template>
 
         <template #purchaseNum="{ row }">
           <span>
             {{ row.purchaseNum }}
-            <t-tag
-              v-if="row.purchaseNum > 50"
-              theme="danger"
-              variant="light"
-              size="medium"
-              style="margin-left: var(--td-comp-margin-s)"
-              >超预算</t-tag
-            >
+            <t-tag v-if="row.purchaseNum > 50" theme="danger" variant="light" size="small">超预算</t-tag>
           </span>
         </template>
 
         <template #op="slotProps">
-          <t-space>
-            <t-link theme="primary" @click="listClick()">管理</t-link>
-            <t-link theme="danger" @click="deleteClickOp(slotProps)">删除</t-link>
-          </t-space>
+          <a :class="prefix + '-link'" @click="listClick()">管理</a>
+          <a :class="prefix + '-link'" @click="deleteClickOp(slotProps)">删除</a>
         </template>
 
         <template #op-column>
@@ -127,12 +117,12 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-
+import { ref, onMounted } from 'vue';
+import { prefix } from '@/config/global';
+import { BASE_INFO_DATA, TABLE_COLUMNS_DATA as columns, PRODUCT_LIST } from './constants';
 import { getPurchaseList } from '@/api/detail';
 
 import Product from './components/Product.vue';
-import { BASE_INFO_DATA, PRODUCT_LIST, TABLE_COLUMNS_DATA as columns } from './constants';
 
 const data = ref([]);
 const pagination = ref({
@@ -171,16 +161,16 @@ onMounted(() => {
 });
 
 const visible = ref(false);
-const sortChange = (val: unknown) => {
+const sortChange = (val) => {
   console.log(val);
 };
-const rehandleChange = (changeParams: unknown, triggerAndData: unknown) => {
+const rehandleChange = (changeParams, triggerAndData) => {
   console.log('统一Change', changeParams, triggerAndData);
 };
 const listClick = () => {
   visible.value = true;
 };
-const deleteClickOp = (columns: { rowIndex: number }) => {
+const deleteClickOp = (columns) => {
   data.value.splice(columns.rowIndex, 1);
 };
 const onConfirm = () => {
@@ -189,5 +179,5 @@ const onConfirm = () => {
 </script>
 
 <style lang="less" scoped>
-@import './index.less';
+@import url('./index.less');
 </style>

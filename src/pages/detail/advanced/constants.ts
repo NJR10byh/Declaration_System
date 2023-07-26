@@ -79,18 +79,18 @@ export const BASE_INFO_DATA = [
 
 export const TABLE_COLUMNS_DATA = [
   {
-    width: 280,
+    width: 300,
     ellipsis: true,
     colKey: 'index',
     title: '申请号',
-    sorter: (a: any, b: any) => a.index.substr(3) - b.index.substr(3),
+    sorter: (a, b) => a.index.substr(3) - b.index.substr(3),
   },
   {
     width: 200,
     ellipsis: true,
     colKey: 'pdName',
     title: '产品名称',
-    sorter: (a: any, b: any) => a.pdName.length - b.pdName.length,
+    sorter: (a, b) => a.pdName.length - b.pdName.length,
   },
   {
     width: 200,
@@ -99,14 +99,14 @@ export const TABLE_COLUMNS_DATA = [
     title: '产品编号',
   },
   {
-    width: 160,
+    width: 200,
     ellipsis: true,
     colKey: 'purchaseNum',
     title: '采购数量',
-    sorter: (a: any, b: any) => a.purchaseNum - b.purchaseNum,
+    sorter: (a, b) => a.purchaseNum - b.purchaseNum,
   },
   {
-    width: 160,
+    width: 200,
     ellipsis: true,
     colKey: 'adminName',
     title: '申请部门',
@@ -116,11 +116,11 @@ export const TABLE_COLUMNS_DATA = [
     ellipsis: true,
     colKey: 'updateTime',
     title: '创建时间',
-    sorter: (a: any, b: any) => Date.parse(a.updateTime) - Date.parse(b.updateTime),
+    sorter: (a, b) => Date.parse(a.updateTime) - Date.parse(b.updateTime),
   },
   {
-    align: 'left' as const,
-    fixed: 'right' as const,
+    align: 'left',
+    fixed: 'right',
     width: 200,
     className: 'test2',
     colKey: 'op',
@@ -131,7 +131,7 @@ export const TABLE_COLUMNS_DATA = [
 export const PRODUCT_LIST = [
   {
     name: 'MacBook Pro 2021',
-    subtitle: '苹果公司（Apple Inc. ）',
+    subTitle: 'MacBook Pro 2021',
     size: '13.3 英寸',
     cpu: 'Apple M1',
     memory: 'RAM 16GB',
@@ -141,7 +141,7 @@ export const PRODUCT_LIST = [
   },
   {
     name: 'Surface Laptop Go',
-    subtitle: '微软（Microsoft Corporation）',
+    subTitle: '微软（Microsoft Corporation）',
     size: '12.4 英寸',
     cpu: 'Core i7',
     memory: 'RAM 16GB',

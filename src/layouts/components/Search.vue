@@ -57,10 +57,16 @@ const changeSearchFocus = (value: boolean) => {
   display: flex;
   margin-left: 16px;
   .hover-active {
-    background: var(--td-bg-color-secondarycontainer);
+    .t-input__inner {
+      background: var(--td-bg-color-secondarycontainer);
+    }
+    .t-icon {
+      color: var(--td-brand-color) !important;
+    }
   }
 
   .t-icon {
+    font-size: 20px !important;
     color: var(--td-text-color-primary) !important;
   }
   .header-search {

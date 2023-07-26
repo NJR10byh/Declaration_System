@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-panel-detail">
-    <t-card title="本月采购申请情况" class="dashboard-detail-card" :bordered="false">
+    <t-card title="本月采购申请情况" class="dashboard-detail-card">
       <t-row :gutter="[16, 16]">
         <t-col v-for="(item, index) in PANE_LIST_DATA" :key="index" :xs="6" :xl="3">
           <t-card class="dashboard-list-card" :description="item.title">
@@ -18,18 +18,18 @@
     </t-card>
     <t-row :gutter="[16, 16]" class="row-margin">
       <t-col :xs="12" :xl="9">
-        <t-card class="dashboard-detail-card" title="采购商品申请趋势" subtitle="(件)" :bordered="false">
+        <t-card class="dashboard-detail-card" title="采购商品申请趋势" subtitle="(件)">
           <template #actions>
             <t-date-range-picker
               class="card-date-picker-container"
               :default-value="LAST_7_DAYS"
               theme="primary"
               mode="date"
-              style="width: 248px"
+              style="width: 240px"
               @change="onMaterialChange"
             />
           </template>
-          <div id="lineContainer" style="width: 100%; height: 416px" />
+          <div id="lineContainer" style="width: 100%; height: 410px" />
         </t-card>
       </t-col>
       <t-col :xs="12" :xl="3">
@@ -37,23 +37,23 @@
           v-for="(item, index) in PRODUCT_LIST"
           :key="index"
           :product="item"
-          :class="{ 'row-margin': index !== 0, 'product-card': true }"
+          :class="{ 'row-margin': index !== 0 }"
         />
       </t-col>
     </t-row>
-    <t-card :class="['dashboard-detail-card', 'row-margin']" title="采购商品满意度分布" :bordered="false">
+    <t-card :class="['dashboard-detail-card', 'row-margin']" title="采购商品满意度分布">
       <template #actions>
         <t-date-range-picker
           class="card-date-picker-container"
           :default-value="LAST_7_DAYS"
           theme="primary"
           mode="date"
-          style="display: inline-block; margin-right: var(--td-comp-margin-s); width: 248px"
+          style="display: inline-block; margin-right: 8px; width: 240px"
           @change="onSatisfyChange"
         />
         <t-button class="card-date-button"> 导出数据 </t-button>
       </template>
-      <div id="scatterContainer" style="width: 100%; height: 434px" />
+      <div id="scatterContainer" style="width: 100%; height: 330px" />
     </t-card>
   </div>
 </template>
@@ -65,20 +65,21 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { LineChart, ScatterChart } from 'echarts/charts';
-import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
-import * as echarts from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
-import { computed, nextTick, onDeactivated, onMounted, onUnmounted, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, watch, computed, onDeactivated } from 'vue';
 
+import * as echarts from 'echarts/core';
+import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import { LineChart, ScatterChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
 import ProductCard from '@/components/product-card/index.vue';
-import Trend from '@/components/trend/index.vue';
+
+import { getFolderLineDataSet, getScatterDataSet } from './index';
+import { PANE_LIST_DATA, PRODUCT_LIST } from './constants';
+import { LAST_7_DAYS } from '@/utils/date';
 import { useSettingStore } from '@/store';
 import { changeChartsTheme } from '@/utils/color';
-import { LAST_7_DAYS } from '@/utils/date';
 
-import { PANE_LIST_DATA, PRODUCT_LIST } from './constants';
-import { getFolderLineDataSet, getScatterDataSet } from './index';
+import Trend from '@/components/trend/index.vue';
 
 echarts.use([GridComponent, LegendComponent, TooltipComponent, LineChart, ScatterChart, CanvasRenderer]);
 
@@ -166,39 +167,13 @@ const onMaterialChange = (value: string[]) => {
   margin-top: 16px;
 }
 
-.product-card {
-  padding: var(--td-comp-paddingTB-xl) var(--td-comp-paddingTB-xl);
-
-  :deep(.t-card__header) {
-    padding: 0;
-  }
-
-  :deep(.t-card__body) {
-    padding: 0;
-    margin-top: var(--td-comp-margin-xxl);
-    margin-bottom: var(--td-comp-margin-xxl);
-  }
-
-  :deep(.t-card__footer) {
-    padding: 0;
-  }
-}
 // 统一增加8px;
 .dashboard-detail-card {
-  padding: var(--td-comp-paddingTB-xxl) var(--td-comp-paddingLR-xxl);
-
-  :deep(.t-card__header) {
-    padding: 0;
-  }
+  padding: 8px;
 
   :deep(.t-card__title) {
-    font: var(--td-font-title-large);
-    font-weight: 400;
-  }
-
-  :deep(.t-card__body) {
-    padding: 0;
-    margin-top: var(--td-comp-margin-xxl);
+    font-size: 20px;
+    font-weight: 500;
   }
 
   :deep(.t-card__actions) {
@@ -211,10 +186,11 @@ const onMaterialChange = (value: string[]) => {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: var(--td-comp-paddingTB-xl) var(--td-comp-paddingLR-xl);
+  height: 170px;
+  padding: 8px;
 
-  :deep(.t-card__description) {
-    margin: 0;
+  :deep(.t-card__header) {
+    padding-bottom: 8px;
   }
 
   :deep(.t-card__body) {
@@ -222,7 +198,6 @@ const onMaterialChange = (value: string[]) => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-top: var(--td-comp-margin-s);
   }
 
   &.dark {
@@ -240,10 +215,9 @@ const onMaterialChange = (value: string[]) => {
   }
 
   &__number {
-    font-size: var(--td-font-size-headline-medium);
-    line-height: var(--td-font-size-headline-medium);
+    font-size: 36px;
+    line-height: 44px;
     color: var(--td-text-color-primary);
-    margin-bottom: var(--td-comp-margin-xxl);
   }
 
   &__text {
@@ -251,18 +225,16 @@ const onMaterialChange = (value: string[]) => {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    font: var(--td-font-body-medium);
+    font-size: 14px;
     color: var(--td-text-color-placeholder);
     text-align: left;
+    line-height: 18px;
 
-    .t-icon {
-      font-size: var(--td-comp-size-xxxs);
-    }
     &-left {
       display: flex;
 
       .icon {
-        margin: 0 var(--td-comp-margin-s);
+        margin: 0 8px;
       }
     }
   }

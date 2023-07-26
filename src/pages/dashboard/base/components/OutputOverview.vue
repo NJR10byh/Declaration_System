@@ -1,5 +1,5 @@
 <template>
-  <t-card :bordered="false">
+  <t-card>
     <t-row>
       <t-col :xs="12" :xl="9">
         <t-card
@@ -17,7 +17,12 @@
               @change="onStokeDataChange"
             />
           </template>
-          <div id="stokeContainer" style="width: 100%; height: 351px" class="dashboard-chart-container"></div>
+          <div
+            id="stokeContainer"
+            ref="stokeContainer"
+            style="width: 100%; height: 351px"
+            class="dashboard-chart-container"
+          ></div>
         </t-card>
       </t-col>
       <t-col :xs="12" :xl="3">
@@ -62,18 +67,18 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { LineChart } from 'echarts/charts';
-import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
+import { onMounted, watch, ref, onUnmounted, nextTick, computed } from 'vue';
+
 import * as echarts from 'echarts/core';
+import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
+import { LineChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useSettingStore } from '@/store';
+import { LAST_7_DAYS } from '@/utils/date';
+import { changeChartsTheme } from '@/utils/color';
 
 // 导入样式
 import Trend from '@/components/trend/index.vue';
-import { useSettingStore } from '@/store';
-import { changeChartsTheme } from '@/utils/color';
-import { LAST_7_DAYS } from '@/utils/date';
-
 import { constructInitDataset } from '../index';
 
 echarts.use([TooltipComponent, LegendComponent, GridComponent, LineChart, CanvasRenderer]);
@@ -150,23 +155,14 @@ const onStokeDataChange = (checkedValues: string[]) => {
 </script>
 
 <style lang="less" scoped>
-:deep(.t-card__body) {
-  padding: var(--td-comp-paddingTB-xxl) var(--td-comp-paddingLR-xxl);
-}
-
 .dashboard-overview-card {
   :deep(.t-card__header) {
-    padding: 0;
+    padding-bottom: 24px;
   }
 
   :deep(.t-card__title) {
-    font: var(--td-font-title-large);
-    font-weight: 400;
-  }
-
-  :deep(.t-card__body) {
-    margin-top: var(--td-comp-margin-xxl);
-    padding: 0;
+    font-size: 20px;
+    font-weight: 500;
   }
 
   &.overview-panel {
@@ -175,36 +171,30 @@ const onStokeDataChange = (checkedValues: string[]) => {
 
   &.export-panel {
     border-left: none;
-    margin-left: calc(var(--td-comp-margin-xxxl) + var(--td-comp-margin-xxxl));
   }
 }
 
 .inner-card {
-  margin-top: var(--td-comp-margin-s);
-  margin-bottom: var(--td-comp-margin-xxxxl);
+  padding: 24px 0;
 
   :deep(.t-card__header) {
     padding-bottom: 0;
   }
 
-  :deep(.t-card__body) {
-    margin-top: var(--td-comp-margin-s);
-  }
-
   &__content {
     &-title {
-      font-size: var(--td-font-size-headline-medium);
-      line-height: var(--td-line-height-headline-medium);
+      font-size: 36px;
+      line-height: 44px;
     }
 
     &-footer {
       display: flex;
       align-items: center;
+      line-height: 22px;
       color: var(--td-text-color-placeholder);
-      margin-top: var(--td-comp-margin-xxl);
 
       .trend-tag {
-        margin-left: var(--td-comp-margin-s);
+        margin-left: 4px;
       }
     }
   }

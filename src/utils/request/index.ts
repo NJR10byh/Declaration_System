@@ -1,36 +1,37 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
-import type { AxiosInstance } from 'axios';
-import isString from 'lodash/isString';
-import merge from 'lodash/merge';
+import isString from "lodash/isString";
+import merge from "lodash/merge";
+import type {AxiosTransform, CreateAxiosOptions} from "./AxiosTransform";
+import {VAxios} from "./Axios";
+import {formatRequestDate, joinTimestamp, setObjToUrlParams} from "./utils";
 
-import { ContentTypeEnum } from '@/constants';
-import { useUserStore } from '@/store';
-
-import { VAxios } from './Axios';
-import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
-import { formatRequestDate, joinTimestamp, setObjToUrlParams } from './utils';
-
-const env = import.meta.env.MODE || 'development';
+const env = import.meta.env.MODE || "development";
 
 // 如果是mock模式 或 没启用直连代理 就不配置host 会走本地Mock拦截 或 Vite 代理
-const host = env === 'mock' || import.meta.env.VITE_IS_REQUEST_PROXY !== 'true' ? '' : import.meta.env.VITE_API_URL;
+const host = "";
 
 // 数据处理，方便区分多种处理方式
 const transform: AxiosTransform = {
   // 处理请求数据。如果数据不是预期格式，可直接抛出错误
   transformRequestHook: (res, options) => {
-    const { isTransformResponse, isReturnNativeResponse } = options;
+    const {isTransformResponse, isReturnNativeResponse} = options;
 
     // 如果204无内容直接返回
-    const method = res.config.method?.toLowerCase();
-    if (res.status === 204 && ['put', 'patch', 'delete'].includes(method)) {
+    // const method = res.config.method?.toLowerCase();
+    // if (res.status === 204 || method === "put" || method === "patch") {
+    //   return res;
+    // }
+
+    // 会话过期，重新登录
+    if (res.request.responseURL.indexOf("i.njupt.edu.cn") != -1) {
+      window.location.href = res.request.responseURL;
+    }
+
+    // 需要获取原生响应头 或者 相应格式为blob流时，返回原生响应头
+    if (isReturnNativeResponse || res.request.responseType == "blob") {
       return res;
     }
 
-    // 是否返回原生响应头 比如：需要获取响应头时使用该属性
-    if (isReturnNativeResponse) {
-      return res;
-    }
     // 不进行任何处理，直接返回
     // 用于页面代码可能需要直接获取code，data，message这些信息时开启
     if (!isTransformResponse) {
@@ -38,26 +39,26 @@ const transform: AxiosTransform = {
     }
 
     // 错误的时候返回
-    const { data } = res;
+    const {data} = res;
     if (!data) {
-      throw new Error('请求接口错误');
+      throw new Error("请求接口错误");
     }
 
     //  这里 code为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
-    const { code } = data;
+    const {status} = data;
 
     // 这里逻辑可以根据项目进行修改
-    const hasSuccess = data && code === 0;
+    const hasSuccess = data && status === "success";
     if (hasSuccess) {
       return data.data;
     }
 
-    throw new Error(`请求接口错误, 错误码: ${code}`);
+    throw new Error(data.data.errMsg);
   },
 
   // 请求前处理配置
   beforeRequestHook: (config, options) => {
-    const { apiUrl, isJoinPrefix, urlPrefix, joinParamsToUrl, formatDate, joinTime = true } = options;
+    const {apiUrl, isJoinPrefix, urlPrefix, joinParamsToUrl, formatDate, joinTime = true} = options;
 
     // 添加接口前缀
     if (isJoinPrefix && urlPrefix && isString(urlPrefix)) {
@@ -74,7 +75,7 @@ const transform: AxiosTransform = {
     if (formatDate && data && !isString(data)) {
       formatRequestDate(data);
     }
-    if (config.method?.toUpperCase() === 'GET') {
+    if (config.method?.toUpperCase() === "GET") {
       if (!isString(params)) {
         // 给 get 请求加上时间戳参数，避免从缓存中拿数据。
         config.params = Object.assign(params || {}, joinTimestamp(joinTime, false));
@@ -88,7 +89,7 @@ const transform: AxiosTransform = {
         formatRequestDate(params);
       }
       if (
-        Reflect.has(config, 'data') &&
+        Reflect.has(config, "data") &&
         config.data &&
         (Object.keys(config.data).length > 0 || data instanceof FormData)
       ) {
@@ -100,7 +101,7 @@ const transform: AxiosTransform = {
         config.params = undefined;
       }
       if (joinParamsToUrl) {
-        config.url = setObjToUrlParams(config.url as string, { ...config.params, ...config.data });
+        config.url = setObjToUrlParams(config.url as string, {...config.params, ...config.data});
       }
     } else {
       // 兼容restful风格
@@ -111,19 +112,17 @@ const transform: AxiosTransform = {
   },
 
   // 请求拦截器处理
-  requestInterceptors: (config, options) => {
-    // 请求之前处理config
-    const userStore = useUserStore();
-    const { token } = userStore;
-
-    if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
-      // jwt token
-      (config as Recordable).headers.Authorization = options.authenticationScheme
-        ? `${options.authenticationScheme} ${token}`
-        : token;
-    }
-    return config;
-  },
+  // requestInterceptors: (config, options) => {
+  //   // 请求之前处理config
+  //   const token = localStorage.getItem(TOKEN_NAME);
+  //   if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
+  //     // jwt token
+  //     (config as Recordable).headers.Authorization = options.authenticationScheme
+  //       ? `${options.authenticationScheme} ${token}`
+  //       : token;
+  //   }
+  //   return config;
+  // },
 
   // 响应拦截器处理
   responseInterceptors: (res) => {
@@ -131,8 +130,8 @@ const transform: AxiosTransform = {
   },
 
   // 响应错误处理
-  responseInterceptorsCatch: (error: any, instance: AxiosInstance) => {
-    const { config } = error;
+  responseInterceptorsCatch: (error: any) => {
+    const {config} = error;
     if (!config || !config.requestOptions.retry) return Promise.reject(error);
 
     config.retryCount = config.retryCount || 0;
@@ -146,24 +145,23 @@ const transform: AxiosTransform = {
         resolve(config);
       }, config.requestOptions.retry.delay || 1);
     });
-    config.headers = { ...config.headers, 'Content-Type': ContentTypeEnum.Json };
-    return backoff.then((config) => instance.request(config));
-  },
+
+    return backoff.then((config) => request.request(config));
+  }
 };
 
 function createAxios(opt?: Partial<CreateAxiosOptions>) {
   return new VAxios(
     merge(
       <CreateAxiosOptions>{
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes
         // 例如: authenticationScheme: 'Bearer'
-        authenticationScheme: '',
+        authenticationScheme: "",
         // 超时
         timeout: 10 * 1000,
         // 携带Cookie
         withCredentials: true,
         // 头信息
-        headers: { 'Content-Type': ContentTypeEnum.Json },
+        headers: {"Content-Type": "application/json;charset=UTF-8"},
         // 数据处理方式
         transform,
         // 配置项，下面的选项都可以在独立的接口请求中覆盖
@@ -172,10 +170,12 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           apiUrl: host,
           // 是否自动添加接口前缀
           isJoinPrefix: true,
-          // 接口前缀
-          // 例如: https://www.baidu.com/api
-          // urlPrefix: '/api'
-          urlPrefix: import.meta.env.VITE_API_URL_PREFIX,
+          /**
+           * 接口前缀
+           * 例如: https://www.baidu.com/api
+           * 开发环境
+           */
+          urlPrefix: "/patent_dev",
           // 是否返回原生响应头 比如：需要获取响应头时使用该属性
           isReturnNativeResponse: false,
           // 需要对返回数据进行处理
@@ -186,21 +186,20 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           formatDate: true,
           // 是否加入时间戳
           joinTime: true,
-          // 是否忽略请求取消令牌
-          // 如果启用，则重复请求时不进行处理
-          // 如果禁用，则重复请求时会取消当前请求
-          ignoreCancelToken: true,
+          // 忽略重复请求
+          ignoreRepeatRequest: true,
           // 是否携带token
-          withToken: true,
+          withToken: false,
           // 重试
           retry: {
             count: 3,
-            delay: 1000,
-          },
-        },
+            delay: 1000
+          }
+        }
       },
-      opt || {},
-    ),
+      opt || {}
+    )
   );
 }
+
 export const request = createAxios();

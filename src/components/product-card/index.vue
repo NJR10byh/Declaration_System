@@ -1,5 +1,5 @@
 <template>
-  <t-card theme="poster2" :bordered="false">
+  <t-card theme="poster2">
     <template #avatar>
       <t-avatar size="56px">
         <template #icon>
@@ -55,16 +55,16 @@
   </t-card>
 </template>
 <script setup lang="ts">
+import { PropType } from 'vue';
 import {
-  AddIcon,
+  ShopIcon,
   CalendarIcon,
+  ServiceIcon,
+  UserAvatarIcon,
   LaptopIcon,
   MoreIcon,
-  ServiceIcon,
-  ShopIcon,
-  UserAvatarIcon,
+  AddIcon,
 } from 'tdesign-icons-vue-next';
-import type { PropType } from 'vue';
 
 export interface CardProductType {
   type: number;
@@ -103,19 +103,22 @@ const handleClickDelete = (product: CardProductType) => {
     min-height: 140px;
 
     &--name {
-      margin-bottom: var(--td-comp-margin-s);
-      font: var(--td-font-title-medium);
+      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 400;
       color: var(--td-text-color-primary);
     }
 
     &--desc {
       color: var(--td-text-color-secondary);
-      font: var(--td-font-body-small);
+      font-size: 12px;
+      line-height: 20px;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      height: 40px;
     }
   }
 }

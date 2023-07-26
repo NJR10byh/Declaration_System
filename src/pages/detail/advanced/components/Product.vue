@@ -8,13 +8,13 @@
           {{ data.subtitle }}
         </div>
         <div class="operator-title-tags">
-          <t-tag class="operator-title-tag" theme="success" size="medium">
+          <t-tag class="operator-title-tag" theme="success" size="small">
             {{ data.size }}
           </t-tag>
-          <t-tag class="operator-title-tag" size="medium">
+          <t-tag class="operator-title-tag" size="small">
             {{ data.cpu }}
           </t-tag>
-          <t-tag class="operator-title-tag" size="medium">
+          <t-tag class="operator-title-tag" size="small">
             {{ data.memory }}
           </t-tag>
         </div>
@@ -54,43 +54,50 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+.operator-gap {
+  margin-left: 20px;
+}
+
 .operator-block {
   position: relative;
   background-color: var(--td-bg-color-container);
   border: 1px solid var(--td-component-border);
-  border-radius: var(--td-radius-medium);
+  border-radius: 3px;
 
   .operator-content {
-    padding: var(--td-comp-paddingTB-xl) var(--td-comp-paddingLR-xl);
-    height: 240px;
+    padding: 20px 32px 24px 32px;
+    height: 256px;
 
     .operator-title-icon {
-      background: var(--td-brand-color-light);
+      background: var(--td-brand-color-1);
       color: var(--td-brand-color);
-      font-size: var(--td-comp-size-xxxl);
-      padding: calc(var(--td-comp-size-xxxl) - var(--td-comp-size-xl));
+      font-size: 56px;
+      padding: 14px;
       border-radius: 100%;
     }
 
     .operator-title {
-      margin-bottom: var(--td-comp-margin-xxl);
+      margin-bottom: 25px;
       position: relative;
 
       h1 {
         display: inline-block;
-        font: var(--td-font-title-large);
+        font-weight: 500;
+        font-size: 24px;
         color: var(--td-text-color-primary);
       }
 
       &-subtitle {
         display: block;
-        font: var(--td-font-body-medium);
+        font-weight: 400;
+        font-size: 14px;
+        width: 60%;
         color: var(--td-text-color-placeholder);
       }
 
       &-tag {
-        margin-right: var(--td-comp-margin-s);
-        margin-top: var(--td-comp-margin-l);
+        margin-right: 4px;
+        margin-top: 8px;
         margin-left: unset;
         border: unset;
       }
@@ -103,7 +110,7 @@ export default defineComponent({
 
       svg {
         circle {
-          fill: var(--td-brand-color-focus);
+          fill: var(--td-brand-color-2);
         }
 
         path {
@@ -114,21 +121,21 @@ export default defineComponent({
 
     .operator-item {
       position: relative;
-      padding-bottom: var(--td-comp-margin-xxl);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      padding-top: 8px;
+      padding-bottom: 8px;
 
       &-info {
         display: inline-block;
-        width: 80%;
+        width: 60%;
         text-align: left;
-        font: var(--td-font-body-medium);
+        font-size: 14px;
         color: var(--td-text-color-placeholder);
       }
 
       &-icon {
-        font-size: var(--td-comp-size-xxxs);
+        position: absolute;
+        bottom: 8px;
+        right: 0;
       }
     }
   }
@@ -141,33 +148,13 @@ export default defineComponent({
 
     .t-progress--thin {
       display: unset;
-
-      :deep(.t-progress__info) {
-        margin-left: 0;
-      }
     }
 
     &-percentage {
       position: absolute;
-      bottom: var(--td-comp-margin-l);
-      right: var(--td-comp-paddingLR-xl);
+      bottom: 15px;
+      right: 32px;
       color: var(--td-text-color-placeholder);
-    }
-
-    .operator-progress {
-      display: unset;
-
-      :deep(.t-progress__bar) {
-        border-radius: 0px 0px var(--td-radius-medium) var(--td-radius-medium);
-      }
-
-      :deep(.t-progress__inner) {
-        border-radius: 0px 0px 0px var(--td-radius-medium);
-      }
-
-      :deep(.t-progress__info) {
-        margin-left: 0;
-      }
     }
   }
 }

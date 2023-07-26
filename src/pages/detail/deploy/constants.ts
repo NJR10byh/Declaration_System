@@ -83,33 +83,33 @@ export const BASE_INFO_DATA = [
 
 export const TABLE_COLUMNS = [
   {
-    width: '280',
+    width: '448',
     ellipsis: true,
     colKey: 'name',
     title: '项目名称',
-    sorter: (a: any, b: any) => a.name.substr(10) - b.name.substr(10),
+    sorter: (a, b) => a.name.substr(10) - b.name.substr(10),
   },
   {
-    width: '280',
+    width: '448',
     ellipsis: true,
     colKey: 'adminName',
     title: '管理员',
   },
   {
-    width: '280',
+    width: '448',
     className: 'test',
     ellipsis: true,
     colKey: 'updateTime',
     title: '创建时间',
-    sorter: (a: any, b: any) => Date.parse(a.updateTime) - Date.parse(b.updateTime),
+    sorter: (a, b) => Date.parse(a.updateTime) - Date.parse(b.updateTime),
   },
   {
-    align: 'left' as const,
+    align: 'left',
     width: '200',
     className: 'test2',
     ellipsis: true,
     colKey: 'op',
-    fixed: 'right' as const,
+    fixed: 'right',
     title: '操作',
   },
 ];

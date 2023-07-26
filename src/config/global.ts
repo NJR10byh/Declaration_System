@@ -1,1 +1,1 @@
-export const prefix = 'tdesign-starter';
+export const prefix = "tdesign-starter";

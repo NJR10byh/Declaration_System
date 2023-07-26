@@ -1,19 +1,19 @@
-import type { ProjectListResult, PurchaseListResult } from '@/api/model/detailModel';
-import { request } from '@/utils/request';
+import { request } from "@/utils/request";
+import type { ProjectListResult, PurchaseListResult } from "@/api/model/detailModel";
 
 const Api = {
-  PurchaseList: '/get-purchase-list',
-  ProjectList: '/get-project-list',
+  PurchaseList: "/get-purchase-dataCenter",
+  ProjectList: "/get-project-dataCenter"
 };
 
 export function getPurchaseList() {
   return request.get<PurchaseListResult>({
-    url: Api.PurchaseList,
+    url: Api.PurchaseList
   });
 }
 
 export function getProjectList() {
   return request.get<ProjectListResult>({
-    url: Api.ProjectList,
+    url: Api.ProjectList
   });
 }

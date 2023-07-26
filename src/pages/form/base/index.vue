@@ -15,7 +15,7 @@
         <!-- 表单内容 -->
 
         <!-- 合同名称,合同类型 -->
-        <t-row class="row-gap" :gutter="[32, 24]">
+        <t-row class="row-gap" :gutter="[16, 24]">
           <t-col :span="6">
             <t-form-item label="合同名称" name="name">
               <t-input v-model="formData.name" :style="{ width: '322px' }" placeholder="请输入内容" />
@@ -115,7 +115,7 @@
             </t-form-item>
           </t-col>
           <t-col :span="6">
-            <t-form-item label="上传文件" name="files">
+            <t-form-item label="" name="files">
               <t-upload
                 v-model="formData.files"
                 action="https://service-bv448zsw-1257786608.gz.apigw.tencentcs.com/api/upload-demo"
@@ -149,7 +149,7 @@
     <div class="form-submit-container">
       <div class="form-submit-sub">
         <div class="form-submit-left">
-          <t-button theme="primary" class="form-submit-confirm" type="submit"> 确认提交 </t-button>
+          <t-button theme="primary" class="form-submit-confirm" type="submit"> 提交 </t-button>
           <t-button type="reset" class="form-submit-cancel" theme="default" variant="base"> 取消 </t-button>
         </div>
       </div>
@@ -164,23 +164,21 @@ export default {
 </script>
 
 <script setup lang="ts">
-import type { SubmitContext, UploadFailContext, UploadFile } from 'tdesign-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
 import { ref } from 'vue';
-
-import { FORM_RULES, INITIAL_DATA, PARTY_A_OPTIONS, PARTY_B_OPTIONS, TYPE_OPTIONS } from './constants';
+import { MessagePlugin } from 'tdesign-vue-next';
+import { FORM_RULES, INITIAL_DATA, TYPE_OPTIONS, PARTY_A_OPTIONS, PARTY_B_OPTIONS } from './constants';
 
 const formData = ref({ ...INITIAL_DATA });
 
 const onReset = () => {
   MessagePlugin.warning('取消新建');
 };
-const onSubmit = (ctx: SubmitContext) => {
-  if (ctx.validateResult === true) {
+const onSubmit = ({ validateResult }) => {
+  if (validateResult === true) {
     MessagePlugin.success('新建成功');
   }
 };
-const beforeUpload = (file: UploadFile) => {
+const beforeUpload = (file) => {
   if (!/\.(pdf)$/.test(file.name)) {
     MessagePlugin.warning('请上传pdf文件');
     return false;
@@ -191,11 +189,11 @@ const beforeUpload = (file: UploadFile) => {
   }
   return true;
 };
-const handleFail = (options: UploadFailContext) => {
-  MessagePlugin.error(`文件 ${options.file.name} 上传失败`);
+const handleFail = ({ file }) => {
+  MessagePlugin.error(`文件 ${file.name} 上传失败`);
 };
 // 用于格式化接口响应值，error 会被用于上传失败的提示文字；url 表示文件/图片地址
-const formatResponse = (res: any) => {
+const formatResponse = (res) => {
   return { ...res, error: '上传失败，请重试', url: res.url };
 };
 </script>

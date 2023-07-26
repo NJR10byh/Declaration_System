@@ -1,5 +1,5 @@
+import { ref, Ref, onUnmounted, onMounted } from 'vue';
 import * as echarts from 'echarts/core';
-import { onMounted, onUnmounted, Ref, ref } from 'vue';
 
 /**
  * eChart hook
@@ -39,7 +39,7 @@ export const useChart = (domId: string): Ref<echarts.ECharts> => {
  * @returns
  */
 export const useCounter = (duration = 60): [Ref<number>, () => void] => {
-  let intervalTimer: ReturnType<typeof setInterval>;
+  let intervalTimer;
   onUnmounted(() => {
     clearInterval(intervalTimer);
   });

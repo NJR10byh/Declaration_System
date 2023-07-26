@@ -26,13 +26,15 @@
   top: 22%;
   left: 5%;
   min-height: 500px;
+  line-height: 22px;
 }
 
 .title-container {
   .title {
-    font: var(--td-font-headline-large);
+    font-size: 36px;
+    line-height: 44px;
     color: var(--td-text-color-primary);
-    margin-top: var(--td-comp-margin-xs);
+    margin-top: 4px;
 
     &.margin-no {
       margin-top: 0;
@@ -40,12 +42,12 @@
   }
 
   .sub-title {
-    margin-top: var(--td-comp-margin-xxl);
+    margin-top: 16px;
 
     .tip {
       display: inline-block;
-      margin-right: var(--td-comp-margin-s);
-      font: var(--td-font-body-medium);
+      margin-right: 8px;
+      font-size: 14px;
 
       &:first-child {
         color: var(--td-text-color-secondary);
@@ -61,18 +63,18 @@
 
 .item-container {
   width: 400px;
-  margin-top: var(--td-comp-margin-xxxxl);
+  margin-top: 48px;
 
   &.login-qrcode {
     .tip-container {
-      margin-bottom: var(--td-comp-margin-l);
-      font: var(--td-font-body-medium);
+      width: 192px;
+      margin-bottom: 16px;
+      font-size: 14px;
       display: flex;
-      align-items: flex-start;
+      justify-content: space-between;
 
       .tip {
         color: var(--td-text-color-primary);
-        margin-right: var(--td-comp-margin-s);
       }
 
       .refresh {
@@ -81,8 +83,8 @@
         color: var(--td-brand-color);
 
         .t-icon {
-          font-size: var(--td-comp-size-xxxs);
-          margin-left: var(--td-comp-margin-xs);
+          font-size: 14px;
+          margin-left: 4px;
         }
 
         &:hover {
@@ -107,8 +109,12 @@
     align-items: center;
 
     &.remember-pwd {
-      margin-bottom: var(--td-comp-margin-l);
+      margin-bottom: 16px;
       justify-content: space-between;
+    }
+
+    :deep(.t-checkbox__label) {
+      color: var(--td-text-color-secondary);
     }
 
     span {
@@ -129,27 +135,28 @@
 
       button {
         flex-shrink: 0;
-        margin-left: var(--td-comp-margin-l);
-        width: 128px;
+        width: 102px;
+        height: 40px;
+        margin-left: 11px;
       }
     }
   }
 
   .btn-container {
-    margin-top: var(--td-comp-margin-xxxxl);
+    margin-top: 48px;
   }
 }
 
 .switch-container {
-  margin-top: var(--td-comp-margin-xxl);
+  margin-top: 24px;
 
   .tip {
-    font: var(--td-font-body-medium);
-    color: var(--td-brand-color);
+    font-size: 14px;
+    color: var(--td-brand-color-8);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    margin-right: var(--td-comp-margin-l);
+    margin-right: 14px;
 
     &:last-child {
       &::after {
@@ -162,25 +169,25 @@
       display: block;
       width: 1px;
       height: 12px;
-      background: var(--td-component-stroke);
-      margin-left: var(--td-comp-margin-l);
+      background: var(--td-gray-color-3);
+      margin-left: 14px;
     }
   }
 }
 
 .check-container {
-  font: var(--td-font-body-medium);
+  font-size: 14px;
   color: var(--td-text-color-secondary);
 
   .tip {
     float: right;
-    font: var(--td-font-body-medium);
-    color: var(--td-brand-color);
+    font-size: 14px;
+    color: var(--td-brand-color-8);
   }
 }
 
 .copyright {
-  font: var(--td-font-body-medium);
+  font-size: 14px;
   position: absolute;
   left: 5%;
   bottom: 64px;

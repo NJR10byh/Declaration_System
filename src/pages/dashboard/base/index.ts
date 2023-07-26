@@ -1,9 +1,7 @@
 import dayjs from 'dayjs';
-import { EChartsOption } from 'echarts';
-
 import { TChartColor } from '@/config/color';
-import { getRandomArray } from '@/utils/charts';
 import { getChartListColor } from '@/utils/color';
+import { getRandomArray } from '@/utils/charts';
 
 /** 首页 dashboard 折线图 */
 export function constructInitDashboardDataset(type: string) {
@@ -94,14 +92,17 @@ export function constructInitDataset({
   placeholderColor,
   borderColor,
 }: { dateTime: Array<string> } & TChartColor) {
+  // const dataset: Array<Array<string>> = [['时间'], ['入库'], ['出库']];
   const divideNum = 10;
   const timeArray = [];
   const inArray = [];
   const outArray = [];
   for (let i = 0; i < divideNum; i++) {
+    // const [timeArray, inArray, outArray] = dataset;
     if (dateTime.length > 0) {
       const dateAbsTime: number = (new Date(dateTime[1]).getTime() - new Date(dateTime[0]).getTime()) / divideNum;
       const enhandTime: number = new Date(dateTime[0]).getTime() + dateAbsTime * i;
+      // console.log('dateAbsTime..', dateAbsTime, enhandTime);
       timeArray.push(dayjs(enhandTime).format('YYYY-MM-DD'));
     } else {
       timeArray.push(
@@ -114,6 +115,8 @@ export function constructInitDataset({
     inArray.push(getRandomArray().toString());
     outArray.push(getRandomArray().toString());
   }
+
+  // console.log('timeArray..', timeArray);
 
   const dataset = {
     color: getChartListColor(),
@@ -308,7 +311,7 @@ export function getPieChartDataSet({
   textColor,
   placeholderColor,
   containerColor,
-}: { radius?: number } & Record<string, string>): EChartsOption {
+}: { radius?: number } & Record<string, string>) {
   return {
     color: getChartListColor(),
     tooltip: {

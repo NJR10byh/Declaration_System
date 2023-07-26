@@ -1,51 +1,72 @@
-import { defineStore } from 'pinia';
-import { RouteRecordRaw } from 'vue-router';
+import { defineStore } from "pinia";
+import { RouteRecordRaw } from "vue-router";
+import router, { asyncRouterList } from "@/router";
+import { store } from "@/store";
 
-import { RouteItem } from '@/api/model/permissionModel';
-import { getMenuList } from '@/api/permission';
-import router, { fixedRouterList, homepageRouterList } from '@/router';
-import { store } from '@/store';
-import { transformObjectToRoute } from '@/utils/route';
+function filterPermissionsRouters(routes: Array<RouteRecordRaw>, role: String) {
+  const res = [];
+  let children = [];
+  let removeRoutes = [];
+  routes.forEach((route) => {
+    /**
+     * 每次foreach新的route，需要将鉴权通过的孩子数组初始化
+     */
+    children = [];
+    route.children?.forEach((childRouter) => {
+      const rolePermission = childRouter.meta?.rolePermission || childRouter.name;
+      // @ts-ignore
+      if (rolePermission.indexOf(role) !== -1) {
+        children.push(childRouter);
+      } else {
+        removeRoutes.push(childRouter);
+      }
+    });
+    if (children.length > 0) {
+      route.children = children;
+      res.push(route);
+    }
+  });
+  return { accessedRouters: res, removeRoutes };
+}
 
-export const usePermissionStore = defineStore('permission', {
+export const usePermissionStore = defineStore("permission", {
   state: () => ({
-    whiteListRouters: ['/login'],
+    whiteListRouters: ["/login"],
     routers: [],
-    removeRoutes: [],
-    asyncRoutes: [],
+    removeRoutes: []
   }),
   actions: {
-    async initRoutes() {
-      const accessedRouters = this.asyncRoutes;
+    async initRoutes(role) {
+      let accessedRouters = [];// 允许访问的
+      let removeRoutes = []; // 移除的
+      // special token
+      if (role == "root") {
+        accessedRouters = asyncRouterList;
+      } else {
+        const res = filterPermissionsRouters(asyncRouterList, role);
+        accessedRouters = res.accessedRouters;
+        removeRoutes = res.removeRoutes;
+        this.routers = accessedRouters;
+        this.removeRoutes = removeRoutes;
 
-      // 在菜单展示全部路由
-      this.routers = [...homepageRouterList, ...accessedRouters, ...fixedRouterList];
-      // 在菜单只展示动态路由和首页
-      // this.routers = [...homepageRouterList, ...accessedRouters];
-      // 在菜单只展示动态路由
-      // this.routers = [...accessedRouters];
-    },
-    async buildAsyncRoutes() {
-      try {
-        // 发起菜单权限请求 获取菜单列表
-        const asyncRoutes: Array<RouteItem> = (await getMenuList()).list;
-        this.asyncRoutes = transformObjectToRoute(asyncRoutes);
-        await this.initRoutes();
-        return this.asyncRoutes;
-      } catch (error) {
-        throw new Error("Can't build routes");
+        removeRoutes.forEach((item: RouteRecordRaw) => {
+          if (router.hasRoute(item.name)) {
+            router.removeRoute(item.name);
+          }
+        });
       }
     },
-    async restoreRoutes() {
-      // 不需要在此额外调用initRoutes更新侧边导肮内容，在登录后asyncRoutes为空会调用
-      this.asyncRoutes.forEach((item: RouteRecordRaw) => {
-        if (item.name) {
-          router.removeRoute(item.name);
-        }
+    async restore() {
+      this.removeRoutes.forEach((item: RouteRecordRaw) => {
+        router.addRoute(item);
       });
-      this.asyncRoutes = [];
     },
-  },
+    async clearRoutes() {
+      this.whiteListRouters = ["/login"];
+      this.routers = [];
+      this.removeRoutes = [];
+    }
+  }
 });
 
 export function getPermissionStore() {

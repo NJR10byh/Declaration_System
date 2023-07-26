@@ -1,6 +1,4 @@
-import { FormRule } from 'tdesign-vue-next';
-
-export const FORM_RULES: Record<string, FormRule[]> = {
+export const FORM_RULES = {
   name: [{ required: true, message: '请选择合同名称', type: 'error' }],
   type: [{ required: true, message: '请选择发票类型', type: 'error' }],
   title: [{ required: true, message: '请输入发票抬头', type: 'error' }],

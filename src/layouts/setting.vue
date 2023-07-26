@@ -23,7 +23,11 @@
         </t-radio-group>
         <div class="setting-group-title">主题色</div>
         <t-radio-group v-model="formData.brandTheme">
-          <div v-for="(item, index) in DEFAULT_COLOR_OPTIONS" :key="index" class="setting-layout-drawer">
+          <div
+            v-for="(item, index) in COLOR_OPTIONS.slice(0, COLOR_OPTIONS.length - 1)"
+            :key="index"
+            class="setting-layout-drawer"
+          >
             <t-radio-button :key="index" :value="item" class="setting-layout-color-group">
               <color-container :value="item" />
             </t-radio-button>
@@ -46,8 +50,11 @@
                   :swatch-colors="[]"
                 />
               </template>
-              <t-radio-button :value="dynamicColor" class="setting-layout-color-group dynamic-color-btn">
-                <color-container :value="dynamicColor" />
+              <t-radio-button
+                :value="COLOR_OPTIONS[COLOR_OPTIONS.length - 1]"
+                class="setting-layout-color-group dynamic-color-btn"
+              >
+                <color-container :value="COLOR_OPTIONS[COLOR_OPTIONS.length - 1]" />
               </t-radio-button>
             </t-popup>
           </div>
@@ -92,45 +99,42 @@
   </t-drawer>
 </template>
 <script setup lang="ts">
-import type { PopupVisibleChangeContext } from 'tdesign-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
-import { computed, onMounted, ref, watchEffect } from 'vue';
+import { ref, computed, onMounted, watchEffect } from 'vue';
+import { MessagePlugin, PopupVisibleChangeContext } from 'tdesign-vue-next';
+import { Color } from 'tvision-color';
 import useClipboard from 'vue-clipboard3';
 
-import SettingAutoIcon from '@/assets/assets-setting-auto.svg';
+import { useSettingStore } from '@/store';
+import Thumbnail from '@/components/thumbnail/index.vue';
+import ColorContainer from '@/components/color/index.vue';
+
+import STYLE_CONFIG from '@/config/style';
+import { insertThemeStylesheet, generateColorMap } from '@/config/color';
+
 import SettingDarkIcon from '@/assets/assets-setting-dark.svg';
 import SettingLightIcon from '@/assets/assets-setting-light.svg';
-import ColorContainer from '@/components/color/index.vue';
-import Thumbnail from '@/components/thumbnail/index.vue';
-import { DEFAULT_COLOR_OPTIONS } from '@/config/color';
-import STYLE_CONFIG from '@/config/style';
-import { useSettingStore } from '@/store';
+import SettingAutoIcon from '@/assets/assets-setting-auto.svg';
 
 const settingStore = useSettingStore();
 
 const LAYOUT_OPTION = ['side', 'top', 'mix'];
-
+const COLOR_OPTIONS = ['default', 'cyan', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'dynamic'];
 const MODE_OPTIONS = [
   { type: 'light', text: '明亮' },
   { type: 'dark', text: '暗黑' },
   { type: 'auto', text: '跟随系统' },
 ];
-
 const initStyleConfig = () => {
   const styleConfig = STYLE_CONFIG;
   for (const key in styleConfig) {
     if (Object.prototype.hasOwnProperty.call(styleConfig, key)) {
-      (styleConfig[key as keyof typeof STYLE_CONFIG] as any) = settingStore[key as keyof typeof STYLE_CONFIG];
+      styleConfig[key] = settingStore[key];
     }
   }
 
   return styleConfig;
 };
 
-const dynamicColor = computed(() => {
-  const isDynamic = DEFAULT_COLOR_OPTIONS.indexOf(formData.value.brandTheme) === -1;
-  return isDynamic ? formData.value.brandTheme : '';
-});
 const formData = ref({ ...initStyleConfig() });
 const isColoPickerDisplay = ref(false);
 
@@ -146,7 +150,16 @@ const showSettingPanel = computed({
 });
 
 const changeColor = (hex: string) => {
-  formData.value.brandTheme = hex;
+  const newPalette = Color.getPaletteByGradation({
+    colors: [hex],
+    step: 10,
+  })[0];
+  const { mode } = settingStore;
+  const colorMap = generateColorMap(hex, newPalette, mode as 'light' | 'dark');
+
+  settingStore.addColor({ [hex]: colorMap });
+  settingStore.updateConfig({ ...formData.value, brandTheme: hex });
+  insertThemeStylesheet(hex, colorMap, mode as 'light' | 'dark');
 };
 
 onMounted(() => {
@@ -195,17 +208,16 @@ const getThumbnailUrl = (name: string): string => {
 };
 
 watchEffect(() => {
-  if (formData.value.brandTheme) settingStore.updateConfig(formData.value);
+  settingStore.updateConfig(formData.value);
 });
 </script>
-<!-- teleport导致drawer 内 scoped样式问题无法生效 先规避下 -->
-<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
-<style lang="less">
+<style lang="less" scoped>
 .tdesign-setting {
   z-index: 100;
   position: fixed;
   bottom: 200px;
   right: 0;
+  transition: transform 0.3s cubic-bezier(0.7, 0.3, 0.1, 1), visibility 0.3s cubic-bezier(0.7, 0.3, 0.1, 1);
   height: 40px;
   width: 40px;
   border-radius: 20px 0 0 20px;
@@ -251,9 +263,9 @@ watchEffect(() => {
 .setting-group-title {
   font-size: 14px;
   line-height: 22px;
-  margin: 32px 0 24px;
+  margin: 32px 0 24px 0;
   text-align: left;
-  font-family: 'PingFang SC', var(--td-font-family);
+  font-family: PingFang SC;
   font-style: normal;
   font-weight: 500;
   color: var(--td-text-color-primary);
@@ -282,15 +294,14 @@ watchEffect(() => {
   .setting-container {
     padding-bottom: 100px;
   }
-
-  .t-radio-group.t-size-m {
+  :deep(.t-radio-group.t-size-m) {
     min-height: 32px;
     width: 100%;
     justify-content: space-between;
     align-items: center;
   }
 
-  .t-radio-group.t-size-m .t-radio-button {
+  :deep(.t-radio-group.t-size-m .t-radio-button) {
     height: auto;
   }
 
@@ -300,34 +311,33 @@ watchEffect(() => {
     align-items: center;
     margin-bottom: 16px;
 
-    .t-radio-button {
+    :deep(.t-radio-button) {
       display: inline-flex;
       max-height: 78px;
       padding: 8px;
-      border-radius: var(--td-radius-default);
-      border: 2px solid var(--td-component-border);
-
+      border-radius: @border-radius;
+      border: 2px solid #e3e6eb;
       > .t-radio-button__label {
         display: inline-flex;
       }
     }
 
-    .t-is-checked {
+    :deep(.t-is-checked) {
       border: 2px solid var(--td-brand-color) !important;
     }
 
-    .t-form__controls-content {
+    :deep(.t-form__controls-content) {
       justify-content: end;
     }
   }
 
-  .t-form__controls-content {
+  :deep(.t-form__controls-content) {
     justify-content: end;
   }
 }
 
 .setting-route-theme {
-  .t-form__label {
+  :deep(.t-form__label) {
     min-width: 310px !important;
     color: var(--td-text-color-secondary);
   }
@@ -335,7 +345,7 @@ watchEffect(() => {
 
 .setting-color-theme {
   .setting-layout-drawer {
-    .t-radio-button {
+    :deep(.t-radio-button) {
       height: 32px;
     }
 

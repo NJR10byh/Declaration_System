@@ -1,19 +1,19 @@
-import type { CardListResult, ListResult } from '@/api/model/listModel';
-import { request } from '@/utils/request';
+import { request } from "@/utils/request";
+import type { formListResult } from "@/api/model/formModel";
 
 const Api = {
-  BaseList: '/get-list',
-  CardList: '/get-card-list',
+  FormList: "/getFormList",
+  FormDetail: "/getFormById"
 };
 
-export function getList() {
-  return request.get<ListResult>({
-    url: Api.BaseList,
+export function getFormList() {
+  return request.post<formListResult>({
+    url: Api.FormList
   });
 }
 
-export function getCardList() {
-  return request.get<CardListResult>({
-    url: Api.CardList,
+export function getFormById() {
+  return request.post<formListResult>({
+    url: Api.FormDetail
   });
 }

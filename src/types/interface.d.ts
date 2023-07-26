@@ -1,12 +1,9 @@
-import type { TabValue } from 'tdesign-vue-next';
-import { LocationQueryRaw, RouteRecordName } from 'vue-router';
-
+import { RouteRecordName, LocationQueryRaw } from 'vue-router';
 import STYLE_CONFIG from '@/config/style';
 
 export interface MenuRoute {
   path: string;
   title?: string;
-  name?: string;
   icon?:
     | string
     | {
@@ -27,11 +24,6 @@ export type CommonObjType = {
   [key: string]: string | number;
 };
 
-export interface UserInfo {
-  name: string;
-  roles: string[];
-}
-
 export interface NotificationItem {
   id: string;
   content: string;
@@ -50,16 +42,9 @@ export interface TRouterInfo {
   name?: RouteRecordName;
   isAlive?: boolean;
   isHome?: boolean;
-  meta?: any;
 }
 
 export interface TTabRouterType {
   isRefreshing: boolean;
   tabRouterList: Array<TRouterInfo>;
-}
-
-export interface TTabRemoveOptions {
-  value: TabValue;
-  index: number;
-  e: MouseEvent;
 }

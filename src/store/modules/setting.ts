@@ -1,21 +1,17 @@
-import keys from 'lodash/keys';
 import { defineStore } from 'pinia';
-import { Color } from 'tvision-color';
-
-import { DARK_CHART_COLORS, LIGHT_CHART_COLORS } from '@/config/color';
+import keys from 'lodash/keys';
+import { COLOR_TOKEN, LIGHT_CHART_COLORS, DARK_CHART_COLORS, TColorSeries } from '@/config/color';
 import STYLE_CONFIG from '@/config/style';
 import { store } from '@/store';
-import { generateColorMap, insertThemeStylesheet } from '@/utils/color';
 
 const state = {
   ...STYLE_CONFIG,
   showSettingPanel: false,
-  colorList: {},
+  colorList: COLOR_TOKEN,
   chartColors: LIGHT_CHART_COLORS,
 };
 
 export type TState = typeof state;
-export type TStateKey = keyof typeof state;
 
 export const useSettingStore = defineStore('setting', {
   state: () => state,
@@ -23,7 +19,7 @@ export const useSettingStore = defineStore('setting', {
     showSidebar: (state) => state.layout !== 'top',
     showSidebarLogo: (state) => state.layout === 'side',
     showHeaderLogo: (state) => state.layout !== 'side',
-    displayMode: (state): 'dark' | 'light' => {
+    displayMode: (state) => {
       if (state.mode === 'auto') {
         const media = window.matchMedia('(prefers-color-scheme:dark)');
         if (media.matches) {
@@ -31,7 +27,7 @@ export const useSettingStore = defineStore('setting', {
         }
         return 'light';
       }
-      return state.mode as 'dark' | 'light';
+      return state.mode;
     },
   },
   actions: {
@@ -53,28 +49,15 @@ export const useSettingStore = defineStore('setting', {
       this.chartColors = isDarkMode ? DARK_CHART_COLORS : LIGHT_CHART_COLORS;
     },
     changeBrandTheme(brandTheme: string) {
-      const mode = this.displayMode;
-      // 以主题色加显示模式作为键
-      const colorKey = `${brandTheme}[${mode}]`;
-      let colorMap = this.colorList[colorKey];
-      // 如果不存在色阶，就需要计算
-      if (colorMap === undefined) {
-        const [{ colors: newPalette, primary: brandColorIndex }] = Color.getColorGradations({
-          colors: [brandTheme],
-          step: 10,
-          remainInput: false, // 是否保留输入 不保留会矫正不合适的主题色
-        });
-        colorMap = generateColorMap(brandTheme, newPalette, mode as 'light' | 'dark', brandColorIndex);
-        this.colorList[colorKey] = colorMap;
-      }
-      // TODO 需要解决不停切换时有反复插入 style 的问题
-      insertThemeStylesheet(brandTheme, colorMap, mode as 'light' | 'dark');
       document.documentElement.setAttribute('theme-color', brandTheme);
+    },
+    addColor(payload: TColorSeries) {
+      this.colorList = { ...this.colorList, ...payload };
     },
     updateConfig(payload: Partial<TState>) {
       for (const key in payload) {
-        if (payload[key as TStateKey] !== undefined) {
-          this[key] = payload[key as TStateKey];
+        if (payload[key] !== undefined) {
+          this[key] = payload[key];
         }
         if (key === 'mode') {
           this.changeMode(payload[key]);

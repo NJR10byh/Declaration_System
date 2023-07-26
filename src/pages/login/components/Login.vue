@@ -2,115 +2,104 @@
   <t-form
     ref="form"
     :class="['item-container', `login-${type}`]"
-    :data="formData"
+    :data="loginData"
     :rules="FORM_RULES"
     label-width="0"
     @submit="onSubmit"
   >
     <template v-if="type == 'password'">
-      <t-form-item name="account">
-        <t-input v-model="formData.account" size="large" placeholder="请输入账号：admin">
+      <t-form-item name="username">
+        <t-input
+          v-model="loginData.username"
+          size="large"
+          placeholder="请输入账号：admin"
+        >
           <template #prefix-icon>
-            <t-icon name="user" />
+            <t-icon name="user"/>
           </template>
         </t-input>
       </t-form-item>
 
       <t-form-item name="password">
         <t-input
-          v-model="formData.password"
+          v-model="loginData.password"
           size="large"
           :type="showPsw ? 'text' : 'password'"
           clearable
           placeholder="请输入登录密码：admin"
         >
           <template #prefix-icon>
-            <t-icon name="lock-on" />
+            <t-icon name="lock-on"/>
           </template>
           <template #suffix-icon>
-            <t-icon :name="showPsw ? 'browse' : 'browse-off'" @click="showPsw = !showPsw" />
+            <t-icon
+              :name="showPsw ? 'browse' : 'browse-off'"
+              @click="showPsw = !showPsw"
+            />
           </template>
         </t-input>
       </t-form-item>
-
-     </template>
+    </template>
 
     <t-form-item v-if="type !== 'qrcode'" class="btn-container">
-      <t-button block size="large" type="submit"> 登录 </t-button>
+      <t-button block size="large" type="submit" :loading="loginBtnLoading">登 录</t-button>
     </t-form-item>
   </t-form>
 </template>
 
 <script setup lang="ts">
-import QrcodeVue from 'qrcode.vue';
-import type { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
-import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import {ref} from "vue";
+import {useRouter} from "vue-router";
+import {MessagePlugin} from "tdesign-vue-next";
+import {usePermissionStore, useUserStore} from "@/store";
+import {request} from "@/utils/request";
+import {checkAuth, userInfoToCache} from "@/utils/auth";
+import md5 from "js-md5";
 
-import { useCounter } from '@/hooks';
-import { useUserStore } from '@/store';
 
 const userStore = useUserStore();
+const permissionStore = usePermissionStore();
 
-const INITIAL_DATA = {
-  phone: '',
-  account: 'admin',
-  password: 'admin',
-  verifyCode: '',
-  checked: false,
+const FORM_RULES = {
+  username: [{required: true, message: "账号必填", type: "error"}],
+  password: [{required: true, message: "密码必填", type: "error"}]
 };
 
-const FORM_RULES: Record<string, FormRule[]> = {
-  phone: [{ required: true, message: '手机号必填', type: 'error' }],
-  account: [{ required: true, message: '账号必填', type: 'error' }],
-  password: [{ required: true, message: '密码必填', type: 'error' }],
-  verifyCode: [{ required: true, message: '验证码必填', type: 'error' }],
-};
+const type = ref("password");
 
-const type = ref('password');
-
-const form = ref<FormInstanceFunctions>();
-const formData = ref({ ...INITIAL_DATA });
+const loginData = ref({
+  username: "admin",
+  password: "admin"
+});
 const showPsw = ref(false);
 
-const [countDown, handleCounter] = useCounter();
-
-const switchType = (val: string) => {
-  type.value = val;
-};
-
+const loginBtnLoading = ref(false);
 const router = useRouter();
-const route = useRoute();
 
-/**
- * 发送验证码
- */
-const sendCode = () => {
-  form.value.validate({ fields: ['phone'] }).then((e) => {
-    if (e === true) {
-      handleCounter();
-    }
-  });
-};
-
-const onSubmit = async (ctx: SubmitContext) => {
-  if (ctx.validateResult === true) {
-    try {
-      await userStore.login(formData.value);
-
-      MessagePlugin.success('登陆成功');
-      const redirect = route.query.redirect as string;
-      const redirectUrl = redirect ? decodeURIComponent(redirect) : '/dashboard';
-      router.push(redirectUrl);
-    } catch (e) {
-      console.log(e);
-      MessagePlugin.error(e.message);
+const onSubmit = async ({validateResult}) => {
+  if (validateResult === true) {
+    loginBtnLoading.value = true;
+    if (!await checkAuth()) {
+      loginData.value.password = md5(loginData.value.password);
+      let requestUrl = "/authorize/loginByPassword";
+      await request.post({
+        url: requestUrl,
+        data: loginData.value
+      }).then(async res => {
+        console.log(res);
+        await userInfoToCache(res);
+      }).catch(err => {
+        MessagePlugin.error(err.message);
+      }).finally(() => {
+        loginBtnLoading.value = false;
+      });
+    } else {
+      loginBtnLoading.value = false;
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-@import url('../index.less');
+@import url("../index.less");
 </style>

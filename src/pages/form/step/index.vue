@@ -3,11 +3,11 @@
     <div class="form-step-container">
       <!-- 简单步骤条 -->
       <t-card :bordered="false">
-        <t-steps class="step-container" :current="1" status="process">
-          <t-step-item title="提交申请" content="已于12月21日提交" />
-          <t-step-item title="电子信息" content="预计1-3个工作日" />
-          <t-step-item title="发票已邮寄" content="电子发票开出后联系" />
-          <t-step-item title="完成申请" content="如有疑问联系客服" />
+        <t-steps class="step-container" :current="activeForm" status="process">
+          <t-step-item title="提交开票申请" />
+          <t-step-item title="填写发票信息" />
+          <t-step-item title="确认邮寄地址" />
+          <t-step-item title="完成" />
         </t-steps>
       </t-card>
 
@@ -29,7 +29,7 @@
         :data="formData1"
         :rules="FORM_RULES"
         label-align="right"
-        @submit="(result: SubmitContext) => onSubmit(result, 1)"
+        @submit="(result) => onSubmit(result, 1)"
       >
         <t-form-item label="合同名称" name="name">
           <t-select v-model="formData1.name" :style="{ width: '480px' }" class="demo-select-base" clearable>
@@ -59,7 +59,7 @@
         :rules="FORM_RULES"
         label-align="left"
         @reset="onReset(0)"
-        @submit="(result: SubmitContext) => onSubmit(result, 2)"
+        @submit="(result) => onSubmit(result, 2)"
       >
         <t-form-item label="发票抬头" name="title">
           <t-input v-model="formData2.title" :style="{ width: '480px' }" placeholder="请输入发票抬头" />
@@ -96,7 +96,7 @@
         :rules="FORM_RULES"
         label-align="left"
         @reset="onReset(1)"
-        @submit="(result: SubmitContext) => onSubmit(result, 6)"
+        @submit="(result) => onSubmit(result, 6)"
       >
         <t-form-item label="收货人" name="consignee">
           <t-input v-model="formData3.consignee" :style="{ width: '480px' }" placeholder="请输入收货人" />
@@ -147,18 +147,18 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { SubmitContext } from 'tdesign-vue-next';
-import { computed, ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { ValidateResultContext } from 'tdesign-vue-next';
 
 import {
-  ADDRESS_OPTIONS,
   FORM_RULES,
+  NAME_OPTIONS,
+  TYPE_OPTIONS,
+  ADDRESS_OPTIONS,
   INITIAL_DATA1,
   INITIAL_DATA2,
   INITIAL_DATA3,
-  NAME_OPTIONS,
-  TYPE_OPTIONS,
 } from './constants';
 
 const formData1 = ref({ ...INITIAL_DATA1 });
@@ -179,7 +179,7 @@ const amount = computed(() => {
   return '--';
 });
 
-const onSubmit = (result: SubmitContext, val: number) => {
+const onSubmit = (result: ValidateResultContext<FormData>, val: number) => {
   if (result.validateResult === true) {
     activeForm.value = val;
   }

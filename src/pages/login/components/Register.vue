@@ -71,10 +71,8 @@
 </template>
 
 <script setup lang="ts">
-import type { FormRule, SubmitContext } from 'tdesign-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
 import { ref } from 'vue';
-
+import { MessagePlugin } from 'tdesign-vue-next';
 import { useCounter } from '@/hooks';
 
 const INITIAL_DATA = {
@@ -85,7 +83,7 @@ const INITIAL_DATA = {
   checked: false,
 };
 
-const FORM_RULES: Record<string, FormRule[]> = {
+const FORM_RULES = {
   phone: [{ required: true, message: '手机号必填', type: 'error' }],
   email: [
     { required: true, message: '邮箱必填', type: 'error' },
@@ -106,8 +104,8 @@ const [countDown, handleCounter] = useCounter();
 
 const emit = defineEmits(['registerSuccess']);
 
-const onSubmit = (ctx: SubmitContext) => {
-  if (ctx.validateResult === true) {
+const onSubmit = ({ validateResult }) => {
+  if (validateResult === true) {
     if (!formData.value.checked) {
       MessagePlugin.error('请同意TDesign服务协议和TDesign 隐私声明');
       return;
@@ -117,7 +115,7 @@ const onSubmit = (ctx: SubmitContext) => {
   }
 };
 
-const switchType = (val: string) => {
+const switchType = (val) => {
   form.value.reset();
   type.value = val;
 };

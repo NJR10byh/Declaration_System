@@ -2,14 +2,14 @@
   <div class="detail-deploy">
     <t-row :gutter="16">
       <t-col :lg="6" :xs="12">
-        <t-card title="部署趋势" :bordered="false">
+        <t-card title="部署趋势">
           <div class="deploy-panel-left">
             <div id="monitorContainer" style="width: 100%; height: 265px" />
           </div>
         </t-card>
       </t-col>
       <t-col :lg="6" :xs="12">
-        <t-card title="告警情况" :bordered="false">
+        <t-card title="告警情况">
           <template #option>
             <t-radio-group default-value="dateVal" @change="onAlertChange">
               <t-radio-button value="dateVal"> 本周 </t-radio-button>
@@ -22,13 +22,12 @@
     </t-row>
 
     <!-- 项目列表 -->
-    <t-card title="项目列表" class="container-base-margin-top" :bordered="false">
+    <t-card title="项目列表" class="container-base-margin-top">
       <t-table
         :columns="columns"
         :data="data"
         :pagination="pagination"
         :hover="true"
-        :stripe="true"
         row-key="index"
         @sort-change="sortChange"
         @change="rehandleChange"
@@ -40,10 +39,8 @@
           </span>
         </template>
         <template #op="slotProps">
-          <t-space>
-            <t-link theme="primary" @click="listClick()">管理</t-link>
-            <t-link theme="danger" @click="deleteClickOp(slotProps)">删除</t-link>
-          </t-space>
+          <a :class="prefix + '-link'" @click="listClick()">管理</a>
+          <a :class="prefix + '-link'" @click="deleteClickOp(slotProps)">删除</a>
         </template>
         <template #op-column>
           <t-icon name="descending-order" />
@@ -79,18 +76,20 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { BarChart, LineChart } from 'echarts/charts';
-import { GridComponent, LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent } from 'echarts/components';
-import * as echarts from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch, computed } from 'vue';
 
-import { getProjectList } from '@/api/detail';
+import * as echarts from 'echarts/core';
+import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
+import { BarChart, LineChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
 import { useSettingStore } from '@/store';
+
+import { getSmoothLineDataSet, get2ColBarChartDataSet } from './index';
+import { BASE_INFO_DATA, TABLE_COLUMNS as columns } from './constants';
 import { changeChartsTheme } from '@/utils/color';
 
-import { BASE_INFO_DATA, TABLE_COLUMNS as columns } from './constants';
-import { get2ColBarChartDataSet, getSmoothLineDataSet } from './index';
+import { prefix } from '@/config/global';
+import { getProjectList } from '@/api/detail';
 
 echarts.use([
   TitleComponent,
@@ -148,6 +147,8 @@ onMounted(() => {
   dataChart.setOption(get2ColBarChartDataSet({ ...chartColors.value }));
 });
 
+const intervalTimer = null;
+
 /// / chartSize update
 const updateContainer = () => {
   monitorChart.resize({
@@ -162,6 +163,7 @@ const updateContainer = () => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateContainer);
+  clearInterval(intervalTimer);
 });
 
 const onAlertChange = () => {
@@ -180,10 +182,10 @@ watch(
   },
 );
 
-const sortChange = (val: unknown) => {
+const sortChange = (val) => {
   console.log(val);
 };
-const rehandleChange = (changeParams: unknown, triggerAndData: unknown) => {
+const rehandleChange = (changeParams, triggerAndData) => {
   console.log('统一Change', changeParams, triggerAndData);
 };
 const listClick = () => {
@@ -192,35 +194,22 @@ const listClick = () => {
 const onConfirm = () => {
   visible.value = false;
 };
-const deleteClickOp = (e: { rowIndex: number }) => {
+const deleteClickOp = (e) => {
   data.value.splice(e.rowIndex, 1);
 };
 </script>
 
 <style lang="less" scoped>
-@import '../base/index.less';
+@import url('../base/index.less');
 
 .detail-deploy {
   :deep(.t-card) {
-    padding: var(--td-comp-paddingTB-xxl) var(--td-comp-paddingLR-xxl);
-  }
-
-  :deep(.t-card__header) {
-    padding: 0;
-  }
-
-  :deep(.t-card__body) {
-    padding: 0;
-    margin-top: var(--td-comp-margin-xxl);
+    padding: 8px;
   }
 
   :deep(.t-card__title) {
-    font: var(--td-font-title-large);
-    font-weight: 400;
-  }
-
-  :deep(.t-text-ellipsis) {
-    width: auto;
+    font-size: 20px;
+    font-weight: 500;
   }
 }
 </style>

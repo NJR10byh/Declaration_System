@@ -125,7 +125,7 @@ export const SALE_COLUMNS: TdBaseTableProps['columns'] = [
     align: 'center',
     colKey: 'index',
     title: '排名',
-    width: 70,
+    width: 80,
     fixed: 'left',
   },
   {
@@ -138,20 +138,26 @@ export const SALE_COLUMNS: TdBaseTableProps['columns'] = [
   {
     align: 'center',
     colKey: 'growUp',
-    width: 70,
+    width: 100,
     title: '较上周',
   },
   {
     align: 'center',
     colKey: 'count',
     title: '订单量',
-    width: 70,
+    width: 100,
+  },
+  {
+    align: 'center',
+    colKey: 'date',
+    width: 140,
+    title: '合同签订日期',
   },
   {
     align: 'center',
     colKey: 'operation',
     title: '操作',
-    width: 70,
+    width: 80,
     fixed: 'right',
   },
 ];
@@ -161,7 +167,7 @@ export const BUY_COLUMNS: TdBaseTableProps['columns'] = [
     align: 'center',
     colKey: 'index',
     title: '排名',
-    width: 70,
+    width: 80,
     fixed: 'left',
   },
   {
@@ -174,20 +180,26 @@ export const BUY_COLUMNS: TdBaseTableProps['columns'] = [
   {
     align: 'center',
     colKey: 'growUp',
-    width: 70,
+    width: 100,
     title: '较上周',
   },
   {
     align: 'center',
     colKey: 'count',
     title: '订单量',
-    width: 70,
+    width: 100,
+  },
+  {
+    align: 'center',
+    colKey: 'date',
+    width: 140,
+    title: '合同签订日期',
   },
   {
     align: 'center',
     colKey: 'operation',
     title: '操作',
-    width: 70,
+    width: 80,
     fixed: 'right',
   },
 ];

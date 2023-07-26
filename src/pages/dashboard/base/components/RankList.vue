@@ -1,9 +1,9 @@
 <template>
   <t-row :gutter="16" class="row-container">
     <t-col :xs="12" :xl="6">
-      <t-card title="销售订单排名" class="dashboard-rank-card" :bordered="false">
+      <t-card title="销售订单排名" class="dashboard-rank-card">
         <template #actions>
-          <t-radio-group default-value="dateVal" variant="default-filled">
+          <t-radio-group default-value="dateVal">
             <t-radio-button value="dateVal">本周</t-radio-button>
             <t-radio-button value="monthVal">近三个月</t-radio-button>
           </t-radio-group>
@@ -20,15 +20,15 @@
             </span>
           </template>
           <template #operation="slotProps">
-            <t-link theme="primary" @click="rehandleClickOp(slotProps)">详情</t-link>
+            <a class="t-button-link" @click="rehandleClickOp(slotProps)">详情</a>
           </template>
         </t-table>
       </t-card>
     </t-col>
     <t-col :xs="12" :xl="6">
-      <t-card title="销售订单排名" class="dashboard-rank-card" :bordered="false">
+      <t-card title="销售订单排名" class="dashboard-rank-card">
         <template #actions>
-          <t-radio-group default-value="dateVal" variant="default-filled">
+          <t-radio-group default-value="dateVal">
             <t-radio-button value="dateVal">本周</t-radio-button>
             <t-radio-button value="monthVal">近三个月</t-radio-button>
           </t-radio-group>
@@ -43,7 +43,7 @@
             <trend :type="row.growUp > 0 ? 'up' : 'down'" :describe="Math.abs(row.growUp)" />
           </template>
           <template #operation="slotProps">
-            <t-link theme="primary" @click="rehandleClickOp(slotProps)">详情</t-link>
+            <a class="t-button-link" @click="rehandleClickOp(slotProps)">详情</a>
           </template>
         </t-table>
       </t-card>
@@ -55,7 +55,7 @@
 // 导入样式
 import Trend from '@/components/trend/index.vue';
 
-import { BUY_COLUMNS, BUY_TEND_LIST, SALE_COLUMNS, SALE_TEND_LIST } from '../constants';
+import { SALE_TEND_LIST, BUY_TEND_LIST, SALE_COLUMNS, BUY_COLUMNS } from '../constants';
 
 const rehandleClickOp = (val: MouseEvent) => {
   console.log(val);
@@ -67,20 +67,15 @@ const getRankClass = (index: number) => {
 
 <style lang="less" scoped>
 .dashboard-rank-card {
-  padding: var(--td-comp-paddingTB-xxl) var(--td-comp-paddingLR-xxl);
+  padding: 8px;
 
   :deep(.t-card__header) {
-    padding: 0;
+    padding-bottom: 24px;
   }
 
   :deep(.t-card__title) {
-    font: var(--td-font-title-large);
-    font-weight: 400;
-  }
-
-  :deep(.t-card__body) {
-    padding: 0;
-    margin-top: var(--td-comp-margin-xxl);
+    font-size: 20px;
+    font-weight: 500;
   }
 }
 
