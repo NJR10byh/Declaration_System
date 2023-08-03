@@ -99,32 +99,12 @@ export const userInfoToCache = async (info: {
         case "superadmin":
             formData.value.brandTheme = "default";
             settingStore.updateConfig(formData.value);
-            await router.push("/contractManage/contract");
-            break;
-        case  "admin":
-            formData.value.brandTheme = "pink";
-            settingStore.updateConfig(formData.value);
-            await router.push("/contractManage/contract");
+            await router.push("/declaration/all");
             break;
         case "teacher":
             formData.value.brandTheme = "purple";
             settingStore.updateConfig(formData.value);
-            await router.push("/patent/all");
-            break;
-        case "fzr":
-            formData.value.brandTheme = "yellow";
-            settingStore.updateConfig(formData.value);
-            await router.push("/waitApproval/cxyChargePerson");
-            break;
-        case "academy":
-            formData.value.brandTheme = "yellow";
-            settingStore.updateConfig(formData.value);
-            await router.push("/userCenter/userInfo");
-            break;
-        case "finance":
-            formData.value.brandTheme = "yellow";
-            settingStore.updateConfig(formData.value);
-            await router.push("/userCenter/userInfo");
+            await router.push("/declaration/all");
             break;
     }
 };

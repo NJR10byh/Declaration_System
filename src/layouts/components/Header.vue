@@ -159,7 +159,7 @@ const toggleSettingPanel = () => {
 };
 
 const toUser = () => {
-  router.push("/userCenter/userInfo");
+  router.push("/user/userInfo");
 };
 
 const active = computed(() => getActive());

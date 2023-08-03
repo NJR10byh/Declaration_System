@@ -1,24 +1,24 @@
 <template>
   <div :class="sideNavCls">
     <t-menu
-      :class="menuCls"
-      :theme="theme"
-      :value="active"
-      :collapsed="collapsed"
-      :default-expanded="defaultExpanded"
-      expand-mutex
+        :class="menuCls"
+        :theme="theme"
+        :value="active"
+        :collapsed="collapsed"
+        :default-expanded="defaultExpanded"
+        expand-mutex
     >
       <template #logo>
         <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome" class="header-logo-container">
 <!--          <component :is="getLogo()" :class="`${prefix}-side-nav-logo-${collapsed ? 't' : 'tdesign'}-logo`" />-->
           <!--          <img :src="`@/assets/assets-njupt${collapsed ? '-' : '-full'}-logo.png`" style="width: 100%;height: 100%;" />-->
-          <img v-if="collapsed" src="@/assets/assets-njupt-logo.png" class="logo" />
-          <img v-else src="@/assets/assets-njupt-full-logo.png" class="logo" />
+          <img v-if="collapsed" src="@/assets/assets-njupt-logo.png" class="logo"/>
+          <img v-else src="@/assets/assets-njupt-full-logo.png" class="logo"/>
         </span>
       </template>
-      <menu-content :nav-data="menu" />
+      <menu-content :nav-data="menu"/>
       <template #operations>
-        <span class="version-container"> {{ !collapsed ? "专利转让系统" : "" }} {{ pgk.version }} </span>
+        <span class="version-container"> {{ !collapsed ? "智慧报单系统" : "" }} {{ pgk.version }} </span>
       </template>
     </t-menu>
     <div :class="`${prefix}-side-nav-placeholder${collapsed ? '-hidden' : ''}`"></div>
@@ -26,15 +26,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, PropType } from "vue";
-import { useRouter } from "vue-router";
+import {computed, onMounted, PropType} from "vue";
+import {useRouter} from "vue-router";
 import union from "lodash/union";
 
-import { useSettingStore } from "@/store";
-import { prefix } from "@/config/global";
+import {useSettingStore} from "@/store";
+import {prefix} from "@/config/global";
 import pgk from "../../../package.json";
-import { MenuRoute } from "@/types/interface";
-import { getActive, getRoutesExpanded } from "@/router";
+import {MenuRoute} from "@/types/interface";
+import {getActive, getRoutesExpanded} from "@/router";
 
 import AssetLogo from "@/assets/assets-t-logo.svg?component";
 import AssetLogoFull from "@/assets/assets-logo-full.svg?component";
@@ -85,7 +85,7 @@ const defaultExpanded = computed(() => {
 });
 
 const sideNavCls = computed(() => {
-  const { isCompact } = props;
+  const {isCompact} = props;
   return [
     `${prefix}-sidebar-layout`,
     {
@@ -95,7 +95,7 @@ const sideNavCls = computed(() => {
 });
 
 const menuCls = computed(() => {
-  const { showLogo, isFixed, layout } = props;
+  const {showLogo, isFixed, layout} = props;
   return [
     `${prefix}-side-nav`,
     {
@@ -124,7 +124,7 @@ onMounted(() => {
 });
 
 const goHome = () => {
-  router.push("/userCenter/userInfo");
+  router.push("/user/userInfo");
 };
 
 const getLogo = () => {
