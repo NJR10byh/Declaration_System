@@ -7,19 +7,19 @@
 <template>
   <t-card class="waitFirstAuthorApproval-card">
     <t-table
-      :data="waitFirstAuthorApprovalTable.tableData"
-      :columns="WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS"
-      row-key="id"
+        :data="waitFirstAuthorApprovalTable.tableData"
+        :columns="WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS"
+        row-key="id"
 
-      hover
-      stripe
-      :pagination="waitFirstAuthorApprovalTable.pagination"
-      :loading="waitFirstAuthorApprovalTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="waitFirstAuthorApprovalTablePageChange"
-      size="small"
+        hover
+        stripe
+        :pagination="waitFirstAuthorApprovalTable.pagination"
+        :loading="waitFirstAuthorApprovalTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="waitFirstAuthorApprovalTablePageChange"
+        size="small"
     >
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
@@ -64,14 +64,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS } from "./constants";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
-import { chargeTransferState } from "@/utils/transferState";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {WAIT_FIRST_AUTHOR_APPROVAL_TABLE_COLUMNS} from "./constants";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {MessagePlugin} from "tdesign-vue-next";
+import {chargeTransferState} from "@/utils/transferState";
 
 const store = useSettingStore();
 

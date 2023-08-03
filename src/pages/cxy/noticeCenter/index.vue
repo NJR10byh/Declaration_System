@@ -23,16 +23,16 @@
       <div class="cardTitle">视频管理</div>
     </t-row>
     <t-table
-      :data="videoManageTable.tableData"
-      :columns="VIDEO_MANAGE_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :loading="videoManageTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      style="margin-top: 10px"
-      size="small"
+        :data="videoManageTable.tableData"
+        :columns="VIDEO_MANAGE_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :loading="videoManageTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        style="margin-top: 10px"
+        size="small"
     >
       <template #title="slotProps">
         <t-link :href="'https://cgzh.njupt.edu.cn/video/' + slotProps.row.filename" theme="primary" target="_blank">
@@ -53,19 +53,19 @@
       <div class="cardTitle">通知管理</div>
     </t-row>
     <t-table
-      :data="noticeManageTable.tableData"
-      :columns="NOTICE_MANAGE_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :pagination="noticeManageTable.pagination"
-      :loading="noticeManageTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="patentTablePageChange"
-      style="margin-top: 10px"
-      size="small"
+        :data="noticeManageTable.tableData"
+        :columns="NOTICE_MANAGE_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :pagination="noticeManageTable.pagination"
+        :loading="noticeManageTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="patentTablePageChange"
+        style="margin-top: 10px"
+        size="small"
     >
       <template #settings="slotProps">
         <t-button theme="warning" variant="base">
@@ -85,14 +85,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { NOTICE_MANAGE_TABLE_COLUMNS, VIDEO_MANAGE_TABLE_COLUMNS } from "./constants";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {NOTICE_MANAGE_TABLE_COLUMNS, VIDEO_MANAGE_TABLE_COLUMNS} from "./constants";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {MessagePlugin} from "tdesign-vue-next";
 
 
 const store = useSettingStore();

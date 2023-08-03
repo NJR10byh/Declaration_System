@@ -10,23 +10,23 @@
       <!-- 待审批 -->
       <t-tab-panel class="tabPanel" :value="tabsData[0].value" :label="tabsData[0].label">
         <t-table
-          class="tableStyle"
-          :data="waitApprovalTable.tableData"
-          :columns="WAIT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+            class="tableStyle"
+            :data="waitApprovalTable.tableData"
+            :columns="WAIT_APPROVAL_TABLE_COLUMNS"
+            row-key="id"
 
-          hover
-          stripe
-          table-layout="auto"
-          :table-content-width="tableContentWidth"
-          :pagination="waitApprovalTable.pagination"
-          :loading="waitApprovalTable.tableLoading"
-          :header-affixed-top="{ offsetTop, container: getContainer }"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="waitApprovalTablePageChange"
-          size="small"
-          v-resize="resize"
+            hover
+            stripe
+            table-layout="auto"
+            :table-content-width="tableContentWidth"
+            :pagination="waitApprovalTable.pagination"
+            :loading="waitApprovalTable.tableLoading"
+            :header-affixed-top="{ offsetTop, container: getContainer }"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="waitApprovalTablePageChange"
+            size="small"
+            v-resize="resize"
         >
           <template #zlh="slotProps">
             <t-tag theme="primary" variant="light-outline">
@@ -73,21 +73,21 @@
       <!-- 已通过审批 -->
       <t-tab-panel class="tabPanel" :value="tabsData[1].value" :label="tabsData[1].label">
         <t-table
-          class="tableStyle"
-          :data="waitApprovalTable.tableData"
-          :columns="WAIT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+            class="tableStyle"
+            :data="waitApprovalTable.tableData"
+            :columns="WAIT_APPROVAL_TABLE_COLUMNS"
+            row-key="id"
 
-          hover
-          stripe
-          table-layout="auto"
-          :pagination="waitApprovalTable.pagination"
-          :loading="waitApprovalTable.tableLoading"
-          :header-affixed-top="{ offsetTop, container: getContainer }"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="passedTablePageChange"
-          size="small"
+            hover
+            stripe
+            table-layout="auto"
+            :pagination="waitApprovalTable.pagination"
+            :loading="waitApprovalTable.tableLoading"
+            :header-affixed-top="{ offsetTop, container: getContainer }"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="passedTablePageChange"
+            size="small"
         >
           <template #zlh="slotProps">
             <t-tag theme="primary" variant="light-outline">
@@ -129,14 +129,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { WAIT_APPROVAL_TABLE_COLUMNS } from "./constants";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
-import { chargeTransferState } from "@/utils/transferState";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {WAIT_APPROVAL_TABLE_COLUMNS} from "./constants";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {MessagePlugin} from "tdesign-vue-next";
+import {chargeTransferState} from "@/utils/transferState";
 
 const store = useSettingStore();
 

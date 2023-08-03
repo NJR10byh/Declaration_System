@@ -27,23 +27,23 @@
       </div>
     </t-row>
     <t-table
-      class="tableStyle"
-      :data="companyManageTable.tableData"
-      :columns="COMPANY_MANAGE_TABLE_COLUMNS"
-      row-key="id"
+        class="tableStyle"
+        :data="companyManageTable.tableData"
+        :columns="COMPANY_MANAGE_TABLE_COLUMNS"
+        row-key="id"
 
-      hover
-      stripe
-      table-layout="auto"
-      :table-content-width="tableContentWidth"
-      :pagination="companyManageTable.pagination"
-      :loading="companyManageTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="companyManageTablePageChange"
-      size="small"
-      v-resize="resize"
+        hover
+        stripe
+        table-layout="auto"
+        :table-content-width="tableContentWidth"
+        :pagination="companyManageTable.pagination"
+        :loading="companyManageTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="companyManageTablePageChange"
+        size="small"
+        v-resize="resize"
     >
       <template #settings="slotProps">
         <div class="settingBtns">
@@ -67,14 +67,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
-import { BASE_URL, COMPANY_MANAGE_TABLE_COLUMNS } from "./constants";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {MessagePlugin} from "tdesign-vue-next";
+import {BASE_URL, COMPANY_MANAGE_TABLE_COLUMNS} from "./constants";
 
 
 const store = useSettingStore();

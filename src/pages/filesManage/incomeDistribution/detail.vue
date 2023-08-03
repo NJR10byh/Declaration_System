@@ -49,19 +49,19 @@
 
   <t-card class="files-manage-income-distribution-detail-card">
     <t-table
-      :data="filesManageIncomeDistributionDetailTable.tableData"
-      :columns="FILES_MANAGE_INCOME_DISTRIBUTION_DETAIL_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :loading="filesManageIncomeDistributionDetailTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      size="small"
+        :data="filesManageIncomeDistributionDetailTable.tableData"
+        :columns="FILES_MANAGE_INCOME_DISTRIBUTION_DETAIL_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :loading="filesManageIncomeDistributionDetailTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        size="small"
     >
       <template #zlmc="slotProps">
         <div style="display: flex;justify-content: flex-start;align-items: center;">
-          <t-icon :name="getFileIcon(slotProps.row.fileName)" :style="getFileIconColor(slotProps.row.fileName)" />
+          <t-icon :name="getFileIcon(slotProps.row.fileName)" :style="getFileIconColor(slotProps.row.fileName)"/>
           <t-link style="margin-left: 5px;">
             {{ slotProps.row.fileName }}
           </t-link>
@@ -85,14 +85,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import {computed, onMounted, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
 import {
   FILES_MANAGE_INCOME_DISTRIBUTION_DETAIL_TABLE_COLUMNS
 } from "@/pages/filesManage/incomeDistribution/constants";
-import { useFilesStore, useSettingStore } from "@/store";
-import { prefix } from "@/config/global";
-import { isNotEmpty } from "@/utils/validate";
+import {useFilesStore, useSettingStore} from "@/store";
+import {prefix} from "@/config/global";
+import {isNotEmpty} from "@/utils/validate";
 
 const store = useSettingStore();
 const filesStore = useFilesStore();
@@ -156,14 +156,14 @@ const getFileIcon = (fileName) => {
 const getFileIconColor = (fileName) => {
   const fileExtension = fileName.split(".").pop().toLowerCase();
   if (["doc", "docx"].includes(fileExtension)) {
-    return { color: "#0058df" };
+    return {color: "#0058df"};
   } else if (["pdf"].includes(fileExtension)) {
-    return { color: "#e34d59" };
+    return {color: "#e34d59"};
   } else if (["jpg", "jpeg", "png"].includes(fileExtension)) {
-    return { color: "#00a870" };
+    return {color: "#00a870"};
   }
   // 返回默认图标颜色
-  return { color: "#0058df" };
+  return {color: "#0058df"};
 };
 /**
  * 操作钩子

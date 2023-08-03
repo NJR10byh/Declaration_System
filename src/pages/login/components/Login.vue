@@ -1,18 +1,18 @@
 <template>
   <t-form
-    ref="form"
-    :class="['item-container', `login-${type}`]"
-    :data="loginData"
-    :rules="FORM_RULES"
-    label-width="0"
-    @submit="onSubmit"
+      ref="form"
+      :class="['item-container', `login-${type}`]"
+      :data="loginData"
+      :rules="FORM_RULES"
+      label-width="0"
+      @submit="onSubmit"
   >
     <template v-if="type == 'password'">
       <t-form-item name="username">
         <t-input
-          v-model="loginData.username"
-          size="large"
-          placeholder="请输入账号：admin"
+            v-model="loginData.username"
+            size="large"
+            placeholder="请输入账号：admin"
         >
           <template #prefix-icon>
             <t-icon name="user"/>
@@ -22,19 +22,19 @@
 
       <t-form-item name="password">
         <t-input
-          v-model="loginData.password"
-          size="large"
-          :type="showPsw ? 'text' : 'password'"
-          clearable
-          placeholder="请输入登录密码：admin"
+            v-model="loginData.password"
+            size="large"
+            :type="showPsw ? 'text' : 'password'"
+            clearable
+            placeholder="请输入登录密码：admin"
         >
           <template #prefix-icon>
             <t-icon name="lock-on"/>
           </template>
           <template #suffix-icon>
             <t-icon
-              :name="showPsw ? 'browse' : 'browse-off'"
-              @click="showPsw = !showPsw"
+                :name="showPsw ? 'browse' : 'browse-off'"
+                @click="showPsw = !showPsw"
             />
           </template>
         </t-input>
@@ -51,14 +51,9 @@
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {MessagePlugin} from "tdesign-vue-next";
-import {usePermissionStore, useUserStore} from "@/store";
 import {request} from "@/utils/request";
 import {checkAuth, userInfoToCache} from "@/utils/auth";
 import md5 from "js-md5";
-
-
-const userStore = useUserStore();
-const permissionStore = usePermissionStore();
 
 const FORM_RULES = {
   username: [{required: true, message: "账号必填", type: "error"}],
@@ -68,8 +63,8 @@ const FORM_RULES = {
 const type = ref("password");
 
 const loginData = ref({
-  username: "admin",
-  password: "admin"
+  username: "cxy",
+  password: "abc123123"
 });
 const showPsw = ref(false);
 
@@ -79,7 +74,7 @@ const router = useRouter();
 const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {
     loginBtnLoading.value = true;
-    if (!await checkAuth()) {
+    if (!checkAuth()) {
       loginData.value.password = md5(loginData.value.password);
       let requestUrl = "/authorize/loginByPassword";
       await request.post({

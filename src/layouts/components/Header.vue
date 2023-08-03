@@ -1,28 +1,29 @@
 <template>
   <div :class="layoutCls">
     <t-head-menu
-      :class="menuCls"
-      :theme="theme"
-      expand-type="popup"
-      :value="active"
-      style="z-index: 999"
+        :class="menuCls"
+        :theme="theme"
+        expand-type="popup"
+        :value="active"
+        style="z-index: 999"
     >
       <template #logo>
         <span v-if="showLogo" class="header-logo-container">
-          <img src="@/assets/assets-njupt-full-logo.png" class="logo" />
+          <img src="@/assets/assets-njupt-full-logo.png" class="logo"/>
         </span>
         <div v-else class="header-operate-left">
           <t-button
-            theme="default"
-            shape="square"
-            variant="text"
-            @click="changeCollapsed"
+              theme="default"
+              shape="square"
+              variant="text"
+              @click="changeCollapsed"
           >
             <template #icon>
-              <t-icon v-if="settingStore.isSidebarCompact" class="collapsed-icon" name="menu-fold" />
-              <t-icon v-else class="collapsed-icon" name="menu-unfold" />
+              <t-icon v-if="settingStore.isSidebarCompact" class="collapsed-icon" name="menu-fold"/>
+              <t-icon v-else class="collapsed-icon" name="menu-unfold"/>
             </template>
           </t-button>
+          <l-breadcrumb v-if="settingStore.showBreadcrumb"/>
           <!--          <search :layout="layout" />-->
         </div>
       </template>
@@ -63,15 +64,15 @@
             <template #dropdown>
               <t-dropdown-menu>
                 <t-dropdown-item
-                  class="operations-dropdown-container-item"
-                  @click="toUser"
+                    class="operations-dropdown-container-item"
+                    @click="toUser"
                 >
                   <t-icon name="user-circle"></t-icon>
                   个人中心
                 </t-dropdown-item>
                 <t-dropdown-item
-                  class="operations-dropdown-container-item"
-                  @click="handleLogout"
+                    class="operations-dropdown-container-item"
+                    @click="handleLogout"
                 >
                   <t-icon name="poweroff"></t-icon>
                   退出登录
@@ -80,12 +81,12 @@
             </template>
             <t-button class="header-user-btn" theme="default" variant="text">
               <template #icon>
-                <t-icon class="header-user-avatar" name="user-circle" />
+                <t-icon class="header-user-avatar" name="user-circle"/>
               </template>
               <div class="header-user-account">
                 你好，
                 <span style="color: var(--td-brand-color);font-weight: bold">{{ userStore.userInfo.userName }}</span>
-                <t-icon name="chevron-down" />
+                <t-icon name="chevron-down"/>
               </div>
             </t-button>
           </t-dropdown>
@@ -106,12 +107,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType } from "vue";
-import { useRouter } from "vue-router";
-import { getPermissionStore, useSettingStore, useUserStore } from "@/store";
-import { getActive } from "@/router";
-import { prefix } from "@/config/global";
-import { MenuRoute } from "@/types/interface";
+import {computed, PropType} from "vue";
+import {useRouter} from "vue-router";
+import {getPermissionStore, useSettingStore, useUserStore} from "@/store";
+import {getActive} from "@/router";
+import {prefix} from "@/config/global";
+import {MenuRoute} from "@/types/interface";
+import LBreadcrumb from "@/layouts/components/Breadcrumb.vue";
 
 const props = defineProps({
   theme: {
@@ -165,7 +167,7 @@ const active = computed(() => getActive());
 const layoutCls = computed(() => [`${prefix}-header-layout`]);
 
 const menuCls = computed(() => {
-  const { isFixed, layout, isCompact } = props;
+  const {isFixed, layout, isCompact} = props;
   return [
     {
       [`${prefix}-header-menu`]: !isFixed,

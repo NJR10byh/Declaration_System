@@ -31,20 +31,20 @@
 
   <t-card class="files-manage-other-files-card">
     <t-table
-      :data="filesManageOtherFilesTable.tableData"
-      :columns="FILES_MANAGE_OTHER_FILES_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :loading="filesManageOtherFilesTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      size="small"
+        :data="filesManageOtherFilesTable.tableData"
+        :columns="FILES_MANAGE_OTHER_FILES_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :loading="filesManageOtherFilesTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        size="small"
     >
       <template #fileDisplayName="slotProps">
         <div style="display: flex;justify-content: flex-start;align-items: center;">
           <t-icon :name="getFileIcon(slotProps.row.fileDisplayName)"
-                  :style="getFileIconColor(slotProps.row.fileDisplayName)" />
+                  :style="getFileIconColor(slotProps.row.fileDisplayName)"/>
           <t-link style="margin-left: 5px;">
             {{ slotProps.row.fileDisplayName }}
           </t-link>
@@ -75,11 +75,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { FILES_MANAGE_OTHER_FILES_TABLE_COLUMNS } from "./constants";
-import { useFilesStore, useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { prefix } from "@/config/global";
+import {computed, onMounted, ref} from "vue";
+import {FILES_MANAGE_OTHER_FILES_TABLE_COLUMNS} from "./constants";
+import {useFilesStore, useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {prefix} from "@/config/global";
 
 const store = useSettingStore();
 const filesStore = useFilesStore();
@@ -143,14 +143,14 @@ const getFileIcon = (fileName) => {
 const getFileIconColor = (fileName) => {
   const fileExtension = fileName.split(".").pop().toLowerCase();
   if (["doc", "docx"].includes(fileExtension)) {
-    return { color: "#0058df" };
+    return {color: "#0058df"};
   } else if (["pdf"].includes(fileExtension)) {
-    return { color: "#e34d59" };
+    return {color: "#e34d59"};
   } else if (["jpg", "jpeg", "png"].includes(fileExtension)) {
-    return { color: "#00a870" };
+    return {color: "#00a870"};
   }
   // 返回默认图标颜色
-  return { color: "#0058df" };
+  return {color: "#0058df"};
 };
 
 // 返回上个页面

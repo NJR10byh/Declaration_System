@@ -23,20 +23,20 @@
           </t-button>
         </t-row>
         <t-table
-          class="tableStyle"
-          :data="patentApprovalTable.tableData"
-          :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
-          hover
-          stripe
-          table-layout="auto"
-          table-content-width="1600px"
-          :pagination="patentApprovalTable.pagination"
-          :loading="patentApprovalTable.tableLoading"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="patentApprovalTablePageChange"
-          size="small"
+            class="tableStyle"
+            :data="patentApprovalTable.tableData"
+            :columns="PATENT_APPROVAL_TABLE_COLUMNS"
+            row-key="id"
+            hover
+            stripe
+            table-layout="auto"
+            table-content-width="1600px"
+            :pagination="patentApprovalTable.pagination"
+            :loading="patentApprovalTable.tableLoading"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="patentApprovalTablePageChange"
+            size="small"
         >
           <template #zlh="slotProps">
             <t-tag theme="primary" variant="light-outline">
@@ -98,21 +98,21 @@
       <!-- 已通过审批 -->
       <t-tab-panel class="tabPanel" :value="tabsData[1].value" :label="tabsData[1].label">
         <t-table
-          class="tableStyle"
-          :data="patentApprovalTable.tableData"
-          :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+            class="tableStyle"
+            :data="patentApprovalTable.tableData"
+            :columns="PATENT_APPROVAL_TABLE_COLUMNS"
+            row-key="id"
 
-          hover
-          stripe
-          table-layout="auto"
-          table-content-width="1600px"
-          :pagination="patentApprovalTable.pagination"
-          :loading="patentApprovalTable.tableLoading"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="patentApprovalTablePageChange"
-          size="small"
+            hover
+            stripe
+            table-layout="auto"
+            table-content-width="1600px"
+            :pagination="patentApprovalTable.pagination"
+            :loading="patentApprovalTable.tableLoading"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="patentApprovalTablePageChange"
+            size="small"
         >
           <template #zlh="slotProps">
             <t-tag theme="primary" variant="light-outline">
@@ -187,22 +187,22 @@
           </t-button>
         </t-row>
         <t-table
-          class="tableStyle"
-          :data="patentApprovalTable.tableData"
-          :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+            class="tableStyle"
+            :data="patentApprovalTable.tableData"
+            :columns="PATENT_APPROVAL_TABLE_COLUMNS"
+            row-key="id"
 
-          hover
-          stripe
-          table-layout="auto"
-          :table-content-width="tableContentWidth"
-          :pagination="patentApprovalTable.pagination"
-          :loading="patentApprovalTable.tableLoading"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="patentApprovalTablePageChange"
-          size="small"
-          v-resize="resize"
+            hover
+            stripe
+            table-layout="auto"
+            :table-content-width="tableContentWidth"
+            :pagination="patentApprovalTable.pagination"
+            :loading="patentApprovalTable.tableLoading"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="patentApprovalTablePageChange"
+            size="small"
+            v-resize="resize"
         >
           <template #zlh="slotProps">
             <t-tag theme="primary" variant="light-outline">
@@ -270,20 +270,20 @@
           </t-button>
         </t-row>
         <t-table
-          class="tableStyle"
-          :data="patentApprovalTable.tableData"
-          :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+            class="tableStyle"
+            :data="patentApprovalTable.tableData"
+            :columns="PATENT_APPROVAL_TABLE_COLUMNS"
+            row-key="id"
 
-          hover
-          stripe
-          table-layout="auto"
-          :pagination="patentApprovalTable.pagination"
-          :loading="patentApprovalTable.tableLoading"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="patentApprovalTablePageChange"
-          size="small"
+            hover
+            stripe
+            table-layout="auto"
+            :pagination="patentApprovalTable.pagination"
+            :loading="patentApprovalTable.tableLoading"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="patentApprovalTablePageChange"
+            size="small"
         >
           <template #zlh="slotProps">
             <t-tag theme="primary" variant="light-outline">
@@ -313,21 +313,21 @@
       <!-- 未通过 -->
       <t-tab-panel class="tabPanel" :value="tabsData[4].value" :label="tabsData[4].label">
         <t-table
-          class="tableStyle"
-          :data="patentApprovalTable.tableData"
-          :columns="PATENT_APPROVAL_TABLE_COLUMNS"
-          row-key="id"
+            class="tableStyle"
+            :data="patentApprovalTable.tableData"
+            :columns="PATENT_APPROVAL_TABLE_COLUMNS"
+            row-key="id"
 
-          hover
-          stripe
-          table-layout="auto"
-          table-content-width="1500px"
-          :pagination="patentApprovalTable.pagination"
-          :loading="patentApprovalTable.tableLoading"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="patentApprovalTablePageChange"
-          size="small"
+            hover
+            stripe
+            table-layout="auto"
+            table-content-width="1500px"
+            :pagination="patentApprovalTable.pagination"
+            :loading="patentApprovalTable.tableLoading"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="patentApprovalTablePageChange"
+            size="small"
         >
           <template #zlh="slotProps">
             <t-tag theme="primary" variant="light-outline">
@@ -377,14 +377,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { PATENT_APPROVAL_TABLE_COLUMNS, PATENT_STATE } from "./constants";
-import { MessagePlugin } from "tdesign-vue-next";
-import { chargeTransferState } from "@/utils/transferState";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {PATENT_APPROVAL_TABLE_COLUMNS, PATENT_STATE} from "./constants";
+import {MessagePlugin} from "tdesign-vue-next";
+import {chargeTransferState} from "@/utils/transferState";
 
 const store = useSettingStore();
 
@@ -436,10 +436,10 @@ const tabsData = ref([
 const searchField = ref({
   value: "",
   options: [
-    { label: "专利名称", value: 1 },
-    { label: "专利第一作者", value: 2 },
-    { label: "成员名单", value: 3 },
-    { label: "所属学院", value: 4 }
+    {label: "专利名称", value: 1},
+    {label: "专利第一作者", value: 2},
+    {label: "成员名单", value: 3},
+    {label: "所属学院", value: 4}
   ]
 });
 

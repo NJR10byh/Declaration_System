@@ -7,10 +7,10 @@
 <template>
   <div style="display: flex;justify-content: flex-start;align-items: center;">
     <t-message theme="warning" content="提示：请打开小程序进行自动备案"
-               v-if="!filesStore.filesInfo.isCheckListFill && isNotEmpty(filesStore.filesInfo.contract) && isNotEmpty(filesStore.filesInfo.voucherList)" />
+               v-if="!filesStore.filesInfo.isCheckListFill && isNotEmpty(filesStore.filesInfo.contract) && isNotEmpty(filesStore.filesInfo.voucherList)"/>
     <t-message theme="warning" content="提示：请打开小程序进行自动填发票"
                v-if="!filesStore.filesInfo.isInvoiceFill && isNotEmpty(filesStore.filesInfo.contract) && isNotEmpty(filesStore.filesInfo.voucherList)"
-               style="margin-left: 10px;" />
+               style="margin-left: 10px;"/>
   </div>
   <t-card class="files-manage-home-card">
     <t-row justify="space-between" class="cardTop">
@@ -44,27 +44,27 @@
 
   <t-card class="files-manage-home-card">
     <t-table
-      :data="filesManageHomeTable.tableData"
-      :columns="FILES_MANAGE_HOME_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :loading="filesManageHomeTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      size="small"
+        :data="filesManageHomeTable.tableData"
+        :columns="FILES_MANAGE_HOME_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :loading="filesManageHomeTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        size="small"
     >
       <template #fileName="slotProps">
         <div style="display: flex;justify-content: flex-start;align-items: center;">
-          <t-icon :name="getFileIcon(slotProps.row.fileName)" :style="getFileIconColor(slotProps.row.fileName)" />
+          <t-icon :name="getFileIcon(slotProps.row.fileName)" :style="getFileIconColor(slotProps.row.fileName)"/>
           <t-link
-            v-if="['合同','合同（已盖章）','入账通知单','科技成果认定清单','发票','专利证书','个人所得税备案'].includes(slotProps.row.fileName)"
-            :disabled="isEmpty(slotProps.row.updateTime)" style="margin-left: 5px;">
+              v-if="['合同','合同（已盖章）','入账通知单','科技成果认定清单','发票','专利证书','个人所得税备案'].includes(slotProps.row.fileName)"
+              :disabled="isEmpty(slotProps.row.updateTime)" style="margin-left: 5px;">
             {{ slotProps.row.fileName }}
           </t-link>
           <t-link
-            v-if="['收益分配','到款凭证','其他相关文件'].includes(slotProps.row.fileName)" style="margin-left: 5px;"
-            @click="openFolder(slotProps.row.fileName)">
+              v-if="['收益分配','到款凭证','其他相关文件'].includes(slotProps.row.fileName)" style="margin-left: 5px;"
+              @click="openFolder(slotProps.row.fileName)">
             {{ slotProps.row.fileName }}
           </t-link>
         </div>
@@ -124,12 +124,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useFilesStore, useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { prefix } from "@/config/global";
-import { FILES_MANAGE_HOME_TABLE_COLUMNS } from "./constants";
-import { isEmpty, isNotEmpty } from "@/utils/validate";
+import {computed, onMounted, ref} from "vue";
+import {useFilesStore, useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {prefix} from "@/config/global";
+import {FILES_MANAGE_HOME_TABLE_COLUMNS} from "./constants";
+import {isEmpty, isNotEmpty} from "@/utils/validate";
 
 const store = useSettingStore();
 const filesStore = useFilesStore();
@@ -226,14 +226,14 @@ const getFileIcon = (fileName) => {
 // 根据文件类型获取图标颜色
 const getFileIconColor = (fileName) => {
   if (["入账通知单", "个人所得税备案"].includes(fileName)) {
-    return { color: "#0058df" };
+    return {color: "#0058df"};
   } else if (["合同", "合同（已盖章）", "科技成果认定清单", "发票", "专利证书"].includes(fileName)) {
-    return { color: "#e34d59" };
+    return {color: "#e34d59"};
   } else if (["到款凭证", "收益分配", "其他相关文件"].includes(fileName)) {
-    return { color: "#ebb105" };
+    return {color: "#ebb105"};
   }
   // 返回默认图标颜色
-  return { color: "#0058df" };
+  return {color: "#0058df"};
 };
 // 获取表格数据
 const getTableData = (filesInfo) => {

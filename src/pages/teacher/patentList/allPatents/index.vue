@@ -22,21 +22,21 @@
       </div>
     </t-row>
     <t-table
-      class="tableStyle"
-      :data="allPatentsTable.tableData"
-      :columns="ALL_PATENTS_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      table-layout="auto"
-      :pagination="allPatentsTable.pagination"
-      :loading="allPatentsTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="allPatentsTablePageChange"
-      size="small"
-      v-resize="resize"
+        class="tableStyle"
+        :data="allPatentsTable.tableData"
+        :columns="ALL_PATENTS_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        table-layout="auto"
+        :pagination="allPatentsTable.pagination"
+        :loading="allPatentsTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="allPatentsTablePageChange"
+        size="small"
+        v-resize="resize"
     >
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
@@ -78,15 +78,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
-import { ALL_PATENTS_TABLE_COLUMNS, BASE_URL } from "./constants";
-import { isEmpty, isNotEmpty } from "@/utils/validate";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {MessagePlugin} from "tdesign-vue-next";
+import {ALL_PATENTS_TABLE_COLUMNS, BASE_URL} from "./constants";
+import {isEmpty, isNotEmpty} from "@/utils/validate";
 
 
 const store = useSettingStore();
@@ -113,10 +113,10 @@ const tableContentWidth = ref("1300px");
 const searchField = ref({
   value: "",
   options: [
-    { label: "专利名称", value: 1 },
-    { label: "专利第一作者", value: 2 },
-    { label: "成员名单", value: 3 },
-    { label: "所属学院", value: 4 }
+    {label: "专利名称", value: 1},
+    {label: "专利第一作者", value: 2},
+    {label: "成员名单", value: 3},
+    {label: "所属学院", value: 4}
   ]
 });
 

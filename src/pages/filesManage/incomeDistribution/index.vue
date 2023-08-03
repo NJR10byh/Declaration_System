@@ -31,15 +31,15 @@
 
   <t-card class="files-manage-income-distribution-card">
     <t-table
-      :data="filesManageIncomeDistributionTable.tableData"
-      :columns="FILES_MANAGE_INCOME_DISTRIBUTION_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :loading="filesManageIncomeDistributionTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      size="small"
+        :data="filesManageIncomeDistributionTable.tableData"
+        :columns="FILES_MANAGE_INCOME_DISTRIBUTION_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :loading="filesManageIncomeDistributionTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        size="small"
     >
       <template #zlmc="slotProps">
         <div style="display: flex;justify-content: flex-start;align-items: center;">
@@ -54,11 +54,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useFilesStore, useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { prefix } from "@/config/global";
-import { FILES_MANAGE_INCOME_DISTRIBUTION_TABLE_COLUMNS } from "./constants";
+import {computed, onMounted, ref} from "vue";
+import {useFilesStore, useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {prefix} from "@/config/global";
+import {FILES_MANAGE_INCOME_DISTRIBUTION_TABLE_COLUMNS} from "./constants";
 
 const store = useSettingStore();
 const filesStore = useFilesStore();
@@ -116,7 +116,7 @@ const openFolder = (row) => {
   // });
   router.push({
     path: "/filesManage/incomeDistributionDetail",
-    query: { zlmc: row.zlmc }
+    query: {zlmc: row.zlmc}
   });
 };
 </script>

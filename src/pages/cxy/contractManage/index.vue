@@ -30,22 +30,22 @@
           </t-button>
         </t-row>
         <t-table
-          class="tableStyle"
-          :data="contractManageTable.tableData"
-          :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
-          row-key="id"
-          hover
-          stripe
-          table-layout="auto"
-          :table-content-width="tableContentWidth"
-          :pagination="contractManageTable.pagination"
-          :loading="contractManageTable.tableLoading"
-          :header-affixed-top="{ offsetTop, container: getContainer }"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="contractManageTablePageChange"
-          size="small"
-          v-resize="resize"
+            class="tableStyle"
+            :data="contractManageTable.tableData"
+            :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
+            row-key="id"
+            hover
+            stripe
+            table-layout="auto"
+            :table-content-width="tableContentWidth"
+            :pagination="contractManageTable.pagination"
+            :loading="contractManageTable.tableLoading"
+            :header-affixed-top="{ offsetTop, container: getContainer }"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="contractManageTablePageChange"
+            size="small"
+            v-resize="resize"
         >
           <template #projectName="slotProps">
             <t-link theme="primary" target="_blank">
@@ -170,22 +170,22 @@
           </t-button>
         </t-row>
         <t-table
-          class="tableStyle"
-          :data="contractManageTable.tableData"
-          :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
-          row-key="id"
-          hover
-          stripe
-          table-layout="auto"
-          :table-content-width="tableContentWidth"
-          :pagination="contractManageTable.pagination"
-          :loading="contractManageTable.tableLoading"
-          :header-affixed-top="{ offsetTop, container: getContainer }"
-          :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-          :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-          @page-change="passedTablePageChange"
-          size="small"
-          v-resize="resize"
+            class="tableStyle"
+            :data="contractManageTable.tableData"
+            :columns="CONTRACT_MANAGE_TABLE_COLUMNS"
+            row-key="id"
+            hover
+            stripe
+            table-layout="auto"
+            :table-content-width="tableContentWidth"
+            :pagination="contractManageTable.pagination"
+            :loading="contractManageTable.tableLoading"
+            :header-affixed-top="{ offsetTop, container: getContainer }"
+            :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+            :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+            @page-change="passedTablePageChange"
+            size="small"
+            v-resize="resize"
         >
           <template #projectName="slotProps">
             <t-link theme="primary" target="_blank">
@@ -253,15 +253,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { BASE_URL, CONTRACT_MANAGE_TABLE_COLUMNS } from "./constants";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
-import { chargeContractState } from "@/utils/contractState";
-import { fileInfoToCache } from "@/utils/files";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {BASE_URL, CONTRACT_MANAGE_TABLE_COLUMNS} from "./constants";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {MessagePlugin} from "tdesign-vue-next";
+import {chargeContractState} from "@/utils/contractState";
+import {fileInfoToCache} from "@/utils/files";
 import router from "@/router";
 
 const store = useSettingStore();

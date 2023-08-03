@@ -9,13 +9,13 @@
     <t-row justify="end" class="cardTop">
       <div class="cardTitle">
         <t-input class="inputStyle" v-model="operateLogSearch.searchCondition.operatorName" placeholder="操作人姓名"
-                 clearable />
+                 clearable/>
         <t-input class="inputStyle" v-model="operateLogSearch.searchCondition.operatorGh" placeholder="操作人工号"
-                 clearable />
+                 clearable/>
         <t-input class="inputStyle" v-model="operateLogSearch.searchCondition.operatorDepartment"
-                 placeholder="操作人所属部门" clearable />
+                 placeholder="操作人所属部门" clearable/>
         <t-date-range-picker class="inputStyle rangeInputStyle" v-model="operateTimeRange"
-                             :placeholder="['操作时间 起', '操作时间 止']" clearable @change="operateTimeChange" />
+                             :placeholder="['操作时间 起', '操作时间 止']" clearable @change="operateTimeChange"/>
         <t-button @click="searchData">
           <template #icon>
             <t-icon name="search"></t-icon>
@@ -25,19 +25,19 @@
       </div>
     </t-row>
     <t-table
-      class="tableStyle"
-      :data="operateLogTable.tableData"
-      :columns="OPERATE_LOG_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :pagination="operateLogTable.pagination"
-      :loading="operateLogTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="operateLogTablePageChange"
-      size="small"
+        class="tableStyle"
+        :data="operateLogTable.tableData"
+        :columns="OPERATE_LOG_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :pagination="operateLogTable.pagination"
+        :loading="operateLogTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="operateLogTablePageChange"
+        size="small"
     >
       <template #operatorGh="slotProps">
         <t-tag theme="primary" variant="light-outline">
@@ -56,13 +56,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { request } from "@/utils/request";
-import { MessagePlugin } from "tdesign-vue-next";
-import { BASE_URL, OPERATE_LOG_TABLE_COLUMNS } from "./constants";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {request} from "@/utils/request";
+import {MessagePlugin} from "tdesign-vue-next";
+import {BASE_URL, OPERATE_LOG_TABLE_COLUMNS} from "./constants";
 
 
 const store = useSettingStore();

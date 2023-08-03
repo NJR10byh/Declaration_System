@@ -7,20 +7,20 @@
 <template>
   <t-card class="wait-initiate-card">
     <t-table
-      :data="waitInitiateTable.tableData"
-      :columns="WAIT_INITIATED_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      table-layout="auto"
-      :pagination="waitInitiateTable.pagination"
-      :loading="waitInitiateTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="waitInitiateTablePageChange"
-      style="margin-top: 10px"
-      size="small"
+        :data="waitInitiateTable.tableData"
+        :columns="WAIT_INITIATED_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        table-layout="auto"
+        :pagination="waitInitiateTable.pagination"
+        :loading="waitInitiateTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="waitInitiateTablePageChange"
+        style="margin-top: 10px"
+        size="small"
     >
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
@@ -40,14 +40,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { BASE_URL, WAIT_INITIATED_TABLE_COLUMNS } from "./constants";
-import { useSettingStore } from "@/store";
-import { prefix } from "@/config/global";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { request } from "@/utils/request";
-import { MessagePlugin } from "tdesign-vue-next";
-import { isNotEmpty } from "@/utils/validate";
+import {computed, onMounted, ref} from "vue";
+import {BASE_URL, WAIT_INITIATED_TABLE_COLUMNS} from "./constants";
+import {useSettingStore} from "@/store";
+import {prefix} from "@/config/global";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {request} from "@/utils/request";
+import {MessagePlugin} from "tdesign-vue-next";
+import {isNotEmpty} from "@/utils/validate";
 
 const store = useSettingStore();
 

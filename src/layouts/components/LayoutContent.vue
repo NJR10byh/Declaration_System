@@ -1,25 +1,25 @@
 <template>
   <t-layout :class="`${prefix}-layout`">
     <t-tabs
-      v-if="settingStore.isUseTabsRouter"
-      theme="card"
-      :class="`${prefix}-layout-tabs-nav`"
-      :value="$route.path"
-      :style="{ position: 'sticky', top: 0, width: '100%' }"
-      @change="handleChangeCurrentTab"
-      @remove="handleRemove"
+        v-if="settingStore.isUseTabsRouter"
+        theme="card"
+        :class="`${prefix}-layout-tabs-nav`"
+        :value="$route.path"
+        :style="{ position: 'sticky', top: 0, width: '100%' }"
+        @change="handleChangeCurrentTab"
+        @remove="handleRemove"
     >
       <t-tab-panel
-        v-for="(routeItem, index) in tabRouters"
-        :key="`${routeItem.path}_${index}`"
-        :value="routeItem.path"
-        :removable="!routeItem.isHome"
+          v-for="(routeItem, index) in tabRouters"
+          :key="`${routeItem.path}_${index}`"
+          :value="routeItem.path"
+          :removable="!routeItem.isHome"
       >
         <template #label>
           <t-dropdown
-            trigger="context-menu"
-            :min-column-width="128"
-            :popup-props="{
+              trigger="context-menu"
+              :min-column-width="128"
+              :popup-props="{
               overlayClassName: 'route-tabs-dropdown',
               onVisibleChange: (visible: boolean, ctx) => handleTabMenuClick(visible, ctx, routeItem.path),
               visible: activeTabPath === routeItem.path,
@@ -28,26 +28,26 @@
             <template v-if="!routeItem.isHome">
               {{ routeItem.title }}
             </template>
-            <t-icon v-else name="home" />
+            <t-icon v-else name="home"/>
             <template #dropdown>
               <t-dropdown-menu>
                 <t-dropdown-item @click="() => handleRefresh(routeItem, index)">
-                  <t-icon name="refresh" />
+                  <t-icon name="refresh"/>
                   刷新
                 </t-dropdown-item>
                 <t-dropdown-item v-if="index > 1" @click="() => handleCloseAhead(routeItem.path, index)">
-                  <t-icon name="arrow-left" />
+                  <t-icon name="arrow-left"/>
                   关闭左侧
                 </t-dropdown-item>
                 <t-dropdown-item
-                  v-if="index < tabRouters.length - 1"
-                  @click="() => handleCloseBehind(routeItem.path, index)"
+                    v-if="index < tabRouters.length - 1"
+                    @click="() => handleCloseBehind(routeItem.path, index)"
                 >
-                  <t-icon name="arrow-right" />
+                  <t-icon name="arrow-right"/>
                   关闭右侧
                 </t-dropdown-item>
                 <t-dropdown-item v-if="tabRouters.length > 2" @click="() => handleCloseOther(routeItem.path, index)">
-                  <t-icon name="close-circle" />
+                  <t-icon name="close-circle"/>
                   关闭其它
                 </t-dropdown-item>
               </t-dropdown-menu>
@@ -57,24 +57,22 @@
       </t-tab-panel>
     </t-tabs>
     <t-content :class="`${prefix}-content-layout`">
-      <l-breadcrumb v-if="settingStore.showBreadcrumb" />
-      <l-content />
+      <l-content/>
     </t-content>
     <t-footer v-if="settingStore.showFooter" :class="`${prefix}-footer-layout`">
-      <l-footer />
+      <l-footer/>
     </t-footer>
   </t-layout>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useSettingStore, useTabsRouterStore } from "@/store";
-import { prefix } from "@/config/global";
-import { TRouterInfo } from "@/types/interface";
+import {computed, nextTick, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {useSettingStore, useTabsRouterStore} from "@/store";
+import {prefix} from "@/config/global";
+import {TRouterInfo} from "@/types/interface";
 
 import LContent from "./Content.vue";
-import LBreadcrumb from "./Breadcrumb.vue";
 import LFooter from "./Footer.vue";
 
 const route = useRoute();
@@ -86,39 +84,39 @@ const tabRouters = computed(() => tabsRouterStore.tabRouters.filter((route) => r
 const activeTabPath = ref("");
 
 const handleChangeCurrentTab = (path: string) => {
-  const { tabRouters } = tabsRouterStore;
+  const {tabRouters} = tabsRouterStore;
   const route = tabRouters.find((i) => i.path === path);
-  router.push({ path, query: route.query });
+  router.push({path, query: route.query});
 };
 
-const handleRemove = ({ value: path, index }) => {
-  const { tabRouters } = tabsRouterStore;
+const handleRemove = ({value: path, index}) => {
+  const {tabRouters} = tabsRouterStore;
   const nextRouter = tabRouters[index + 1] || tabRouters[index - 1];
 
-  tabsRouterStore.subtractCurrentTabRouter({ path, routeIdx: index });
-  if (path === route.path) router.push({ path: nextRouter.path, query: nextRouter.query });
+  tabsRouterStore.subtractCurrentTabRouter({path, routeIdx: index});
+  if (path === route.path) router.push({path: nextRouter.path, query: nextRouter.query});
 };
 
 const handleRefresh = (route: TRouterInfo, routeIdx: number) => {
   tabsRouterStore.toggleTabRouterAlive(routeIdx);
   nextTick(() => {
     tabsRouterStore.toggleTabRouterAlive(routeIdx);
-    router.replace({ path: route.path, query: route.query });
+    router.replace({path: route.path, query: route.query});
   });
   activeTabPath.value = null;
 };
 const handleCloseAhead = (path: string, routeIdx: number) => {
-  tabsRouterStore.subtractTabRouterAhead({ path, routeIdx });
+  tabsRouterStore.subtractTabRouterAhead({path, routeIdx});
 
   handleOperationEffect("ahead", routeIdx);
 };
 const handleCloseBehind = (path: string, routeIdx: number) => {
-  tabsRouterStore.subtractTabRouterBehind({ path, routeIdx });
+  tabsRouterStore.subtractTabRouterBehind({path, routeIdx});
 
   handleOperationEffect("behind", routeIdx);
 };
 const handleCloseOther = (path: string, routeIdx: number) => {
-  tabsRouterStore.subtractTabRouterOther({ path, routeIdx });
+  tabsRouterStore.subtractTabRouterOther({path, routeIdx});
 
   handleOperationEffect("other", routeIdx);
 };
@@ -126,19 +124,19 @@ const handleCloseOther = (path: string, routeIdx: number) => {
 // 处理非当前路由操作的副作用
 const handleOperationEffect = (type: "other" | "ahead" | "behind", routeIndex: number) => {
   const currentPath = router.currentRoute.value.path;
-  const { tabRouters } = tabsRouterStore;
+  const {tabRouters} = tabsRouterStore;
 
   const currentIdx = tabRouters.findIndex((i) => i.path === currentPath);
   // 存在三种情况需要刷新当前路由
   // 点击非当前路由的关闭其他、点击非当前路由的关闭左侧且当前路由小于触发路由、点击非当前路由的关闭右侧且当前路由大于触发路由
   const needRefreshRouter =
-    (type === "other" && currentIdx !== routeIndex) ||
-    (type === "ahead" && currentIdx < routeIndex) ||
-    (type === "behind" && currentIdx === -1);
+      (type === "other" && currentIdx !== routeIndex) ||
+      (type === "ahead" && currentIdx < routeIndex) ||
+      (type === "behind" && currentIdx === -1);
   if (needRefreshRouter) {
     const nextRouteIdx = type === "behind" ? tabRouters.length - 1 : 1;
     const nextRouter = tabRouters[nextRouteIdx];
-    router.push({ path: nextRouter.path, query: nextRouter.query });
+    router.push({path: nextRouter.path, query: nextRouter.query});
   }
 
   activeTabPath.value = null;

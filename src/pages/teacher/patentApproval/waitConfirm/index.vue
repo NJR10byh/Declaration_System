@@ -7,20 +7,20 @@
 <template>
   <t-card class="wait-confirm-card">
     <t-table
-      class="tableStyle"
-      :data="waitConfirmTable.tableData"
-      :columns="WAIT_CONFIRM_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      table-layout="auto"
-      :pagination="waitConfirmTable.pagination"
-      :loading="waitConfirmTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="waitConfirmTablePageChange"
-      size="small"
+        class="tableStyle"
+        :data="waitConfirmTable.tableData"
+        :columns="WAIT_CONFIRM_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        table-layout="auto"
+        :pagination="waitConfirmTable.pagination"
+        :loading="waitConfirmTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="waitConfirmTablePageChange"
+        size="small"
     >
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
@@ -54,15 +54,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useSettingStore, useUserStore } from "@/store";
-import { useRouter } from "vue-router";
-import { prefix } from "@/config/global";
-import { BASE_URL, WAIT_CONFIRM_TABLE_COLUMNS } from "./constants";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { request } from "@/utils/request";
-import { isEmpty } from "@/utils/validate";
-import { MessagePlugin } from "tdesign-vue-next";
+import {computed, onMounted, ref} from "vue";
+import {useSettingStore, useUserStore} from "@/store";
+import {useRouter} from "vue-router";
+import {prefix} from "@/config/global";
+import {BASE_URL, WAIT_CONFIRM_TABLE_COLUMNS} from "./constants";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {request} from "@/utils/request";
+import {isEmpty} from "@/utils/validate";
+import {MessagePlugin} from "tdesign-vue-next";
 
 const store = useSettingStore();
 const userStore = useUserStore();

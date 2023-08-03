@@ -19,23 +19,23 @@
       </div>
     </t-row>
     <t-table
-      class="tableStyle"
-      :data="annualFeeExpirationTable.tableData"
-      :columns="ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS"
-      row-key="id"
+        class="tableStyle"
+        :data="annualFeeExpirationTable.tableData"
+        :columns="ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS"
+        row-key="id"
 
-      hover
-      stripe
-      table-layout="auto"
-      :table-content-width="tableContentWidth"
-      :pagination="annualFeeExpirationTable.pagination"
-      :loading="annualFeeExpirationTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="annualFeeExpirationTablePageChange"
-      size="small"
-      v-resize="resize"
+        hover
+        stripe
+        table-layout="auto"
+        :table-content-width="tableContentWidth"
+        :pagination="annualFeeExpirationTable.pagination"
+        :loading="annualFeeExpirationTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="annualFeeExpirationTablePageChange"
+        size="small"
+        v-resize="resize"
     >
       <template #settings="slotProps">
         <div class="settingBtns">
@@ -52,14 +52,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
-import { ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS, BASE_URL } from "./constants";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {MessagePlugin} from "tdesign-vue-next";
+import {ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS, BASE_URL} from "./constants";
 
 
 const store = useSettingStore();

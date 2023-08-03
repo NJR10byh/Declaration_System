@@ -7,16 +7,16 @@
 <template>
   <t-card class="annual-fee-expiration-card">
     <t-table
-      class="tableStyle"
-      :data="annualFeeExpirationTable.tableData"
-      :columns="ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :loading="annualFeeExpirationTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      size="small"
+        class="tableStyle"
+        :data="annualFeeExpirationTable.tableData"
+        :columns="ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :loading="annualFeeExpirationTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        size="small"
     >
       <template #annualFeePaymentDate="slotProps">
         <t-tag theme="warning" variant="light-outline">
@@ -36,13 +36,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { request } from "@/utils/request";
-import { MessagePlugin } from "tdesign-vue-next";
-import { ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS, BASE_URL } from "./constants";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {request} from "@/utils/request";
+import {MessagePlugin} from "tdesign-vue-next";
+import {ANNUAL_FEE_EXPIRATION_TABLE_COLUMNS, BASE_URL} from "./constants";
 
 
 const store = useSettingStore();

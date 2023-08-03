@@ -68,22 +68,22 @@
     <!-- 专利列表搜索相关 -->
     <t-row justify="start" class="cardTop searchConditionStyle" v-if="tableType=='1'">
       <t-input class="inputStyle" v-for="item in PATENT_SEARCH_CONDITION" :key="item.name"
-               v-model="patentSearch.searchCondition[item.name]" :placeholder="item.placeholder" clearable />
+               v-model="patentSearch.searchCondition[item.name]" :placeholder="item.placeholder" clearable/>
       <t-range-input class="inputStyle rangeInputStyle" v-model="patentPriceRange"
                      :placeholder="['价格（万元）起', '价格（万元）止']"
-                     clearable />
+                     clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="patentTimeRange"
-                           :placeholder="['专利申请时间 起', '专利申请时间 止']" clearable />
+                           :placeholder="['专利申请时间 起', '专利申请时间 止']" clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="patentSQRQRange"
-                           :placeholder="['专利授权时间 起', '专利授权时间 止']" clearable />
+                           :placeholder="['专利授权时间 起', '专利授权时间 止']" clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="patentCompleteTimeRange"
                            :placeholder="['转化完成时间 起', '转化完成时间 止']"
-                           clearable />
+                           clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="patentContractTimeRange"
                            :placeholder="['合同签订时间 起', '合同签订时间 止']"
-                           clearable />
+                           clearable/>
       <t-cascader class="inputStyle cascaderStyle" v-model="regionCode" value-mode="all" value-type="full"
-                  :options="chinaAreaOptions" placeholder="行政区划" @change="regionChange" clearable />
+                  :options="chinaAreaOptions" placeholder="行政区划" @change="regionChange" clearable/>
     </t-row>
     <!-- 合同列表搜索相关 -->
     <t-row justify="start" class="cardTop" v-if="tableType=='2'">
@@ -91,15 +91,15 @@
                v-model="contractSearch.searchCondition[item.name]" :placeholder="item.placeholder" clearable>
       </t-input>
       <t-range-input class="inputStyle rangeInputStyle" v-model="contractCodeRange"
-                     :placeholder="['合同编号 起', '合同编号 止']" clearable />
+                     :placeholder="['合同编号 起', '合同编号 止']" clearable/>
       <t-range-input class="inputStyle rangeInputStyle" v-model="contractAmountRange"
-                     :placeholder="['价格（万元）起', '价格（万元）止']" clearable />
+                     :placeholder="['价格（万元）起', '价格（万元）止']" clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="contractCompleteTimeRange"
-                           :placeholder="['转化完成时间 起', '转化完成时间 止']" clearable />
+                           :placeholder="['转化完成时间 起', '转化完成时间 止']" clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="contractTimeRange"
-                           :placeholder="['合同签订时间 起', '合同签订时间 止']" clearable />
+                           :placeholder="['合同签订时间 起', '合同签订时间 止']" clearable/>
       <t-cascader class="inputStyle cascaderStyle" v-model="regionCode" value-mode="all" value-type="full"
-                  :options="chinaAreaOptions" placeholder="请选择行政区划" @change="regionChange" clearable />
+                  :options="chinaAreaOptions" placeholder="请选择行政区划" @change="regionChange" clearable/>
     </t-row>
   </t-card>
   <t-card class="data-center-card">
@@ -120,20 +120,20 @@
 
     <!-- 专利列表 -->
     <t-table
-      v-if="tableType=='1'"
-      :data="dataCenterPatentTable.tableData"
-      :columns="PATENT_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :pagination="dataCenterPatentTable.pagination"
-      :loading="dataCenterPatentTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="dataCenterPatentTablePageChange"
-      style="margin-top: 10px"
-      size="small"
+        v-if="tableType=='1'"
+        :data="dataCenterPatentTable.tableData"
+        :columns="PATENT_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :pagination="dataCenterPatentTable.pagination"
+        :loading="dataCenterPatentTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="dataCenterPatentTablePageChange"
+        style="margin-top: 10px"
+        size="small"
     >
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
@@ -144,20 +144,20 @@
 
     <!-- 合同列表 -->
     <t-table
-      v-if="tableType=='2'"
-      :data="dataCenterContractTable.tableData"
-      :columns="CONTRACT_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :pagination="dataCenterContractTable.pagination"
-      :loading="dataCenterContractTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="dataCenterContractTablePageChange"
-      style="margin-top: 10px"
-      size="small"
+        v-if="tableType=='2'"
+        :data="dataCenterContractTable.tableData"
+        :columns="CONTRACT_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :pagination="dataCenterContractTable.pagination"
+        :loading="dataCenterContractTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="dataCenterContractTablePageChange"
+        style="margin-top: 10px"
+        size="small"
     >
       <template #projectCode="slotProps">
         <t-tag theme="primary" variant="light-outline">
@@ -172,9 +172,9 @@
     <template #body>
       <div>
         <t-checkbox-group v-model="columnMapValues">
-          <t-checkbox :check-all="true" label="全选" />
+          <t-checkbox :check-all="true" label="全选"/>
           <t-checkbox v-for="item in columnMapOptions" :key="item.index" :label="item.columnNameCN"
-                      :value="item.columnName" />
+                      :value="item.columnName"/>
         </t-checkbox-group>
       </div>
     </template>
@@ -182,9 +182,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { CodeToText, regionData } from "element-china-area-data";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {CodeToText, regionData} from "element-china-area-data";
 import {
   BASE_URL,
   CONTRACT_SEARCH_CONDITION,
@@ -192,11 +192,11 @@ import {
   PATENT_SEARCH_CONDITION,
   PATENT_TABLE_COLUMNS
 } from "@/pages/cxy/dataCenter/constants";
-import { useSettingStore } from "@/store";
-import { request } from "@/utils/request";
-import { MessagePlugin } from "tdesign-vue-next";
-import { downloadFile } from "@/utils/files";
-import { isNotEmpty } from "@/utils/validate";
+import {useSettingStore} from "@/store";
+import {request} from "@/utils/request";
+import {MessagePlugin} from "tdesign-vue-next";
+import {downloadFile} from "@/utils/files";
+import {isNotEmpty} from "@/utils/validate";
 
 const store = useSettingStore();
 

@@ -29,16 +29,16 @@
       </div>
     </t-row>
     <t-table
-      class="tableStyle"
-      :data="userListTable.tableData"
-      :columns="USER_LIST_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :loading="userListTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      size="small"
+        class="tableStyle"
+        :data="userListTable.tableData"
+        :columns="USER_LIST_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :loading="userListTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        size="small"
     >
       <template #userGh="slotProps">
         <t-tag theme="primary" variant="light">
@@ -64,14 +64,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { request } from "@/utils/request";
-import { MessagePlugin } from "tdesign-vue-next";
-import { BASE_URL, USER_LIST_TABLE_COLUMNS } from "./constants";
-import { getRoleName } from "../../../utils/auth";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {request} from "@/utils/request";
+import {MessagePlugin} from "tdesign-vue-next";
+import {BASE_URL, USER_LIST_TABLE_COLUMNS} from "./constants";
+import {getRoleName} from "../../../utils/auth";
 
 
 const store = useSettingStore();

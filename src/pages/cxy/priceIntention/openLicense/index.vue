@@ -10,31 +10,31 @@
       <div class="cardTitle">开放许可价格意向</div>
     </t-row>
     <t-table
-      :data="openLicensePriceTable.tableData"
-      :columns="OPEN_LICENCES_PRICE_TABLE_COLUMNS"
-      row-key="id"
+        :data="openLicensePriceTable.tableData"
+        :columns="OPEN_LICENCES_PRICE_TABLE_COLUMNS"
+        row-key="id"
 
-      hover
-      stripe
-      :pagination="openLicensePriceTable.pagination"
-      :loading="openLicensePriceTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="openLicensePriceTablePageChange"
-      style="margin-top: 10px"
+        hover
+        stripe
+        :pagination="openLicensePriceTable.pagination"
+        :loading="openLicensePriceTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="openLicensePriceTablePageChange"
+        style="margin-top: 10px"
     />
   </t-card>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { prefix } from "@/config/global";
-import { useSettingStore } from "@/store";
-import { OPEN_LICENCES_PRICE_TABLE_COLUMNS } from "./constants";
-import { request } from "@/utils/request";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { MessagePlugin } from "tdesign-vue-next";
+import {computed, onMounted, ref} from "vue";
+import {prefix} from "@/config/global";
+import {useSettingStore} from "@/store";
+import {OPEN_LICENCES_PRICE_TABLE_COLUMNS} from "./constants";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {MessagePlugin} from "tdesign-vue-next";
 
 
 const store = useSettingStore();

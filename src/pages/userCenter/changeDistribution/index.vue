@@ -10,15 +10,15 @@
       <div class="cardTitle">授权 实施转化的科技成果</div>
     </t-row>
     <t-table
-      :data="changeDistributionTable.tableData"
-      :columns="CHANGE_DISTRIBUTION_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      :loading="changeDistributionTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      style="margin-top: 10px"
+        :data="changeDistributionTable.tableData"
+        :columns="CHANGE_DISTRIBUTION_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        :loading="changeDistributionTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        style="margin-top: 10px"
     >
       <template #settings="slotProps">
         <div class="settingBtns">
@@ -42,13 +42,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useSettingStore } from "@/store";
-import { useRouter } from "vue-router";
-import { prefix } from "@/config/global";
-import { BASE_URL, CHANGE_DISTRIBUTION_TABLE_COLUMNS } from "./constants";
-import { request } from "@/utils/request";
-import { MessagePlugin } from "tdesign-vue-next";
+import {computed, onMounted, ref} from "vue";
+import {useSettingStore} from "@/store";
+import {useRouter} from "vue-router";
+import {prefix} from "@/config/global";
+import {BASE_URL, CHANGE_DISTRIBUTION_TABLE_COLUMNS} from "./constants";
+import {request} from "@/utils/request";
+import {MessagePlugin} from "tdesign-vue-next";
 
 const store = useSettingStore();
 const router = useRouter();

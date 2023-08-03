@@ -33,21 +33,21 @@
   </t-card>
   <t-card class="initiated-card">
     <t-table
-      class="tableStyle"
-      :data="initiatedTable.tableData"
-      :columns="INITIATED_TABLE_COLUMNS"
-      row-key="id"
-      hover
-      stripe
-      table-layout="auto"
-      table-content-width="1600px"
-      :pagination="initiatedTable.pagination"
-      :loading="initiatedTable.tableLoading"
-      :header-affixed-top="{ offsetTop, container: getContainer }"
-      :horizontal-scroll-affixed-bottom="{ offsetBottom: '64', container: getContainer }"
-      :pagination-affixed-bottom="{ offsetBottom: '0',container: getContainer }"
-      @page-change="initiatedTablePageChange"
-      size="small"
+        class="tableStyle"
+        :data="initiatedTable.tableData"
+        :columns="INITIATED_TABLE_COLUMNS"
+        row-key="id"
+        hover
+        stripe
+        table-layout="auto"
+        table-content-width="1600px"
+        :pagination="initiatedTable.pagination"
+        :loading="initiatedTable.tableLoading"
+        :header-affixed-top="{ offsetTop, container: getContainer }"
+        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+        @page-change="initiatedTablePageChange"
+        size="small"
     >
       <template #zlh="slotProps">
         <t-tag theme="primary" variant="light-outline">
@@ -109,9 +109,9 @@
           </t-button>
 
           <t-button
-            variant="outline"
-            theme="primary"
-            v-if="['等待上传到款凭证'].includes(slotProps.row.state)"
+              variant="outline"
+              theme="primary"
+              v-if="['等待上传到款凭证'].includes(slotProps.row.state)"
           >
             <template #icon>
               <t-icon name="upload"></t-icon>
@@ -121,9 +121,9 @@
 
           <!-- 转化文件管理 -->
           <t-button
-            variant="outline"
-            theme="primary"
-            v-if="slotProps.row.sendTeacher"
+              variant="outline"
+              theme="primary"
+              v-if="slotProps.row.sendTeacher"
           >
             <template #icon>
               <t-icon name="folder-open"></t-icon>
@@ -137,16 +137,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { BASE_URL, INITIATED_TABLE_COLUMNS } from "./constants";
-import { useSettingStore } from "@/store";
-import { prefix } from "@/config/global";
-import { request } from "@/utils/request";
-import { MessagePlugin } from "tdesign-vue-next";
-import { setObjToUrlParams } from "@/utils/request/utils";
-import { chargeTransferState } from "@/utils/transferState";
+import {computed, onMounted, ref} from "vue";
+import {BASE_URL, INITIATED_TABLE_COLUMNS} from "./constants";
+import {useSettingStore} from "@/store";
+import {prefix} from "@/config/global";
+import {request} from "@/utils/request";
+import {MessagePlugin} from "tdesign-vue-next";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {chargeTransferState} from "@/utils/transferState";
 import router from "@/router";
-import { isNotEmpty } from "@/utils/validate";
+import {isNotEmpty} from "@/utils/validate";
 
 const store = useSettingStore();
 
