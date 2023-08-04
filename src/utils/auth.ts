@@ -99,7 +99,7 @@ export const userInfoToCache = async (info: {
         case "superadmin":
             formData.value.brandTheme = "default";
             settingStore.updateConfig(formData.value);
-            await router.push("/declaration/all");
+            await router.push("/dashboard/mainInfo");
             break;
         case "teacher":
             formData.value.brandTheme = "purple";
@@ -116,26 +116,11 @@ export const userInfoToCache = async (info: {
 export const getRoleName = (role: any) => {
     let roleName = "";
     switch (role) {
-        case "root":
-            roleName = "root";
-            break;
         case "superadmin":
             roleName = "产学研超级管理员";
             break;
-        case  "admin":
-            roleName = "产学研管理员";
-            break;
         case "teacher":
             roleName = "教师";
-            break;
-        case "fzr":
-            roleName = "产学研负责人";
-            break;
-        case "academy":
-            roleName = "学院";
-            break;
-        case "finance":
-            roleName = "财务处";
             break;
     }
     return roleName;
