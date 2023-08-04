@@ -2,31 +2,31 @@
   <t-row :gutter="[16, 16]">
     <t-col v-for="(item, index) in PANE_LIST" :key="item.title" :xs="6" :xl="3">
       <t-card
-        :title="item.title"
-        :style="{ height: '168px' }"
-        :class="{ 'dashboard-item': true, 'dashboard-item--main-color': index == 0 }"
+          :title="item.title"
+          :style="{ height: '168px' }"
+          :class="{ 'dashboard-item': true, 'dashboard-item--main-color': index == 0 }"
       >
         <div class="dashboard-item-top">
           <span :style="{ fontSize: `${resizeTime * 36}px` }">{{ item.number }}</span>
         </div>
         <div class="dashboard-item-left">
           <div
-            v-if="index === 0"
-            id="moneyContainer"
-            class="dashboard-chart-container"
-            :style="{ width: `${resizeTime * 120}px`, height: `${resizeTime * 66}px` }"
+              v-if="index === 0"
+              id="moneyContainer"
+              class="dashboard-chart-container"
+              :style="{ width: `${resizeTime * 120}px`, height: `${resizeTime * 66}px` }"
           ></div>
           <div
-            v-else-if="index === 1"
-            id="refundContainer"
-            class="dashboard-chart-container"
-            :style="{ width: `${resizeTime * 120}px`, height: `${resizeTime * 42}px` }"
+              v-else-if="index === 1"
+              id="refundContainer"
+              class="dashboard-chart-container"
+              :style="{ width: `${resizeTime * 120}px`, height: `${resizeTime * 42}px` }"
           ></div>
           <span v-else-if="index === 2" :style="{ marginTop: `-24px` }">
-            <usergroup-icon />
+            <usergroup-icon/>
           </span>
           <span v-else :style="{ marginTop: '-24px' }">
-            <file-icon />
+            <wallet-icon/>
           </span>
         </div>
         <template #footer>
@@ -34,13 +34,13 @@
             <div class="dashboard-item-block">
               自从上周以来
               <trend
-                class="dashboard-item-trend"
-                :type="item.upTrend ? 'up' : 'down'"
-                :is-reverse-color="index === 0"
-                :describe="item.upTrend || item.downTrend"
+                  class="dashboard-item-trend"
+                  :type="item.upTrend ? 'up' : 'down'"
+                  :is-reverse-color="index === 0"
+                  :describe="item.upTrend || item.downTrend"
               />
             </div>
-            <t-icon name="chevron-right" />
+            <t-icon name="chevron-right"/>
           </div>
         </template>
       </t-card>
@@ -55,20 +55,20 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { onMounted, watch, ref, onUnmounted, nextTick } from 'vue';
+import {onMounted, watch, ref, onUnmounted, nextTick} from 'vue';
 
 import * as echarts from 'echarts/core';
-import { LineChart, BarChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
-import { UsergroupIcon, FileIcon } from 'tdesign-icons-vue-next';
-import { useSettingStore } from '@/store';
-import { changeChartsTheme } from '@/utils/color';
+import {LineChart, BarChart} from 'echarts/charts';
+import {CanvasRenderer} from 'echarts/renderers';
+import {UsergroupIcon, WalletIcon} from 'tdesign-icons-vue-next';
+import {useSettingStore} from '@/store';
+import {changeChartsTheme} from '@/utils/color';
 
 // 导入样式
 import Trend from '@/components/trend/index.vue';
-import { constructInitDashboardDataset } from '../index';
+import {constructInitDashboardDataset} from '../index';
 
-import { PANE_LIST } from '../constants';
+import {PANE_LIST} from '../constants';
 
 echarts.use([LineChart, BarChart, CanvasRenderer]);
 
@@ -134,21 +134,21 @@ onUnmounted(() => {
 });
 
 watch(
-  () => store.brandTheme,
-  () => {
-    changeChartsTheme([refundChart]);
-  },
+    () => store.brandTheme,
+    () => {
+      changeChartsTheme([refundChart]);
+    },
 );
 
 watch(
-  () => store.mode,
-  () => {
-    [moneyChart, refundChart].forEach((item) => {
-      item.dispose();
-    });
+    () => store.mode,
+    () => {
+      [moneyChart, refundChart].forEach((item) => {
+        item.dispose();
+      });
 
-    renderCharts();
-  },
+      renderCharts();
+    },
 );
 </script>
 
