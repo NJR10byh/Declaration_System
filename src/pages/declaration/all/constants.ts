@@ -25,7 +25,7 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
         title: "商品",
         align: "left",
         colKey: "goodsName",
-        width: 80,
+        width: 200,
         ellipsis: true
     },
     {
@@ -45,7 +45,7 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
     {
         title: "实付金额",
         align: "center",
-        colKey: "money",
+        colKey: "relMoney",
         width: 80,
         ellipsis: true
     },
@@ -67,14 +67,14 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
         title: "申请返款时间",
         align: "center",
         colKey: "backMoneyTime",
-        width: 80,
+        width: 120,
         ellipsis: true
     },
     {
         title: "报单时间",
         align: "center",
         colKey: "declarateTime",
-        width: 80,
+        width: 120,
         ellipsis: true
     },
     {
@@ -88,15 +88,13 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
         title: "下单图",
         align: "center",
         colKey: "orderPic",
-        width: 80,
-        ellipsis: true
+        width: 80
     },
     {
         title: "完成图",
         align: "center",
         colKey: "completePic",
-        width: 80,
-        ellipsis: true
+        width: 80
     },
     {
         title: "操作",
