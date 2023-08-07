@@ -148,7 +148,6 @@ const waitApprovalTable = reactive({
       orderStatus: "待审核",
       orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      operation: "操作"
     },
     {
       index: 1,
@@ -164,8 +163,8 @@ const waitApprovalTable = reactive({
       orderStatus: "待审核",
       orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      operation: "操作"
-    }],// 表格数据
+    }
+  ],// 表格数据
   searchText: "",
   // 表格分页
   pagination: {
@@ -183,28 +182,11 @@ const goodsOptions = reactive([
   {label: 'option4', value: '4'},
   {label: 'OPTION5', value: '5'}
 ])
-// 状态选项
-const statusOptions = reactive([
-  {label: '全部', value: '0'},
-  {label: '审核中', value: '1'},
-  {label: '已审核', value: '2'}
-])
 
 // 下单图预览
 const orderPicVisible = ref(false);
 // 完成图预览
 const completePicVisible = ref(false);
-// 编辑对话框
-const editVisible = ref(false);
-
-// 编辑表单
-const editFormData = reactive({
-  goodsName: "",
-  orderStatus: "",
-  orderId: "",
-  relMoney: "",
-  remark: ""
-});
 
 /**
  * methods区
@@ -243,7 +225,7 @@ const approved = (row: any) => {
 // 作废
 const cancel = (row: any) => {
   console.log(row);
-  const confirmDia = DialogPlugin.confirm({
+  const cancelConfirmDialog = DialogPlugin.confirm({
     header: '提示',
     theme: "warning",
     body: '确定要作废吗？',
@@ -256,10 +238,10 @@ const cancel = (row: any) => {
     onConfirm: () => {
       MessagePlugin.success("已作废")
       // 请求成功后，销毁弹框
-      confirmDia.destroy();
+      cancelConfirmDialog.destroy();
     },
     onClose: () => {
-      confirmDia.hide();
+      cancelConfirmDialog.hide();
     },
   });
 }

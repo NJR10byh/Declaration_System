@@ -188,7 +188,6 @@ const declaratedTable = reactive({
       orderStatus: "已审核",
       orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      operation: "操作"
     },
     {
       index: 1,
@@ -204,8 +203,8 @@ const declaratedTable = reactive({
       orderStatus: "审核中",
       orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      operation: "操作"
-    }],// 表格数据
+    }
+  ],// 表格数据
   searchText: "",
   // 表格分页
   pagination: {
