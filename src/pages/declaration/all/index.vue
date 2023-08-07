@@ -1,3 +1,9 @@
+<!--
+  * @author baoyuhao
+  * @date 2023/8/4 13:55:41
+  * @description 全部报单
+  * @version 0.8.0
+-->
 <template>
   <t-card class="all-declaration-card">
     <t-row justify="start" class="cardTop">
@@ -178,7 +184,7 @@ import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
-import {ALL_DECLARATION_TABLE_COLUMNS} from "@/pages/declaration/all/constants";
+import {ALL_DECLARATION_TABLE_COLUMNS} from "./constants";
 
 const store = useSettingStore();
 const router = useRouter();
