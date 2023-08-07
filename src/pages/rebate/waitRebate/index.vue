@@ -5,7 +5,7 @@
   * @version 0.8.0
 -->
 <template>
-  <t-card class="wait-approval-card">
+  <t-card class="wait-rebate-table">
     <t-table
         class="tableStyle"
         :data="waitRebateTable.tableData"
@@ -280,7 +280,7 @@ const pay = (method: any) => {
 </script>
 
 <style lang="less" scoped>
-.wait-approval-card {
+.wait-rebate-table {
   margin-top: 10px;
 
   &:first-child {

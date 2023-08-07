@@ -92,5 +92,5 @@ export const SETTLEMENT_TABLE_COLUMNS = [
         colKey: "approvalRemark",
         width: 100,
         ellipsis: true
-    },
+    }
 ];
