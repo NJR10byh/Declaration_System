@@ -3,11 +3,7 @@
   "version": "0.8.0",
   "scripts": {
     "dev": "vite --open --mode development",
-    "build": "vite build",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "build": "vite build"
   },
   "dependencies": {
     "@types/nprogress": "^0.2.0",
