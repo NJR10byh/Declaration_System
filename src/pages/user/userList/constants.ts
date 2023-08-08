@@ -1,12 +1,12 @@
 /**
  * @author baoyuhao
- * @date 2023/8/3 22:17:32
+ * @date 2023/8/8 11:13:28
  * @description
  * @version 0.1.0
  */
 export const BASE_URL = {};
 
-export const GOODS_INFO_TABLE_COLUMNS = [
+export const USER_LIST_TABLE_COLUMNS = [
     // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
     {
         title: "序号",
@@ -15,52 +15,51 @@ export const GOODS_INFO_TABLE_COLUMNS = [
         width: 80
     },
     {
-        title: "商品名称",
-        align: "left",
-        colKey: "goodsName",
-        width: 200,
-        ellipsis: true
-    },
-    {
-        title: "剩余额度",
+        title: "手机号码",
         align: "center",
-        colKey: "remainQuota",
+        colKey: "phone",
         width: 80,
         ellipsis: true
     },
     {
-        title: "总金额",
+        title: "姓名",
         align: "center",
-        colKey: "totalMoney",
+        colKey: "name",
         width: 80,
         ellipsis: true
     },
     {
-        title: "预计返款金额",
+        title: "开户行",
         align: "center",
-        colKey: "preBackMoney",
+        colKey: "bankName",
         width: 80,
         ellipsis: true
     },
     {
-        title: "创建时间",
+        title: "银行卡号",
         align: "center",
-        colKey: "createTime",
-        width: 120,
+        colKey: "bankCard",
+        width: 80,
         ellipsis: true
     },
     {
-        title: "截止时间",
+        title: "收款码",
         align: "center",
-        colKey: "endTime",
-        width: 120,
-        ellipsis: true
+        colKey: "qrCode",
+        width: 100
     },
     {
         title: "状态",
         align: "center",
         colKey: "status",
         width: 80,
+        ellipsis: true
+    },
+    {
+        title: "注册时间",
+        align: "center",
+        colKey: "registerTime",
+        width: 120,
         ellipsis: true
     },
     {
