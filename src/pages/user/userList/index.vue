@@ -1,7 +1,7 @@
 <!--
   * @author baoyuhao
   * @date 2023/8/8 11:12:07
-  * @description 
+  * @description 用户列表
   * @version 0.8.0
 -->
 <template>
@@ -229,7 +229,7 @@ const userListTable = reactive({
   }
 });
 
-// 商品状态选项
+// 用户状态选项
 const userStatusOptions = reactive([
   {label: '启用', value: '1'},
   {label: '禁用', value: '0'}
