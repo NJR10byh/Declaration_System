@@ -17,6 +17,7 @@ import ResultIeIcon from '@/assets/assets-result-ie.svg?component';
 import ResultWifiIcon from '@/assets/assets-result-wifi.svg?component';
 import ResultMaintenanceIcon from '@/assets/assets-result-maintenance.svg?component';
 
+// defineProps可以接受父组件传递过来的数据，是Vue3提供的方法，无需引入，数据是只读的
 const props = defineProps({
   bgUrl: String,
   title: String,

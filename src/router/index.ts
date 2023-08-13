@@ -69,6 +69,7 @@ export const getActive = (maxLevel = 3): string => {
     .join("");
 };
 
+// 创建一个路由
 const router = createRouter({
   history: createWebHashHistory(),
   routes: allRoutes,

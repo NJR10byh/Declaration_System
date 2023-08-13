@@ -23,7 +23,7 @@ export const useUserStore = defineStore("user", {
     }
   },
   actions: {
-    getUserInfo(userinfo) {
+    getUserInfo(userinfo: { userName: string; userDepartment: string; userGh: string; userPhone: string; userEmail: string; userIdCard: string; role: string; roles: any[]; authorities: any[]; }) {
       this.userInfo = userinfo;
     },
     logout() {
