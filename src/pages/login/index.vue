@@ -12,6 +12,8 @@
       <tdesign-setting/>
     </div>
 
+<!--    <test> child</test>-->
+
     <footer class="copyright">
       Copyright @ 2022-{{ new Date().getFullYear() }} NJR10byh. All Rights Reserved
     </footer>
@@ -29,6 +31,7 @@ import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
 import LoginHeader from "./components/Header.vue";
 import TdesignSetting from "@/layouts/setting.vue";
+import Test from "@/pages/login/components/Test.vue";
 
 const type = ref("login");
 const switchType = (val: string) => {

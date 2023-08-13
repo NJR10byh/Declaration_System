@@ -30,7 +30,7 @@ export function constructInitDashboardDataset(type: string) {
             color: ['#fff'],
             series: [
                 {
-                    data: [150, 230, 224, 218, 135, 147, 260],
+                    data: [150, 230, 224, 218, 135, 147, 900],
                     type,
                     showSymbol: true,
                     symbol: 'circle',

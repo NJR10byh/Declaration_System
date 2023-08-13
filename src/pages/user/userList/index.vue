@@ -10,18 +10,18 @@
       <div class="cardTitle">搜索条件</div>
     </t-row>
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="userListTable.searchText" placeholder="请输入手机号" clearable/>
-      <t-input class="inputStyle" v-model="userListTable.searchText" placeholder="请输入姓名" clearable/>
-      <t-input class="inputStyle" v-model="userListTable.searchText" placeholder="请输入微信名" clearable/>
+      <t-input class="inputStyle" v-model="userListTable.searchText_1" placeholder="请输入手机号" clearable/>
+      <t-input class="inputStyle" v-model="userListTable.searchText_2" placeholder="请输入姓名" clearable/>
+      <t-input class="inputStyle" v-model="userListTable.searchText_3" placeholder="请输入微信名" clearable/>
       <t-select
           class="inputStyle"
-          v-model="userListTable.searchText"
+          v-model="userListTable.searchText_4"
           placeholder="-请选择用户状态-"
           :options="userStatusOptions"
           filterable
           clearable
       />
-      <t-button class="inputStyle" style="width: 100px;">
+      <t-button class="inputStyle" @click="search" style="width: 100px;">
         <template #icon>
           <t-icon name="search"></t-icon>
         </template>
@@ -220,7 +220,10 @@ const userListTable = reactive({
       registerTime: "2023-08-03 17:56:21"
     }
   ],// 表格数据
-  searchText: "",
+  searchText_1: "",
+  searchText_2: "",
+  searchText_3: "",
+  searchText_4: "",
   // 表格分页
   pagination: {
     total: 0,
@@ -293,6 +296,9 @@ const qrCodeOpen = () => {
   qrCodeVisible.value = true;
 }
 
+const search =() => {
+  alert("查询条目失败");
+}
 // 禁用
 const disableUser = (row: any) => {
   console.log(row);

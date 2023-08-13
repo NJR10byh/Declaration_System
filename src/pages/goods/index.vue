@@ -170,6 +170,16 @@ const goodsInfoTable = reactive({
       createTime: "2023-08-01 17:26:43",
       endTime: "2023-08-08 13:21:26",
       status: "审核中",
+    },
+    {
+      index: 3,
+      goodsName: "商品名称",
+      remainQuota: 9800,
+      totalMoney: 1400,
+      preBackMoney: 1500,
+      createTime: "2023-08-01 17:26:43",
+      endTime: "2023-08-08 13:21:26",
+      status: "审核中",
     }
   ],// 表格数据
   searchText: "",
@@ -239,6 +249,7 @@ const addGoodsInfo = () => {
 const copyInfo = (row: any) => {
   console.log("复制");
   console.log(row);
+  // 要实现复制的话，只需要在tableData添加元素
 }
 
 // 启用
