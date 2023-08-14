@@ -10,12 +10,12 @@
       <div class="cardTitle">搜索条件</div>
     </t-row>
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="userListTable.searchText_1" placeholder="请输入手机号" clearable/>
-      <t-input class="inputStyle" v-model="userListTable.searchText_2" placeholder="请输入姓名" clearable/>
-      <t-input class="inputStyle" v-model="userListTable.searchText_3" placeholder="请输入微信名" clearable/>
+      <t-input class="inputStyle" v-model="searchData.phone" placeholder="请输入手机号" clearable/>
+      <t-input class="inputStyle" v-model="searchData.name" placeholder="请输入姓名" clearable/>
+      <t-input class="inputStyle" v-model="searchData.wechat" placeholder="请输入微信名" clearable/>
       <t-select
           class="inputStyle"
-          v-model="userListTable.searchText_4"
+          v-model="searchData.status"
           placeholder="-请选择用户状态-"
           :options="userStatusOptions"
           filterable
@@ -193,6 +193,14 @@ const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
 
+// 搜索条件
+const searchData = reactive({
+  phone: "",
+  name: "",
+  wechat: "",
+  status: ""
+})
+
 /**
  * 表格相关
  */
@@ -296,10 +304,10 @@ const qrCodeOpen = () => {
   qrCodeVisible.value = true;
 }
 
-const search =() => {
-
-
-  alert("查询条目失败");
+const search = () => {
+  // alert("查询条目失败");
+  console.log(searchData);
+  MessagePlugin.warning("暂未开放");
 }
 // 禁用
 const disableUser = (row: any) => {
