@@ -331,6 +331,7 @@ const search = () => {
       return Object.keys(condition).every(key => {
         return String(item[key]).toLowerCase().includes(
             String(condition[key]).trim().toLowerCase())
+
       })
     })
   }
