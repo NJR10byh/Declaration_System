@@ -10,12 +10,12 @@
       <div class="cardTitle">搜索条件</div>
     </t-row>
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="userListTable.searchText_1" placeholder="请输入手机号" clearable/>
-      <t-input class="inputStyle" v-model="userListTable.searchText_2" placeholder="请输入姓名" clearable/>
-      <t-input class="inputStyle" v-model="userListTable.searchText_3" placeholder="请输入微信名" clearable/>
+      <t-input class="inputStyle" v-model="searchData.phone" placeholder="请输入手机号" clearable/>
+      <t-input class="inputStyle" v-model="searchData.name" placeholder="请输入姓名" clearable/>
+      <t-input class="inputStyle" v-model="searchData.wechat" placeholder="请输入微信名" clearable/>
       <t-select
           class="inputStyle"
-          v-model="userListTable.searchText_4"
+          v-model="searchData.status"
           placeholder="-请选择用户状态-"
           :options="userStatusOptions"
           filterable
@@ -177,8 +177,6 @@ import {prefix} from "@/config/global";
 import {USER_LIST_TABLE_COLUMNS} from "./constants";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 import {phone_number} from "../../../utils/antianaphylaxis";
-//import {ElementPlusResolver} from "unplugin-vue-components/resolvers";
-import {ElMessage} from "element-plus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -194,6 +192,14 @@ const offsetTop = computed(() => {
 const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
+
+// 搜索条件
+const searchData = reactive({
+  phone: "",
+  name: "",
+  wechat: "",
+  status: ""
+})
 
 /**
  * 表格相关
@@ -222,13 +228,10 @@ const userListTable = reactive({
       registerTime: "2023-08-03 17:56:21"
     }
   ],// 表格数据
-
-  // 搜索字段
   searchText_1: "",
   searchText_2: "",
   searchText_3: "",
   searchText_4: "",
-
   // 表格分页
   pagination: {
     total: 0,
@@ -301,45 +304,10 @@ const qrCodeOpen = () => {
   qrCodeVisible.value = true;
 }
 
-const search =() => {
-  console.log(userListTable.tableData);
-  let obj = {}
-  obj = {
-
-    searchText_1: userListTable.searchText_1,
-    searchText_2: userListTable.searchText_2,
-    searchText_3: userListTable.searchText_3,
-    searchText_4: userListTable.searchText_4,
-  }
-  // 排除空
-  for (let key in obj) {
-    if (obj[key] == '' || obj[key] == null) {
-      delete obj[key]
-    }
-  }
-  // @param condition 过滤条件
-  // @param data 需要过滤的数据
-  let filter = (condition, data) => {
-    return data.filter(item => {
-      return Object.keys(condition).every(key => {
-        return String(item[key]).toLowerCase().includes(
-            String(condition[key]).trim().toLowerCase())
-      })
-    })
-  }
-  let data = filter(obj, userListTable.tableData);
-  console.log(data);
-  if (data != '') {
-    userListTable.tableData = data
-  } else {
-    ElMessage({
-      type: 'error',
-      message: `没有相关信息`,
-    });
-    data = [];
-    userListTable.tableData = data;
-  }
-
+const search = () => {
+  // alert("查询条目失败");
+  console.log(searchData);
+  MessagePlugin.warning("暂未开放");
 }
 // 禁用
 const disableUser = (row: any) => {
