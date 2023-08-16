@@ -12,7 +12,7 @@ export default [
         name: "declaration",
         component: Layout,
         redirect: "/declaration/all",
-        meta: {title: "报单", icon: "view-module"},
+        meta: {title: "报单", icon: "file-1"},
         children: [
             {
                 path: "all",
