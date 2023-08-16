@@ -304,48 +304,36 @@ const qrCodeOpen = () => {
   qrCodeVisible.value = true;
 }
 
+const initPagination = () => {
+
+      userListTable.pagination.current = 1;
+
+};
 const search = () => {
   // alert("查询条目失败");
   // console.log(searchData);
   // MessagePlugin.warning("暂未开放");
+  initPagination();
   console.log(searchData);
   let obj = {}
-  obj = {
-    phone: searchData.phone,
-    name: searchData.name,
-    wechat:searchData.wechat,
-    statue:searchData.status,
-  }
-  console.log(searchData);
-  console.log("@",userListTable.tableData);
-  // 排除空
-  // for (let key in obj) {
-  //   if (obj[key] == '' || obj[key] == null) {
-  //     delete obj[key]
-  //   }
+  // obj = {
+  //   phone: searchData.phone,
+  //   name: searchData.name,
+  //   wechat:searchData.wechat,
+  //   statue:searchData.status,
   // }
-  // @param condition 过滤条件
-  // @param data 需要过滤的数据
-  let filter = (condition, data) => {
-    return data.filter(item => {
-      return Object.keys(condition).every(key => {
-        return String(item[key]).toLowerCase().includes(
-            String(condition[key]).trim().toLowerCase())
 
-      })
-    })
-  }
-  let data = filter(obj, userListTable.tableData);
-  console.log(data);
-  if (data != '') {
-    userListTable.tableData = data
-  } else {
-    MessagePlugin.warning(
-     `没有相关信息`,
-    );
-    data = [];
-    userListTable.tableData = data;
-  }
+  // let data = filter(obj, userListTable.tableData);
+  // console.log(data);
+  // if (data != '') {
+  //   userListTable.tableData = data
+  // } else {
+     MessagePlugin.warning(
+      `没有相关信息`,
+     );
+  //   data = [];
+  //   userListTable.tableData = data;
+  // }
 
 }
 // 禁用
