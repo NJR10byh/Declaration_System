@@ -223,7 +223,7 @@ const allDeclarationTable = reactive({
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
     },
     {
-      index: 1,
+      index: 2,
       orderId: "123456789",
       goodsName: "加长商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称",
       declarationPerson: "报单人",
@@ -324,6 +324,7 @@ const editDeclaration = (row: any) => {
 const editConfirm = () => {
   editVisible.value = false;
   console.log(editFormData);
+
 }
 </script>
 
