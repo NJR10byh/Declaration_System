@@ -44,8 +44,8 @@ export default ({mode}: ConfigEnv): UserConfig => {
             port: 3005,
             host: "localhost",
             proxy: {
-                "/patent_dev": { /* 测试环境 */
-                    target: "http://cgzh.njupt.edu.cn:8080",
+                "/smartReport": { /* 测试环境 */
+                    target: "http://120.77.168.106:6700",
                     // 允许跨域
                     changeOrigin: true
                     // pathRewrite: { // 在发出请求后将 /patent 替换为''空值，这样不影响接口请求

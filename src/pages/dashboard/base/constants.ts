@@ -14,32 +14,9 @@ interface TendItem {
     count: number;
 }
 
-export const PANE_LIST: Array<DashboardPanel> = [
-    {
-        title: '今日报单',
-        number: '112',
-        upTrend: '60.5%',
-        leftType: 'echarts-line',
-    },
-    {
-        title: '今日已审核',
-        number: '25',
-        downTrend: '22.1%',
-        leftType: 'echarts-bar',
-    },
-    {
-        title: '今日待审核',
-        number: '57',
-        upTrend: '45.3%',
-        leftType: 'icon-usergroup',
-    },
-    {
-        title: '今日返款',
-        number: '¥ 1290',
-        downTrend: '80.2%',
-        leftType: 'icon-wallet',
-    },
-];
+export const BASE_URL = {
+    todayStat: "/home/todayStat"
+};
 
 export const SALE_TEND_LIST: Array<TendItem> = [
     {

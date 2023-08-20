@@ -93,12 +93,6 @@
             </template>
             编辑
           </t-button>
-          <t-button theme="primary">
-            <template #icon>
-              <t-icon name="file"></t-icon>
-            </template>
-            日志
-          </t-button>
         </div>
       </template>
     </t-table>

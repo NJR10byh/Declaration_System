@@ -5,7 +5,6 @@
  * @version 0.1.0
  */
 import {getPermissionStore, getUserStore, usePermissionStore, useSettingStore, useUserStore} from "@/store";
-import {request} from "@/utils/request";
 import {MessagePlugin} from "tdesign-vue-next";
 import {ref} from "vue";
 import router from "@/router";
@@ -16,16 +15,15 @@ import {isNotEmpty} from "@/utils/validate";
 const userStore = useUserStore();
 const permissionStore = usePermissionStore();
 const userInfo = ref({
+    bankName: "",
+    bankNum: "",
+    id: "",
+    phoneNum: "",
     userName: "",
-    userDepartment: "",
-    userGh: "",
-    userPhone: "",
-    userEmail: "",
-    userIdCard: "",
-    role: "",
-    roles: [],
-    authorities: []
+    zfbNum: "",
+    role: ""
 });
+
 const settingStore = useSettingStore();
 
 const initStyleConfig = () => {
@@ -63,50 +61,33 @@ export const checkAuth = () => {
  * @param info
  */
 export const userInfoToCache = async (info: {
+    bankName: string;
+    bankNum: string;
+    id: string;
+    phoneNum: string;
     userName: string;
-    userDepartment: string;
-    userGh: string;
+    zfbNum: string;
     role: string;
-    roles: any[];
-    authorities: any[];
 }) => {
+    console.log(info)
+    userInfo.value.bankName = info.bankName;
+    userInfo.value.bankNum = info.bankNum;
+    userInfo.value.id = info.id;
+    userInfo.value.phoneNum = info.phoneNum;
     userInfo.value.userName = info.userName;
-    userInfo.value.userDepartment = info.userDepartment;
-    userInfo.value.userGh = info.userGh;
+    userInfo.value.zfbNum = info.zfbNum;
     userInfo.value.role = info.role;
-    userInfo.value.roles = info.roles;
-    userInfo.value.authorities = info.authorities;
+    userStore.getUserInfo(userInfo.value);
     await permissionStore.initRoutes(info.role);
-    await request.get({
-        url: getUserContactInfoUrl.value
-    }).then(res => {
-        console.log(res);
-        userInfo.value.userPhone = res.userPhone;
-        userInfo.value.userEmail = res.userEmail;
-        userInfo.value.userIdCard = res.userIdCard;
-        userStore.getUserInfo(userInfo.value);
-    }).catch(err => {
-        MessagePlugin.error(err.message);
-    }).finally(() => {
-    });
     /* 处理主题 */
     formData.value.mode = chargeTheme(); // 根据当前系统时间切换主题模式（light、dark）
 
     await MessagePlugin.success("欢迎您，" + info.userName);
 
     /* 分权限处理 默认跳转页 */
-    switch (userInfo.value.role) {
-        case "superadmin":
-            formData.value.brandTheme = "default";
-            settingStore.updateConfig(formData.value);
-            await router.push("/dashboard/mainInfo");
-            break;
-        case "teacher":
-            formData.value.brandTheme = "purple";
-            settingStore.updateConfig(formData.value);
-            await router.push("/declaration/all");
-            break;
-    }
+    formData.value.brandTheme = "default";
+    settingStore.updateConfig(formData.value);
+    await router.push("/dashboard/mainInfo");
 };
 
 /**
@@ -117,10 +98,7 @@ export const getRoleName = (role: any) => {
     let roleName = "";
     switch (role) {
         case "superadmin":
-            roleName = "产学研超级管理员";
-            break;
-        case "teacher":
-            roleName = "教师";
+            roleName = "超级管理员";
             break;
     }
     return roleName;

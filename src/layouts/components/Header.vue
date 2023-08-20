@@ -114,6 +114,7 @@ import {getActive} from "@/router";
 import {prefix} from "@/config/global";
 import {MenuRoute} from "@/types/interface";
 import LBreadcrumb from "@/layouts/components/Breadcrumb.vue";
+import {request} from "@/utils/request";
 
 const props = defineProps({
   theme: {
@@ -186,9 +187,21 @@ const changeCollapsed = () => {
   });
 };
 
-const handleLogout = async () => {
-  await router.push("/login");
-  window.location.reload();
+const handleLogout = () => {
+  request.post({
+    url: "/logout"
+  }).then(res => {
+    console.log(res);
+    if (res.code === 200) {
+      router.push("/login");
+    }
+  }).catch(err => {
+    console.log(err);
+  }).finally(() => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  });
+
 };
 
 const navToGitHub = () => {

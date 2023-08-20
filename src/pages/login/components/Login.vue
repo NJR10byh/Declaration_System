@@ -8,9 +8,9 @@
       @submit="onSubmit"
   >
     <template v-if="type == 'password'">
-      <t-form-item name="username">
+      <t-form-item name="phoneNum">
         <t-input
-            v-model="loginData.username"
+            v-model="loginData.phoneNum"
             size="large"
             placeholder="请输入账号：cxy"
         >
@@ -53,18 +53,18 @@ import {useRouter} from "vue-router";
 import {MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
 import {checkAuth, userInfoToCache} from "@/utils/auth";
-import md5 from "js-md5";
+import {BASE_URL} from "./constants";
 
 const FORM_RULES = {
-  username: [{required: true, message: "账号必填", type: "error"}],
+  phoneNum: [{required: true, message: "账号必填", type: "error"}],
   password: [{required: true, message: "密码必填", type: "error"}]
 };
 
 const type = ref("password");
 
 const loginData = ref({
-  username: "cxy",
-  password: "abc123123"
+  phoneNum: "19825089387",
+  password: "1234"
 });
 const showPsw = ref(false);
 
@@ -75,14 +75,14 @@ const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {
     loginBtnLoading.value = true;
     if (!checkAuth()) {
-      loginData.value.password = md5(loginData.value.password);
-      let requestUrl = "/authorize/loginByPassword";
+      // loginData.value.password = md5(loginData.value.password);
       await request.post({
-        url: requestUrl,
+        url: BASE_URL.login,
         data: loginData.value
       }).then(async res => {
         console.log(res);
-        await userInfoToCache(res);
+        localStorage.setItem("token", res.token);
+        await userInfoToCache(res.userInfo);
       }).catch(err => {
         MessagePlugin.error(err.message);
       }).finally(() => {

@@ -29,20 +29,6 @@
             <wallet-icon/>
           </span>
         </div>
-        <template #footer>
-          <div class="dashboard-item-bottom">
-            <div class="dashboard-item-block">
-              自从上周以来
-              <trend
-                  class="dashboard-item-trend"
-                  :type="item.upTrend ? 'up' : 'down'"
-                  :is-reverse-color="index === 0"
-                  :describe="item.upTrend || item.downTrend"
-              />
-            </div>
-            <t-icon name="chevron-right"/>
-          </div>
-        </template>
       </t-card>
     </t-col>
   </t-row>
@@ -55,7 +41,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import {onMounted, watch, ref, onUnmounted, nextTick} from 'vue';
+import {onMounted, watch, ref, onUnmounted, nextTick, reactive} from 'vue';
 
 import * as echarts from 'echarts/core';
 import {LineChart, BarChart} from 'echarts/charts';
@@ -68,12 +54,36 @@ import {changeChartsTheme} from '@/utils/color';
 import Trend from '@/components/trend/index.vue';
 import {constructInitDashboardDataset} from '../index';
 
-import {PANE_LIST} from '../constants';
+import {BASE_URL} from '../constants';
+import {request} from "@/utils/request";
 
 echarts.use([LineChart, BarChart, CanvasRenderer]);
 
 const store = useSettingStore();
 const resizeTime = ref(1);
+
+const PANE_LIST = ref([
+  {
+    title: '今日报单',
+    number: '0',
+    leftType: 'echarts-line',
+  },
+  {
+    title: '今日已审核',
+    number: '0',
+    leftType: 'echarts-bar',
+  },
+  {
+    title: '今日待审核',
+    number: '0',
+    leftType: 'icon-usergroup',
+  },
+  {
+    title: '今日返款',
+    number: '0',
+    leftType: 'icon-wallet',
+  },
+])
 
 // moneyCharts
 let moneyContainer: HTMLElement;
@@ -127,6 +137,18 @@ onMounted(() => {
     updateContainer();
   });
   window.addEventListener('resize', updateContainer, false);
+
+  request.get({
+    url: BASE_URL.todayStat,
+  }).then((res) => {
+    console.log(res);
+    PANE_LIST.value[0].number = res.todayReport
+    PANE_LIST.value[1].number = res.todayExamined;
+    PANE_LIST.value[2].number = res.todayWaitExamine;
+    PANE_LIST.value[3].number = res.todayPayback;
+  }).catch((err) => {
+    console.log(err);
+  });
 });
 
 onUnmounted(() => {

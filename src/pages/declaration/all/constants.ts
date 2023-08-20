@@ -101,6 +101,6 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
         align: "left",
         colKey: "settings",
         fixed: "right",
-        width: 200
+        width: 100
     }
 ];

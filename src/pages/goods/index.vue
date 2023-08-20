@@ -82,12 +82,6 @@
             </template>
             编辑
           </t-button>
-          <t-button theme="primary" @click="getLog(slotProps.row)">
-            <template #icon>
-              <t-icon name="view-module"></t-icon>
-            </template>
-            日志
-          </t-button>
         </div>
       </template>
     </t-table>
@@ -274,12 +268,6 @@ const editInfo = (row: any) => {
     endTime: row.endTime
   })
   editVisible.value = true;
-}
-
-// 日志
-const getLog = (row: any) => {
-  console.log("日志");
-  console.log(row);
 }
 
 const editConfirm = () => {

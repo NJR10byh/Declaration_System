@@ -1,55 +1,51 @@
-import { defineStore } from "pinia";
-import { store, usePermissionStore } from "@/store";
+import {defineStore} from "pinia";
+import {store, usePermissionStore} from "@/store";
 
 const userInfo = {
-  userName: "",
-  userDepartment: "",
-  userGh: "",
-  userPhone: "",
-  userEmail: "",
-  userIdCard: "",
-  role: "",
-  roles: [],
-  authorities: []
+    bankName: "",
+    bankNum: "",
+    id: "",
+    phoneNum: "",
+    userName: "",
+    zfbNum: "",
+    role: ""
 };
 
 export const useUserStore = defineStore("user", {
-  state: () => ({
-    userInfo: userInfo
-  }),
-  getters: {
-    role: (state) => {
-      return state.userInfo.role;
-    }
-  },
-  actions: {
-    getUserInfo(userinfo: { userName: string; userDepartment: string; userGh: string; userPhone: string; userEmail: string; userIdCard: string; role: string; roles: any[]; authorities: any[]; }) {
-      this.userInfo = userinfo;
+    state: () => ({
+        userInfo: userInfo
+    }),
+    getters: {
+        role: (state) => {
+            return state.userInfo.role;
+        }
     },
-    logout() {
-      this.userInfo = {
-        userName: "",
-        userDepartment: "",
-        userGh: "",
-        userPhone: "",
-        userEmail: "",
-        userIdCard: "",
-        role: "",
-        roles: [],
-        authorities: []
-      };
+    actions: {
+        getUserInfo(userinfo: any) {
+            this.userInfo = userinfo;
+        },
+        logout() {
+            this.userInfo = {
+                bankName: "",
+                bankNum: "",
+                id: "",
+                phoneNum: "",
+                userName: "",
+                zfbNum: "",
+                role: ""
+            };
+        }
+    },
+    persist: {
+        afterRestore: (ctx) => {
+            if (ctx.store.roles && ctx.store.roles.length > 0) {
+                const permissionStore = usePermissionStore();
+                permissionStore.initRoutes(ctx.store.roles);
+            }
+        }
     }
-  },
-  persist: {
-    afterRestore: (ctx) => {
-      if (ctx.store.roles && ctx.store.roles.length > 0) {
-        const permissionStore = usePermissionStore();
-        permissionStore.initRoutes(ctx.store.roles);
-      }
-    }
-  }
 });
 
 export function getUserStore() {
-  return useUserStore(store);
+    return useUserStore(store);
 }
