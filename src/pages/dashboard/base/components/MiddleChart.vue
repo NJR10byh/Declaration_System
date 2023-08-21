@@ -42,7 +42,7 @@ import {LAST_7_DAYS} from "@/utils/date";
 import {request} from "@/utils/request";
 
 const SALE_TEND_LIST = ref([]);
-let reportCountList: string[] = [];
+const reportCountList = ref([]);
 
 echarts.use([TooltipComponent, LegendComponent, PieChart, GridComponent, LineChart, CanvasRenderer]);
 
@@ -62,7 +62,7 @@ const renderStokeChart = () => {
   stokeChart = echarts.init(stokeContainer);
   console.log(reportCountList)
   stokeChart.setOption(constructInitDataset({
-    dateTime: LAST_7_DAYS, reportCountList: reportCountList, ...chartColors.value
+    dateTime: LAST_7_DAYS, reportCountList: reportCountList.value, ...chartColors.value
   }));
 };
 
@@ -98,12 +98,12 @@ onUnmounted(() => {
 
 // 获取近七天报单数
 const getWeekStat = async () => {
-  reportCountList = [];
+  reportCountList.value = [];
   await request.get({
     url: BASE_URL.weekStat
   }).then(res => {
     res.map((i: { reportCount: number; }) => {
-      reportCountList.push(i.reportCount.toString())
+      reportCountList.value.push(i.reportCount.toString())
     })
     renderCharts();
   });
