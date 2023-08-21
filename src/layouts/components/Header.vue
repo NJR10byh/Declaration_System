@@ -193,12 +193,12 @@ const handleLogout = () => {
   }).then(res => {
     console.log(res);
     if (res.code === 200) {
+      localStorage.removeItem("token");
       router.push("/login");
     }
   }).catch(err => {
     console.log(err);
   }).finally(() => {
-    localStorage.removeItem("token");
     window.location.reload();
   });
 

@@ -12,11 +12,11 @@
       <tdesign-setting/>
     </div>
 
-<!--    <test> child</test>-->
+    <!--    <test> child</test>-->
 
-    <footer class="copyright">
-      Copyright @ 2022-{{ new Date().getFullYear() }} NJR10byh. All Rights Reserved
-    </footer>
+    <!--    <footer class="copyright">-->
+    <!--      Copyright @ 2022-{{ new Date().getFullYear() }} NJR10byh. All Rights Reserved-->
+    <!--    </footer>-->
   </div>
 </template>
 <script lang="ts">
