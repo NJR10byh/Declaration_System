@@ -103,6 +103,21 @@
       </template>
     </t-table>
   </t-card>
+
+  <!-- 审批通过Dialog -->
+  <t-dialog
+      v-model:visible="approvedVisible"
+      header="审批通过"
+      theme="warning"
+      attach="body"
+      :confirm-on-enter="true"
+      :on-confirm="approvedConfirm"
+  >
+    <template #body>
+      <div>确定要审批通过吗？</div>
+      <t-input style="margin-top: 10px;" v-model="approvedData.remark" placeholder="审批通过请填写备注"/>
+    </template>
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
@@ -188,6 +203,13 @@ const orderPicVisible = ref(false);
 // 完成图预览
 const completePicVisible = ref(false);
 
+// 审批通过Dialog
+const approvedVisible = ref(false);
+const approvedData = reactive({
+  orderId: "",
+  remark: ""
+});
+
 /**
  * methods区
  */
@@ -219,8 +241,17 @@ const completePicOpen = () => {
 
 // 审批通过
 const approved = (row: any) => {
-  console.log(row);
+  Object.assign(approvedData, {
+    orderId: row.orderId,
+    remark: ""
+  })
+  approvedVisible.value = true;
 }
+const approvedConfirm = () => {
+  console.log(approvedData);
+  approvedVisible.value = false;
+}
+
 
 // 作废
 const cancel = (row: any) => {
