@@ -80,10 +80,7 @@
                   <span style="font-weight: bold;">姓名：</span>{{ settlementAccount.name }}
                 </t-list-item>
                 <t-list-item>
-                  <span style="font-weight: bold;">身份证号码：</span>{{ ID_card(settlementAccount.idCard) }}
-                </t-list-item>
-                <t-list-item>
-                  <span style="font-weight: bold;">手机号：</span>{{ phone_number(settlementAccount.phone) }}
+                  <span style="font-weight: bold;">手机号：</span>{{ settlementAccount.phone }}
                 </t-list-item>
                 <t-list-item>
                   <span style="font-weight: bold;">支付宝账号：</span>{{ settlementAccount.aliPayAccount }}
@@ -130,7 +127,6 @@ import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {prefix} from "@/config/global";
 import {SETTLEMENT_TABLE_COLUMNS, WAIT_REBATE_TABLE_COLUMNS} from "./constants";
-import {ID_card, phone_number} from "@/utils/antianaphylaxis";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 
 const store = useSettingStore();
@@ -211,7 +207,6 @@ const settlementTable = reactive({
 
 const settlementAccount = reactive({
   name: "张三",
-  idCard: "320123199709210000",
   phone: "18908213728",
   aliPayAccount: "1890821",
   bank: "中国银行",

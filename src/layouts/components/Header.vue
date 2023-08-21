@@ -65,13 +65,6 @@
               <t-dropdown-menu>
                 <t-dropdown-item
                     class="operations-dropdown-container-item"
-                    @click="toUser"
-                >
-                  <t-icon name="user-circle"></t-icon>
-                  个人中心
-                </t-dropdown-item>
-                <t-dropdown-item
-                    class="operations-dropdown-container-item"
                     @click="handleLogout"
                 >
                   <t-icon name="poweroff"></t-icon>

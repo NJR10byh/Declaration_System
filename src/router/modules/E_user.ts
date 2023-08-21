@@ -15,12 +15,6 @@ export default [
         meta: {title: "用户", icon: "user-circle"},
         children: [
             {
-                path: "userInfo",
-                name: "userInfo",
-                component: () => import("@/pages/user/userInfo/index.vue"),
-                meta: {title: "个人中心", hidden: true, rolePermission: ["superadmin", "teacher"]}
-            },
-            {
                 path: "userList",
                 name: "userList",
                 component: () => import("@/pages/user/userList/index.vue"),

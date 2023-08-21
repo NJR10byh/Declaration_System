@@ -45,7 +45,7 @@
         style="margin-top: 10px;"
     >
       <template #phone="slotProps">
-        {{ phone_number(slotProps.row.phone) }}
+        {{ slotProps.row.phone }}
       </template>
       <template #status="slotProps">
         <t-tag theme="warning" variant="light-outline" shape="round">
@@ -104,7 +104,6 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
 import {USER_MANAGE_TABLE_COLUMNS} from "./constants";
 import {MessagePlugin} from "tdesign-vue-next";
-import {phone_number} from "../../../utils/antianaphylaxis";
 
 const store = useSettingStore();
 const router = useRouter();

@@ -62,7 +62,7 @@
         </div>
       </template>
       <template #phone="slotProps">
-        {{ phone_number(slotProps.row.phone) }}
+        {{ slotProps.row.phone }}
       </template>
       <template #status="slotProps">
         <t-tag theme="warning" variant="light-outline" shape="round">
@@ -110,9 +110,6 @@
         </t-form-item>
         <t-form-item label="姓名">
           <t-input v-model="editFormData.name" placeholder="请输入姓名" clearable/>
-        </t-form-item>
-        <t-form-item label="身份证号码">
-          <t-input v-model="editFormData.idCard" placeholder="请输入身份证号码" clearable/>
         </t-form-item>
         <t-form-item label="开户行">
           <t-input v-model="editFormData.bankName" placeholder="请输入开户行" clearable/>
@@ -176,7 +173,6 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
 import {USER_LIST_TABLE_COLUMNS} from "./constants";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
-import {phone_number} from "../../../utils/antianaphylaxis";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -259,7 +255,6 @@ const dialogTitle = ref("用户编辑");
 const editFormData = reactive({
   phone: "",
   name: "",
-  idCard: "",
   bankName: "",
   bankCard: "",
   status: "",
@@ -306,7 +301,7 @@ const qrCodeOpen = () => {
 
 const initPagination = () => {
 
-      userListTable.pagination.current = 1;
+  userListTable.pagination.current = 1;
 
 };
 const search = () => {
@@ -328,9 +323,9 @@ const search = () => {
   // if (data != '') {
   //   userListTable.tableData = data
   // } else {
-     MessagePlugin.warning(
+  MessagePlugin.warning(
       `没有相关信息`,
-     );
+  );
   //   data = [];
   //   userListTable.tableData = data;
   // }
@@ -366,7 +361,6 @@ const editUser = (row: any) => {
   Object.assign(editFormData, {
     phone: row.phone,
     name: row.name,
-    idCard: row.idCard,
     bankName: row.bankName,
     bankCard: row.bankCard,
     status: row.status,
