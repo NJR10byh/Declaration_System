@@ -18,7 +18,7 @@
         </template>
         查询
       </t-button>
-      <t-button class="inputStyle" style="width: 100px;">
+      <t-button class="inputStyle" style="width: 100px;" @click="addUser">
         <template #icon>
           <t-icon name="add"></t-icon>
         </template>
@@ -65,10 +65,10 @@
     </t-table>
   </t-card>
 
-  <!--  编辑管理员对话框  -->
+  <!--  新增、编辑管理员对话框  -->
   <t-dialog
       v-model:visible="editVisible"
-      header="编辑管理员"
+      :header="dialogTitle"
       attach="body"
       :confirm-on-enter="true"
       :on-confirm="editConfirm"
@@ -158,6 +158,8 @@ const userStatusOptions = reactive([
   {label: '禁用', value: '0'}
 ])
 
+// 对话框标题
+const dialogTitle = ref("编辑管理员");
 // 编辑对话框
 const editVisible = ref(false);
 // 用户编辑表单
@@ -191,9 +193,19 @@ const uploadFail = ({file}) => {
 /**
  * 业务相关
  */
-
-// 编辑用户
+// 新增用户
+const addUser = () => {
+  dialogTitle.value = "新增管理员";
+  Object.assign(editFormData, {
+    phone: "",
+    name: "",
+    status: ""
+  })
+  editVisible.value = true;
+}
+// 编辑管理员
 const editUser = (row: any) => {
+  dialogTitle.value = "编辑管理员";
   Object.assign(editFormData, {
     phone: row.phone,
     name: row.name,
@@ -204,7 +216,7 @@ const editUser = (row: any) => {
 
 // 编辑确认
 const editConfirm = () => {
-  console.log(editFormData);
+  console.log(dialogTitle.value);
   editVisible.value = false;
 }
 </script>

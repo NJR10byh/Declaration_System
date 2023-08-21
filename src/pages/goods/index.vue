@@ -226,7 +226,6 @@ const goodsInfoTablePageChange = (curr: any) => {
 /**
  * 业务相关
  */
-
 // 新增
 const addGoodsInfo = () => {
   dialogTitle.value = "新增商品信息";
@@ -271,7 +270,7 @@ const editInfo = (row: any) => {
 }
 
 const editConfirm = () => {
-  console.log("编辑确认");
+  console.log(dialogTitle);
   editVisible.value = false;
 }
 </script>

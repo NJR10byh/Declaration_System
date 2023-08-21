@@ -47,12 +47,26 @@
         size="small"
         style="margin-top: 10px;"
     >
-      <template #qrCode="slotProps">
+      <template #aliPayCode="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.qrCode]">
+          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.aliPayCode]">
             <template #trigger>
               <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.qrCode" class="tdesign-demo-image-viewer__ui-image--img"/>
+                <img alt="test" :src="slotProps.row.aliPayCode" class="tdesign-demo-image-viewer__ui-image--img"/>
+                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="qrCodeOpen">
+                  <span><t-icon size="1.2em" name="browse"/> 预览</span>
+                </div>
+              </div>
+            </template>
+          </t-image-viewer>
+        </div>
+      </template>
+      <template #weChatCode="slotProps">
+        <div class="tdesign-demo-image-viewer__base">
+          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.weChatCode]">
+            <template #trigger>
+              <div class="tdesign-demo-image-viewer__ui-image">
+                <img alt="test" :src="slotProps.row.weChatCode" class="tdesign-demo-image-viewer__ui-image--img"/>
                 <div class="tdesign-demo-image-viewer__ui-image--hover" @click="qrCodeOpen">
                   <span><t-icon size="1.2em" name="browse"/> 预览</span>
                 </div>
@@ -127,14 +141,25 @@
               clearable
           />
         </t-form-item>
-        <t-form-item label="收款码">
+        <t-form-item label="支付宝收款码">
           <t-upload
               ref="uploadQrcode"
-              v-model="editFormData.qrCode"
+              v-model="editFormData.aliPayCode"
               :abridge-name="[10,8]"
               theme="image"
               accept="image/*"
-              :request-method="uploadPaymentCode"
+              :request-method="uploadALiPayCode"
+              @fail="uploadFail"
+          />
+        </t-form-item>
+        <t-form-item label="微信收款码">
+          <t-upload
+              ref="uploadQrcode"
+              v-model="editFormData.weChatCode"
+              :abridge-name="[10,8]"
+              theme="image"
+              accept="image/*"
+              :request-method="uploadWeChatCode"
               @fail="uploadFail"
           />
         </t-form-item>
@@ -209,25 +234,23 @@ const userListTable = reactive({
       name: "张三",
       bankName: "中国建设银行",
       bankCard: "98708765457899007654",
-      qrCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
+      aliPayCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
+      weChatCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1fxAIv.img?w=768&h=361&m=6",
       status: "待审核",
       registerTime: "2023-08-02 13:23:45"
     },
     {
-      index: 1,
+      index: 2,
       phone: "19009209322",
       name: "李四",
       bankName: "中国农业银行",
       bankCard: "345678908976545678369",
-      qrCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
+      aliPayCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
+      weChatCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1fxAIv.img?w=768&h=361&m=6",
       status: "待审核",
       registerTime: "2023-08-03 17:56:21"
     }
-  ],// 表格数据
-  // searchText_1: "",
-  // searchText_2: "",
-  // searchText_3: "",
-  // searchText_4: "",
+  ],
   // 表格分页
   pagination: {
     total: 0,
@@ -258,7 +281,8 @@ const editFormData = reactive({
   bankName: "",
   bankCard: "",
   status: "",
-  qrCode: [],
+  aliPayCode: [],
+  weChatCode: [],
 });
 
 // 重置密码对话框
@@ -267,7 +291,7 @@ const resetPasswordVisible = ref(false);
 const resetPasswordFormData = reactive({
   phone: "",
   name: "",
-  password: ""
+  password: "000000"
 })
 
 /**
@@ -300,9 +324,7 @@ const qrCodeOpen = () => {
 }
 
 const initPagination = () => {
-
   userListTable.pagination.current = 1;
-
 };
 const search = () => {
   // alert("查询条目失败");
@@ -369,8 +391,31 @@ const editUser = (row: any) => {
   editVisible.value = true;
 }
 
-// 上传收款码
-const uploadPaymentCode = (file: any) => {
+// 上传收款码-支付宝
+const uploadALiPayCode = (file: any) => {
+  console.log(file);
+  return new Promise((resolve) => {
+    // 上传进度控制示例
+    let percent = 0;
+    const percentTimer = setInterval(() => {
+      if (percent + 10 < 99) {
+        percent += 10;
+        uploadQrcode.value.uploadFilePercent({file, percent});
+      } else {
+        clearInterval(percentTimer);
+      }
+    }, 100);
+
+    const timer = setTimeout(() => {
+      // resolve 参数为关键代码
+      resolve({status: 'success', response: {url: 'https://tdesign.gtimg.com/site/avatar.jpg'}});
+      clearTimeout(timer);
+      clearInterval(percentTimer);
+    }, 1000);
+  });
+}
+// 上传收款码-微信
+const uploadWeChatCode = (file: any) => {
   console.log(file);
   return new Promise((resolve) => {
     // 上传进度控制示例
@@ -405,7 +450,7 @@ const resetPassword = (row: any) => {
   Object.assign(resetPasswordFormData, {
     phone: row.phone,
     name: row.name,
-    password: row.password,
+    password: "000000",
   });
   resetPasswordVisible.value = true;
 }

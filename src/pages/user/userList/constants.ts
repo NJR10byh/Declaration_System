@@ -43,9 +43,15 @@ export const USER_LIST_TABLE_COLUMNS = [
         ellipsis: true
     },
     {
-        title: "收款码",
+        title: "支付宝收款码",
         align: "center",
-        colKey: "qrCode",
+        colKey: "aliPayCode",
+        width: 100
+    },
+    {
+        title: "微信收款码",
+        align: "center",
+        colKey: "weChatCode",
         width: 100
     },
     {
