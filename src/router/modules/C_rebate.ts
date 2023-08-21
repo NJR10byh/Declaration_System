@@ -12,7 +12,7 @@ export default [
         name: "rebate",
         component: Layout,
         redirect: "/rebate/waitRebate",
-        meta: {title: "返款", icon: "money-circle"},
+        meta: {title: "返款", icon: "money"},
         children: [
             {
                 path: "waitRebate",

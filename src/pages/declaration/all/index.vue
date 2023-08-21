@@ -142,22 +142,17 @@
     <template #body>
       <t-form>
         <t-form-item label="商品">
-          <t-select
-              v-model="editFormData.goodsName"
-              placeholder="-请选择商品-"
-              :options="goodsOptions"
-              filterable
-              clearable
-          />
+          <!--          <t-select-->
+          <!--              v-model="editFormData.goodsName"-->
+          <!--              placeholder="-请选择商品-"-->
+          <!--              :options="goodsOptions"-->
+          <!--              filterable-->
+          <!--              clearable-->
+          <!--          />-->
+          <t-input v-model="editFormData.goodsName" readonly disabled/>
         </t-form-item>
         <t-form-item label="状态">
-          <t-select
-              v-model="editFormData.orderStatus"
-              placeholder="-请选择状态-"
-              :options="statusOptions"
-              filterable
-              clearable
-          />
+          <t-input v-model="editFormData.orderStatus" readonly disabled/>
         </t-form-item>
         <t-form-item label="订单号">
           <t-input v-model="editFormData.orderId" placeholder="请输入订单号"/>
