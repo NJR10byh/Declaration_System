@@ -90,14 +90,16 @@ export function constructInitDashboardDataset(type: string) {
 export function constructInitDataset(
     {
         dateTime = [],
+        reportCountList = [],
         placeholderColor,
         borderColor,
-    }: { dateTime: Array<string> } & TChartColor) {
+    }: { dateTime: Array<string> } & { reportCountList: Array<string> } & TChartColor) {
     // const dataset: Array<Array<string>> = [['时间'], ['入库'], ['出库']];
     const divideNum = 7;
     const timeArray = [];
-    const inArray = [];
-    const outArray = [];
+    console.log(dateTime)
+    console.log(reportCountList)
+    const outArray = reportCountList;
     for (let i = 0; i < divideNum; i++) {
         // const [timeArray, inArray, outArray] = dataset;
         if (dateTime.length > 0) {
@@ -108,8 +110,6 @@ export function constructInitDataset(
         } else {
             timeArray.push(dayjs().subtract(divideNum - i, 'day').format('YYYY-MM-DD'));
         }
-        inArray.push(getRandomArray().toString());
-        outArray.push(getRandomArray().toString());
     }
 
     // console.log('timeArray..', timeArray);
@@ -161,19 +161,14 @@ export function constructInitDataset(
             left: 'center',
             bottom: '0',
             orient: 'horizontal',
-            data: ['本月', '上月'],
+            data: ['报单数'],
         },
         series: [
             {
-                name: '本月',
+                name: '报单数',
                 data: outArray,
                 type: 'bar',
-            },
-            {
-                name: '上月',
-                data: inArray,
-                type: 'bar',
-            },
+            }
         ],
     };
 

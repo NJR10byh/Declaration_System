@@ -5,7 +5,7 @@
         <div
             id="stokeContainer"
             ref="stokeContainer"
-            style="width: 100%; height: 351px"
+            style="width: 100%; height: 350px"
             class="dashboard-chart-container"
         ></div>
       </t-card>
@@ -35,10 +35,14 @@ import {GridComponent, LegendComponent, TooltipComponent} from 'echarts/componen
 import {LineChart, PieChart} from 'echarts/charts';
 import {CanvasRenderer} from 'echarts/renderers';
 import {useSettingStore} from '@/store';
-import {SALE_COLUMNS, SALE_TEND_LIST} from '../constants';
+import {BASE_URL, SALE_COLUMNS} from '../constants';
 
 import {constructInitDataset} from '../index';
 import {LAST_7_DAYS} from "@/utils/date";
+import {request} from "@/utils/request";
+
+const SALE_TEND_LIST = ref([]);
+let reportCountList: string[] = [];
 
 echarts.use([TooltipComponent, LegendComponent, PieChart, GridComponent, LineChart, CanvasRenderer]);
 
@@ -56,10 +60,13 @@ const renderStokeChart = () => {
     stokeContainer = document.getElementById('stokeContainer');
   }
   stokeChart = echarts.init(stokeContainer);
-  stokeChart.setOption(constructInitDataset({dateTime: LAST_7_DAYS, ...chartColors.value}));
+  console.log(reportCountList)
+  stokeChart.setOption(constructInitDataset({
+    dateTime: LAST_7_DAYS, reportCountList: reportCountList, ...chartColors.value
+  }));
 };
 
-const renderCharts = () => {
+const renderCharts = async () => {
   renderStokeChart();
 };
 
@@ -79,17 +86,42 @@ const updateContainer = () => {
   });
 };
 
-onMounted(() => {
-  renderCharts();
-  nextTick(() => {
-    updateContainer();
-  });
+onMounted(async () => {
   window.addEventListener('resize', updateContainer, false);
+  await getWeekStat();
+  getReportRank();
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', updateContainer);
 });
+
+// 获取近七天报单数
+const getWeekStat = async () => {
+  reportCountList = [];
+  await request.get({
+    url: BASE_URL.weekStat
+  }).then(res => {
+    res.map((i: { reportCount: number; }) => {
+      reportCountList.push(i.reportCount.toString())
+    })
+    renderCharts();
+  });
+  await nextTick(() => {
+    updateContainer();
+  });
+}
+
+// 获取销售订单排名
+const getReportRank = () => {
+  SALE_TEND_LIST.value = [];
+  request.get({
+    url: BASE_URL.reportRank
+  }).then((res) => {
+    console.log(res)
+    SALE_TEND_LIST.value = res;
+  });
+}
 </script>
 
 <style lang="less" scoped>
