@@ -54,7 +54,7 @@
     </t-table>
   </t-card>
 
-  <!-- 返款详情 -->
+  <!-- 返款详情Dialog -->
   <t-dialog
       v-model:visible="rebatedDetailVisible"
       width="1000px"
@@ -144,7 +144,7 @@ const rebatedDetailTable = reactive({
   footData: [
     {
       index: '合计',
-      relMoney: '100',
+      preBackMoney: '100',
     },
   ]
 })
