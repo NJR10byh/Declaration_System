@@ -31,7 +31,7 @@
         <div class="settingBtns">
           <t-button theme="primary" @click="settlement(slotProps.row)">
             <template #icon>
-              <t-icon name="money-circle"></t-icon>
+              <t-icon name="wallet"></t-icon>
             </template>
             结算
           </t-button>
@@ -115,6 +115,7 @@
     </template>
     <template #footer>
       <t-button theme="default" @click="settlementVisible = false">取消</t-button>
+      <t-button theme="primary" @click="pay('bankCard')">银行卡支付</t-button>
       <t-button theme="primary" @click="pay('aliPay')">支付宝支付</t-button>
       <t-button theme="success" @click="pay('weChat')">微信支付</t-button>
     </template>
