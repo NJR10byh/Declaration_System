@@ -76,6 +76,7 @@ const onSubmit = async ({validateResult}) => {
     loginBtnLoading.value = true;
     if (!checkAuth()) {
       // loginData.value.password = md5(loginData.value.password);
+      localStorage.removeItem("token");
       await request.post({
         url: BASE_URL.login,
         data: loginData.value

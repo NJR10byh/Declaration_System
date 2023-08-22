@@ -4,7 +4,9 @@
  * @description
  * @version 0.1.0
  */
-export const BASE_URL = {};
+export const BASE_URL = {
+    queryList: "/reports/queryList"
+};
 
 export const ALL_DECLARATION_TABLE_COLUMNS = [
     // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
@@ -24,63 +26,56 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
     {
         title: "商品",
         align: "left",
-        colKey: "goodsName",
-        width: 200,
+        colKey: "commodity",
+        width: 160,
         ellipsis: true
     },
     {
         title: "报单人",
         align: "center",
-        colKey: "declarationPerson",
-        width: 80,
-        ellipsis: true
-    },
-    {
-        title: "微信名",
-        align: "center",
-        colKey: "wechatName",
+        colKey: "reporter",
         width: 80,
         ellipsis: true
     },
     {
         title: "实付金额",
         align: "center",
-        colKey: "relMoney",
+        colKey: "payAmount",
         width: 80,
         ellipsis: true
     },
     {
         title: "预计返款金额",
         align: "center",
-        colKey: "preBackMoney",
-        width: 80,
+        colKey: "expectPayback",
+        width: 120,
         ellipsis: true
     },
     {
         title: "实际返款金额",
         align: "center",
-        colKey: "relBackMoney",
-        width: 80,
+        colKey: "actualPayback",
+        width: 120,
         ellipsis: true
     },
     {
         title: "申请返款时间",
         align: "center",
-        colKey: "backMoneyTime",
-        width: 120,
+        colKey: "applyPaybackTime",
+        width: 150,
         ellipsis: true
     },
     {
         title: "报单时间",
         align: "center",
-        colKey: "declarateTime",
-        width: 120,
+        colKey: "reportTime",
+        width: 150,
         ellipsis: true
     },
     {
         title: "订单状态",
         align: "center",
-        colKey: "orderStatus",
+        colKey: "status",
         width: 80,
         ellipsis: true
     },

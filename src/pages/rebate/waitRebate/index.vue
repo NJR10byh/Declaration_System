@@ -181,18 +181,18 @@ const settlementTable = reactive({
     {
       index: 1,
       orderId: "0000001",
-      goodsName: "商品1",
-      relMoney: 13,
-      preBackMoney: 1,
+      commodity: "商品1",
+      payAmount: 13,
+      expectPayback: 1,
       remark: "备注",
       approvalRemark: "审批备注"
     },
     {
       index: 2,
       orderId: "0000002",
-      goodsName: "商品2",
-      relMoney: 234,
-      preBackMoney: 12,
+      commodity: "商品2",
+      payAmount: 234,
+      expectPayback: 12,
       remark: "备注",
       approvalRemark: "审批备注"
     }

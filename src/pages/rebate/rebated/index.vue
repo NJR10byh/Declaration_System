@@ -144,7 +144,7 @@ const rebatedDetailTable = reactive({
   footData: [
     {
       index: '合计',
-      preBackMoney: '100',
+      expectPayback: '100',
     },
   ]
 })
@@ -180,9 +180,9 @@ const rebatedDetail = (row: any) => {
   let obj = {
     index: 1,
     orderId: "0000001",
-    goodsName: "商品1",
-    relMoney: 13,
-    preBackMoney: 1,
+    commodity: "商品1",
+    payAmount: 13,
+    expectPayback: 1,
     remark: "备注",
     approvalRemark: "审批备注"
   };

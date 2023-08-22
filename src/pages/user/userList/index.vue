@@ -12,7 +12,6 @@
     <t-row justify="start" class="cardTop">
       <t-input class="inputStyle" v-model="searchData.phone" placeholder="请输入手机号" clearable/>
       <t-input class="inputStyle" v-model="searchData.name" placeholder="请输入姓名" clearable/>
-      <t-input class="inputStyle" v-model="searchData.wechat" placeholder="请输入微信名" clearable/>
       <t-select
           class="inputStyle"
           v-model="searchData.status"
@@ -218,7 +217,6 @@ const getContainer = () => {
 const searchData = reactive({
   phone: "",
   name: "",
-  wechat: "",
   status: ""
 })
 

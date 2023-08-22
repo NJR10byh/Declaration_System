@@ -17,7 +17,7 @@ export const GOODS_INFO_TABLE_COLUMNS = [
     {
         title: "商品名称",
         align: "left",
-        colKey: "goodsName",
+        colKey: "commodity",
         width: 200,
         ellipsis: true
     },
@@ -38,7 +38,7 @@ export const GOODS_INFO_TABLE_COLUMNS = [
     {
         title: "预计返款金额",
         align: "center",
-        colKey: "preBackMoney",
+        colKey: "expectPayback",
         width: 80,
         ellipsis: true
     },

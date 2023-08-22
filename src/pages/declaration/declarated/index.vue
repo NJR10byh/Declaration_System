@@ -80,9 +80,9 @@
           </t-image-viewer>
         </div>
       </template>
-      <template #orderStatus="slotProps">
+      <template #status="slotProps">
         <t-tag theme="success" variant="light-outline" shape="round">
-          {{ slotProps.row.orderStatus }}
+          {{ slotProps.row.status }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -110,7 +110,7 @@
       <t-form>
         <t-form-item label="商品">
           <t-select
-              v-model="editFormData.goodsName"
+              v-model="editFormData.commodity"
               placeholder="-请选择商品-"
               :options="goodsOptions"
               filterable
@@ -119,7 +119,7 @@
         </t-form-item>
         <t-form-item label="状态">
           <t-select
-              v-model="editFormData.orderStatus"
+              v-model="editFormData.status"
               placeholder="-请选择状态-"
               :options="statusOptions"
               filterable
@@ -130,7 +130,7 @@
           <t-input v-model="editFormData.orderId" placeholder="请输入订单号"/>
         </t-form-item>
         <t-form-item label="实付金额">
-          <t-input v-model="editFormData.relMoney" placeholder="请输入实付金额" suffix="元"/>
+          <t-input v-model="editFormData.payAmount" placeholder="请输入实付金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="备注">
           <t-textarea v-model="editFormData.remark" placeholder="请输入备注"/>
@@ -171,30 +171,28 @@ const declaratedTable = reactive({
     {
       index: 1,
       orderId: "123456789",
-      goodsName: "商品名称",
-      declarationPerson: "报单人",
-      wechatName: "微信名",
-      relMoney: "1000",
-      preBackMoney: "800",
-      relBackMoney: "700",
-      backMoneyTime: "2023-08-01",
+      commodity: "商品名称",
+      reporter: "报单人",
+      payAmount: "1000",
+      expectPayback: "800",
+      actualPayback: "700",
+      applyPaybackTime: "2023-08-01",
       declarateTime: "2023-08-02",
-      orderStatus: "已审核",
+      status: "已审核",
       orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
     },
     {
       index: 1,
       orderId: "123456789",
-      goodsName: "加长商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称",
-      declarationPerson: "报单人",
-      wechatName: "微信名",
-      relMoney: "1000",
-      preBackMoney: "800",
-      relBackMoney: "700",
-      backMoneyTime: "2023-08-01",
+      commodity: "加长商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称",
+      reporter: "报单人",
+      payAmount: "1000",
+      expectPayback: "800",
+      actualPayback: "700",
+      applyPaybackTime: "2023-08-01",
       declarateTime: "2023-08-02",
-      orderStatus: "审核中",
+      status: "审核中",
       orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
     }
@@ -232,10 +230,10 @@ const editVisible = ref(false);
 
 // 编辑表单
 const editFormData = reactive({
-  goodsName: "",
-  orderStatus: "",
+  commodity: "",
+  status: "",
   orderId: "",
-  relMoney: "",
+  payAmount: "",
   remark: ""
 });
 
@@ -272,10 +270,10 @@ const completePicOpen = () => {
 const editDeclaration = (row: any) => {
   console.log(row);
   Object.assign(editFormData, {
-    goodsName: row.goodsName,
-    orderStatus: row.orderStatus,
+    commodity: row.commodity,
+    status: row.status,
     orderId: row.orderId,
-    relMoney: row.relMoney,
+    payAmount: row.payAmount,
     remark: row.remark,
   });
   editVisible.value = true;

@@ -124,6 +124,7 @@ export function constructInitDataset(
             timeArray.push(dayjs().subtract(divideNum - i, 'day').format('YYYY-MM-DD'));
         }
     }
+    console.log(timeArray)
 
     // console.log('timeArray..', timeArray);
 

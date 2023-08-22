@@ -24,49 +24,42 @@ export const DECLARATED_TABLE_COLUMNS = [
     {
         title: "商品",
         align: "left",
-        colKey: "goodsName",
+        colKey: "commodity",
         width: 200,
         ellipsis: true
     },
     {
         title: "报单人",
         align: "center",
-        colKey: "declarationPerson",
-        width: 80,
-        ellipsis: true
-    },
-    {
-        title: "微信名",
-        align: "center",
-        colKey: "wechatName",
+        colKey: "reporter",
         width: 80,
         ellipsis: true
     },
     {
         title: "实付金额",
         align: "center",
-        colKey: "relMoney",
+        colKey: "payAmount",
         width: 80,
         ellipsis: true
     },
     {
         title: "预计返款金额",
         align: "center",
-        colKey: "preBackMoney",
+        colKey: "expectPayback",
         width: 80,
         ellipsis: true
     },
     {
         title: "实际返款金额",
         align: "center",
-        colKey: "relBackMoney",
+        colKey: "actualPayback",
         width: 80,
         ellipsis: true
     },
     {
         title: "申请返款时间",
         align: "center",
-        colKey: "backMoneyTime",
+        colKey: "applyPaybackTime",
         width: 120,
         ellipsis: true
     },
@@ -80,7 +73,7 @@ export const DECLARATED_TABLE_COLUMNS = [
     {
         title: "订单状态",
         align: "center",
-        colKey: "orderStatus",
+        colKey: "status",
         width: 80,
         ellipsis: true
     },

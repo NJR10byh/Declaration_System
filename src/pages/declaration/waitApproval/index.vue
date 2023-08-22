@@ -80,9 +80,9 @@
           </t-image-viewer>
         </div>
       </template>
-      <template #orderStatus="slotProps">
+      <template #status="slotProps">
         <t-tag theme="warning" variant="light-outline" shape="round">
-          {{ slotProps.row.orderStatus }}
+          {{ slotProps.row.status }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -152,30 +152,28 @@ const waitApprovalTable = reactive({
     {
       index: 1,
       orderId: "123456789",
-      goodsName: "商品名称",
-      declarationPerson: "报单人",
-      wechatName: "微信名",
-      relMoney: "1000",
-      preBackMoney: "800",
-      relBackMoney: "700",
-      backMoneyTime: "2023-08-01",
+      commodity: "商品名称",
+      reporter: "报单人",
+      payAmount: "1000",
+      expectPayback: "800",
+      actualPayback: "700",
+      applyPaybackTime: "2023-08-01",
       declarateTime: "2023-08-02",
-      orderStatus: "待审核",
+      status: "待审核",
       orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
     },
     {
       index: 1,
       orderId: "123456789",
-      goodsName: "加长商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称",
-      declarationPerson: "报单人",
-      wechatName: "微信名",
-      relMoney: "1000",
-      preBackMoney: "800",
-      relBackMoney: "700",
-      backMoneyTime: "2023-08-01",
+      commodity: "加长商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称",
+      reporter: "报单人",
+      payAmount: "1000",
+      expectPayback: "800",
+      actualPayback: "700",
+      applyPaybackTime: "2023-08-01",
       declarateTime: "2023-08-02",
-      orderStatus: "待审核",
+      status: "待审核",
       orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
       completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
     }

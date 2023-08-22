@@ -28,7 +28,6 @@
           clearable
       />
       <t-input class="inputStyle" v-model="allDeclarationTable.searchText" placeholder="请输入报单人" clearable/>
-      <t-input class="inputStyle" v-model="allDeclarationTable.searchText" placeholder="请输入微信名" clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" :placeholder="['报单日期 起', '报单日期 止']" clearable/>
     </t-row>
   </t-card>
@@ -113,9 +112,9 @@
           </t-image-viewer>
         </div>
       </template>
-      <template #orderStatus="slotProps">
-        <t-tag theme="success" variant="light-outline" shape="round">
-          {{ slotProps.row.orderStatus }}
+      <template #status="slotProps">
+        <t-tag :theme="chargeStatusTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
+          {{ slotProps.row.status }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -142,23 +141,16 @@
     <template #body>
       <t-form>
         <t-form-item label="商品">
-          <!--          <t-select-->
-          <!--              v-model="editFormData.goodsName"-->
-          <!--              placeholder="-请选择商品-"-->
-          <!--              :options="goodsOptions"-->
-          <!--              filterable-->
-          <!--              clearable-->
-          <!--          />-->
-          <t-input v-model="editFormData.goodsName" readonly disabled/>
+          <t-input v-model="editFormData.commodity" readonly disabled/>
         </t-form-item>
         <t-form-item label="状态">
-          <t-input v-model="editFormData.orderStatus" readonly disabled/>
+          <t-input v-model="editFormData.status" readonly disabled/>
         </t-form-item>
         <t-form-item label="订单号">
           <t-input v-model="editFormData.orderId" placeholder="请输入订单号"/>
         </t-form-item>
         <t-form-item label="实付金额">
-          <t-input v-model="editFormData.relMoney" placeholder="请输入实付金额" suffix="元"/>
+          <t-input v-model="editFormData.payAmount" placeholder="请输入实付金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="备注">
           <t-textarea v-model="editFormData.remark" placeholder="请输入备注"/>
@@ -173,7 +165,10 @@ import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
-import {ALL_DECLARATION_TABLE_COLUMNS} from "./constants";
+import {ALL_DECLARATION_TABLE_COLUMNS, BASE_URL} from "./constants";
+import {request} from "@/utils/request";
+import {timestampToDateTime} from "@/utils/date";
+import {chargeStatus, chargeStatusTagTheme} from "@/utils/declarationStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -195,38 +190,7 @@ const getContainer = () => {
  */
 const allDeclarationTable = reactive({
   tableLoading: false,// 表格加载
-  tableData: [
-    {
-      index: 1,
-      orderId: "123456789",
-      goodsName: "商品名称",
-      declarationPerson: "报单人",
-      wechatName: "微信名",
-      relMoney: "1000",
-      preBackMoney: "800",
-      relBackMoney: "700",
-      backMoneyTime: "2023-08-01",
-      declarateTime: "2023-08-02",
-      orderStatus: "已审核",
-      orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-    },
-    {
-      index: 2,
-      orderId: "123456789",
-      goodsName: "加长商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称",
-      declarationPerson: "报单人",
-      wechatName: "微信名",
-      relMoney: "1000",
-      preBackMoney: "800",
-      relBackMoney: "700",
-      backMoneyTime: "2023-08-01",
-      declarateTime: "2023-08-02",
-      orderStatus: "审核中",
-      orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-    }
-  ],// 表格数据
+  tableData: [],// 表格数据
   searchText: "",
   // 表格分页
   pagination: {
@@ -260,12 +224,23 @@ const editVisible = ref(false);
 
 // 编辑表单
 const editFormData = reactive({
-  goodsName: "",
-  orderStatus: "",
+  commodity: "",
+  status: "",
   orderId: "",
-  relMoney: "",
+  payAmount: "",
   remark: ""
 });
+
+const currRequestBody = reactive({
+  pageNo: 1, // 页
+  pageItems: 20, // 条数
+  orderId: "", // 订单号
+  commodity: "",// 商品名称
+  reporter: "",// 报单人
+  startTime: null,
+  endTime: null,
+  status: null // 全部-不传 已报单-0 待审核-1
+})
 
 /**
  * methods区
@@ -273,6 +248,9 @@ const editFormData = reactive({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
+  allDeclarationTable.pagination.current = currRequestBody.pageNo;
+  allDeclarationTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData()
 });
 
 /**
@@ -281,11 +259,41 @@ onMounted(() => {
 // 分页钩子
 const allDeclarationTablePageChange = (curr: any) => {
   console.log("分页变化", curr);
+  currRequestBody.pageNo = curr.current;
+  currRequestBody.pageItems = curr.pageSize;
+  allDeclarationTable.pagination.current = currRequestBody.pageNo;
+  allDeclarationTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData();
 };
 
 /**
  * 业务相关
  */
+const getTableData = () => {
+  allDeclarationTable.tableData = [];
+  allDeclarationTable.tableLoading = true;
+  request.post({
+    url: BASE_URL.queryList,
+    data: currRequestBody
+  }).then(res => {
+    console.log(res)
+    allDeclarationTable.pagination.total = res.totalRows;
+    allDeclarationTable.tableData = res.list;
+    allDeclarationTable.tableData.map((item, index) => {
+      item.index = (allDeclarationTable.pagination.current - 1) * allDeclarationTable.pagination.pageSize + index + 1;
+      item.payAmount += " 元";
+      item.expectPayback += " 元";
+      item.actualPayback += " 元";
+      item.reportTime = timestampToDateTime(item.reportTime);
+      item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
+      item.status = chargeStatus(item.status);
+    })
+  }).catch(err => {
+  }).finally(() => {
+    allDeclarationTable.tableLoading = false;
+  })
+}
+
 // 下单图预览trigger
 const orderPicOpen = () => {
   orderPicVisible.value = true;
@@ -300,10 +308,10 @@ const completePicOpen = () => {
 const editDeclaration = (row: any) => {
   console.log(row);
   Object.assign(editFormData, {
-    goodsName: row.goodsName,
-    orderStatus: row.orderStatus,
+    commodity: row.commodity,
+    status: row.status,
     orderId: row.orderId,
-    relMoney: row.relMoney,
+    payAmount: row.payAmount,
     remark: row.remark,
   });
   editVisible.value = true;

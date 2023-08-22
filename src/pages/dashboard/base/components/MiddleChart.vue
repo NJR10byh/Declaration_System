@@ -118,7 +118,6 @@ const getReportRank = () => {
   request.get({
     url: BASE_URL.reportRank
   }).then((res) => {
-    console.log(res)
     SALE_TEND_LIST.value = res;
   });
 }

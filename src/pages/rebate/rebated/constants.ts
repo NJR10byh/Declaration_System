@@ -68,21 +68,21 @@ export const REBATED_DETAIL_TABLE_COLUMNS = [
     {
         title: "商品",
         align: "left",
-        colKey: "goodsName",
+        colKey: "commodity",
         width: 150,
         ellipsis: true
     },
     {
         title: "实付金额",
         align: "center",
-        colKey: "relMoney",
+        colKey: "payAmount",
         width: 80,
         ellipsis: true
     },
     {
         title: "应返款金额",
         align: "center",
-        colKey: "preBackMoney",
+        colKey: "expectPayback",
         width: 80,
         ellipsis: true
     },

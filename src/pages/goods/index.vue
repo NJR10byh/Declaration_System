@@ -98,7 +98,7 @@
     <template #body>
       <t-form>
         <t-form-item label="商品">
-          <t-input v-model="editFormData.goodsName" placeholder="请输入商品名称"/>
+          <t-input v-model="editFormData.commodity" placeholder="请输入商品名称"/>
         </t-form-item>
         <t-form-item label="商品链接">
           <t-input v-model="editFormData.goodsLink" placeholder="请输入商品链接"/>
@@ -107,7 +107,7 @@
           <t-input v-model="editFormData.totalMoney" placeholder="请输入总金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="预计返款金额">
-          <t-input v-model="editFormData.preBackMoney" placeholder="请输入预计返款金额" suffix="元"/>
+          <t-input v-model="editFormData.expectPayback" placeholder="请输入预计返款金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="截止时间">
           <t-date-picker v-model="editFormData.endTime" enable-time-picker placeholder="请选择截止时间"
@@ -147,30 +147,30 @@ const goodsInfoTable = reactive({
   tableData: [
     {
       index: 1,
-      goodsName: "商品名称",
+      commodity: "商品名称",
       remainQuota: 10000,
       totalMoney: 5200,
-      preBackMoney: 800,
+      expectPayback: 800,
       createTime: "2023-08-01 17:26:43",
       endTime: "2023-08-08 13:21:26",
       status: "待审核",
     },
     {
       index: 2,
-      goodsName: "商品名称",
+      commodity: "商品名称",
       remainQuota: 9800,
       totalMoney: 1400,
-      preBackMoney: 1500,
+      expectPayback: 1500,
       createTime: "2023-08-01 17:26:43",
       endTime: "2023-08-08 13:21:26",
       status: "审核中",
     },
     {
       index: 3,
-      goodsName: "商品名称",
+      commodity: "商品名称",
       remainQuota: 9800,
       totalMoney: 1400,
-      preBackMoney: 1500,
+      expectPayback: 1500,
       createTime: "2023-08-01 17:26:43",
       endTime: "2023-08-08 13:21:26",
       status: "审核中",
@@ -199,10 +199,10 @@ const editVisible = ref(false);
 
 // 编辑表单
 const editFormData = reactive({
-  goodsName: "",
+  commodity: "",
   goodsLink: "",
   totalMoney: "",
-  preBackMoney: "",
+  expectPayback: "",
   endTime: ""
 });
 
@@ -230,10 +230,10 @@ const goodsInfoTablePageChange = (curr: any) => {
 const addGoodsInfo = () => {
   dialogTitle.value = "新增商品信息";
   Object.assign(editFormData, {
-    goodsName: "",
+    commodity: "",
     goodsLink: "",
     totalMoney: "",
-    preBackMoney: "",
+    expectPayback: "",
     endTime: ""
   })
   editVisible.value = true;
@@ -261,9 +261,9 @@ const disable = (row: any) => {
 const editInfo = (row: any) => {
   dialogTitle.value = "编辑商品信息";
   Object.assign(editFormData, {
-    goodsName: row.goodsName,
+    commodity: row.commodity,
     totalMoney: row.totalMoney,
-    preBackMoney: row.preBackMoney,
+    expectPayback: row.expectPayback,
     endTime: row.endTime
   })
   editVisible.value = true;

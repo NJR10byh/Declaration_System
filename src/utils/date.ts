@@ -42,3 +42,24 @@ export const getNYearLaterDate = (nYears) => {
     // 格式化为 "yyyy-MM-dd" 的字符串
     return year + "-" + month + "-" + day;
 };
+
+/**
+ * 十位时间戳转 yyyy-MM-dd HH:mm:ss
+ * @param timestamp
+ */
+export const timestampToDateTime = (timestamp: number) => {
+    // 将十位时间戳转换为毫秒级时间戳
+    const timestampMs = timestamp * 1000;
+    // 创建一个 Date 对象
+    const date = new Date(timestampMs);
+    // 获取年、月、日、小时、分钟和秒
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 注意月份是从 0 开始的，所以要加 1
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    // 构建格式化的日期时间字符串
+    const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return formattedDateTime;
+}
