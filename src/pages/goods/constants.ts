@@ -4,7 +4,9 @@
  * @description
  * @version 0.1.0
  */
-export const BASE_URL = {};
+export const BASE_URL = {
+    commodityList: "/commodity/list"
+};
 
 export const GOODS_INFO_TABLE_COLUMNS = [
     // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
@@ -18,20 +20,20 @@ export const GOODS_INFO_TABLE_COLUMNS = [
         title: "商品名称",
         align: "left",
         colKey: "commodity",
-        width: 200,
+        width: 160,
         ellipsis: true
     },
     {
         title: "剩余额度",
         align: "center",
-        colKey: "remainQuota",
+        colKey: "remainAmount",
         width: 80,
         ellipsis: true
     },
     {
         title: "总金额",
         align: "center",
-        colKey: "totalMoney",
+        colKey: "totalAmount",
         width: 80,
         ellipsis: true
     },
@@ -45,7 +47,7 @@ export const GOODS_INFO_TABLE_COLUMNS = [
     {
         title: "创建时间",
         align: "center",
-        colKey: "createTime",
+        colKey: "buildTime",
         width: 120,
         ellipsis: true
     },

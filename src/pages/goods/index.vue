@@ -52,25 +52,25 @@
         style="margin-top: 10px;"
     >
       <template #status="slotProps">
-        <t-tag theme="warning" variant="light-outline" shape="round">
+        <t-tag :theme="chargeStatusTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
           {{ slotProps.row.status }}
         </t-tag>
       </template>
       <template #settings="slotProps">
         <div class="settingBtns">
-          <t-button theme="primary" @click="copyInfo(slotProps.row)">
+          <t-button theme="primary" @click="copyInfo(slotProps.row.shoppingUrl)">
             <template #icon>
               <t-icon name="file-copy"></t-icon>
             </template>
             复制
           </t-button>
-          <t-button theme="success" @click="enable(slotProps.row)">
+          <t-button theme="success" @click="enable(slotProps.row)" v-show="slotProps.row.status==='禁用'">
             <template #icon>
               <t-icon name="check-circle"></t-icon>
             </template>
             启用
           </t-button>
-          <t-button theme="danger" @click="disable(slotProps.row)">
+          <t-button theme="danger" @click="disable(slotProps.row)" v-show="slotProps.row.status==='启用'">
             <template #icon>
               <t-icon name="close-circle"></t-icon>
             </template>
@@ -104,7 +104,7 @@
           <t-input v-model="editFormData.goodsLink" placeholder="请输入商品链接"/>
         </t-form-item>
         <t-form-item label="总金额">
-          <t-input v-model="editFormData.totalMoney" placeholder="请输入总金额" suffix="元"/>
+          <t-input v-model="editFormData.totalAmount" placeholder="请输入总金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="预计返款金额">
           <t-input v-model="editFormData.expectPayback" placeholder="请输入预计返款金额" suffix="元"/>
@@ -123,7 +123,11 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {prefix} from "@/config/global";
-import {GOODS_INFO_TABLE_COLUMNS} from "./constants";
+import {BASE_URL, GOODS_INFO_TABLE_COLUMNS} from "./constants";
+import {request} from "@/utils/request";
+import {timestampToDateTime} from "@/utils/date";
+import {chargeStatus, chargeStatusTagTheme} from "@/utils/goodsStatus";
+import {copyInfo} from "@/utils/tools";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -144,38 +148,7 @@ const getContainer = () => {
  */
 const goodsInfoTable = reactive({
   tableLoading: false,// 表格加载
-  tableData: [
-    {
-      index: 1,
-      commodity: "商品名称",
-      remainQuota: 10000,
-      totalMoney: 5200,
-      expectPayback: 800,
-      createTime: "2023-08-01 17:26:43",
-      endTime: "2023-08-08 13:21:26",
-      status: "待审核",
-    },
-    {
-      index: 2,
-      commodity: "商品名称",
-      remainQuota: 9800,
-      totalMoney: 1400,
-      expectPayback: 1500,
-      createTime: "2023-08-01 17:26:43",
-      endTime: "2023-08-08 13:21:26",
-      status: "审核中",
-    },
-    {
-      index: 3,
-      commodity: "商品名称",
-      remainQuota: 9800,
-      totalMoney: 1400,
-      expectPayback: 1500,
-      createTime: "2023-08-01 17:26:43",
-      endTime: "2023-08-08 13:21:26",
-      status: "审核中",
-    }
-  ],// 表格数据
+  tableData: [],// 表格数据
   searchText: "",
   // 表格分页
   pagination: {
@@ -201,10 +174,17 @@ const editVisible = ref(false);
 const editFormData = reactive({
   commodity: "",
   goodsLink: "",
-  totalMoney: "",
+  totalAmount: "",
   expectPayback: "",
   endTime: ""
 });
+
+const currRequestBody = reactive({
+  pageNo: 1,
+  pageItems: 20,
+  commodity: null,
+  status: null
+})
 
 /**
  * methods区
@@ -212,7 +192,9 @@ const editFormData = reactive({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-
+  goodsInfoTable.pagination.current = currRequestBody.pageNo;
+  goodsInfoTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData()
 });
 
 /**
@@ -226,23 +208,41 @@ const goodsInfoTablePageChange = (curr: any) => {
 /**
  * 业务相关
  */
+const getTableData = () => {
+  goodsInfoTable.tableData = [];
+  goodsInfoTable.tableLoading = true;
+  request.post({
+    url: BASE_URL.commodityList,
+    data: currRequestBody
+  }).then(res => {
+    goodsInfoTable.pagination.total = res.totalRows;
+    goodsInfoTable.tableData = res.list;
+    goodsInfoTable.tableData.map((item, index) => {
+      item.index = (goodsInfoTable.pagination.current - 1) * goodsInfoTable.pagination.pageSize + index + 1;
+      item.remainAmount += " 元";
+      item.totalAmount += " 元";
+      item.expectPayback += " 元";
+      item.buildTime = timestampToDateTime(item.buildTime);
+      item.endTime = timestampToDateTime(item.endTime);
+      item.status = chargeStatus(item.status);
+    })
+    console.log(goodsInfoTable.tableData)
+  }).catch(err => {
+  }).finally(() => {
+    goodsInfoTable.tableLoading = false;
+  })
+}
 // 新增
 const addGoodsInfo = () => {
   dialogTitle.value = "新增商品信息";
   Object.assign(editFormData, {
     commodity: "",
     goodsLink: "",
-    totalMoney: "",
+    totalAmount: "",
     expectPayback: "",
     endTime: ""
   })
   editVisible.value = true;
-}
-// 复制
-const copyInfo = (row: any) => {
-  console.log("复制");
-  console.log(row);
-  // 要实现复制的话，只需要在tableData添加元素
 }
 
 // 启用
@@ -262,7 +262,7 @@ const editInfo = (row: any) => {
   dialogTitle.value = "编辑商品信息";
   Object.assign(editFormData, {
     commodity: row.commodity,
-    totalMoney: row.totalMoney,
+    totalAmount: row.totalAmount,
     expectPayback: row.expectPayback,
     endTime: row.endTime
   })
