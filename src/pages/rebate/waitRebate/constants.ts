@@ -4,7 +4,10 @@
  * @description
  * @version 0.1.0
  */
-export const BASE_URL = {};
+export const BASE_URL = {
+    listStat: "/payback/listStat",
+    payDetail: "/payback/payDetail"
+};
 
 export const WAIT_REBATE_TABLE_COLUMNS = [
     // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
@@ -17,21 +20,21 @@ export const WAIT_REBATE_TABLE_COLUMNS = [
     {
         title: "用户名称",
         align: "center",
-        colKey: "userName",
+        colKey: "reporter",
         width: 120,
         ellipsis: true
     },
     {
         title: "报单数量",
         align: "center",
-        colKey: "declarationNum",
+        colKey: "reportsNum",
         width: 80,
         ellipsis: true
     },
     {
         title: "待结算金额",
         align: "center",
-        colKey: "waitSettlementAmount",
+        colKey: "paybackAmount",
         width: 80,
         ellipsis: true
     },
@@ -44,7 +47,7 @@ export const WAIT_REBATE_TABLE_COLUMNS = [
     }
 ];
 
-export const SETTLEMENT_TABLE_COLUMNS = [
+export const PAY_DETAIL_TABLE_COLUMNS = [
     {
         title: "序号",
         align: "center",
@@ -75,7 +78,7 @@ export const SETTLEMENT_TABLE_COLUMNS = [
     {
         title: "应返款金额",
         align: "center",
-        colKey: "expectPayback",
+        colKey: "shouldPayback",
         width: 80,
         ellipsis: true
     },

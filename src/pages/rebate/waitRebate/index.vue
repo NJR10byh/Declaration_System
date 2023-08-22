@@ -22,14 +22,14 @@
         size="small"
         style="margin-top: 10px;"
     >
-      <template #waitSettlementAmount="slotProps">
+      <template #paybackAmount="slotProps">
         <t-tag theme="primary" variant="light-outline">
-          {{ slotProps.row.waitSettlementAmount }}
+          {{ slotProps.row.paybackAmount }}
         </t-tag>
       </template>
       <template #settings="slotProps">
         <div class="settingBtns">
-          <t-button theme="primary" @click="settlement(slotProps.row)">
+          <t-button theme="primary" @click="payDetail(slotProps.row)">
             <template #icon>
               <t-icon name="wallet"></t-icon>
             </template>
@@ -42,7 +42,7 @@
 
   <!--  结算对话框  -->
   <t-dialog
-      v-model:visible="settlementVisible"
+      v-model:visible="payDetailVisible"
       width="1000px"
       header="结算"
       attach="body"
@@ -54,14 +54,12 @@
           <t-col :span="12">
             <t-table
                 class="tableStyle"
-                :data="settlementTable.tableData"
-                :columns="SETTLEMENT_TABLE_COLUMNS"
+                :data="payDetailTable.tableData"
+                :columns="PAY_DETAIL_TABLE_COLUMNS"
                 row-key="id"
                 hover
                 stripe
-                :pagination="settlementTable.pagination"
-                :loading="settlementTable.tableLoading"
-                @page-change="settlementTablePageChange"
+                :loading="payDetailTable.tableLoading"
                 size="small"
             >
               <template #orderId="slotProps">
@@ -77,19 +75,19 @@
             <t-card title="账户信息">
               <t-list :split="true">
                 <t-list-item>
-                  <span style="font-weight: bold;">姓名：</span>{{ settlementAccount.name }}
+                  <span style="font-weight: bold;">姓名：</span>{{ payDetailTable.accountInfo.userName }}
                 </t-list-item>
                 <t-list-item>
-                  <span style="font-weight: bold;">手机号：</span>{{ settlementAccount.phone }}
+                  <span style="font-weight: bold;">手机号：</span>{{ payDetailTable.accountInfo.phoneNum }}
                 </t-list-item>
                 <t-list-item>
-                  <span style="font-weight: bold;">支付宝账号：</span>{{ settlementAccount.aliPayAccount }}
+                  <span style="font-weight: bold;">支付宝账号：</span>{{ payDetailTable.accountInfo.zfbNum }}
                 </t-list-item>
                 <t-list-item>
-                  <span style="font-weight: bold;">银行名称：</span>{{ settlementAccount.bank }}
+                  <span style="font-weight: bold;">银行名称：</span>{{ payDetailTable.accountInfo.bankName }}
                 </t-list-item>
                 <t-list-item>
-                  <span style="font-weight: bold;">银行卡号：</span>{{ settlementAccount.account }}
+                  <span style="font-weight: bold;">银行卡号：</span>{{ payDetailTable.accountInfo.bankNum }}
                 </t-list-item>
               </t-list>
             </t-card>
@@ -98,12 +96,12 @@
             <t-card title="收款码">
               <t-row justify="space-between">
                 <t-image
-                    src="https://tdesign.gtimg.com/demo/demo-image-1.png"
+                    :src="payDetailTable.accountInfo.wxPic"
                     fit="contain"
                     :style="{ width: '200px', height: '200px' }"
                 />
                 <t-image
-                    src="https://tdesign.gtimg.com/demo/demo-image-1.png"
+                    :src="payDetailTable.accountInfo.zfbPic"
                     fit="contain"
                     :style="{ width: '200px', height: '200px' }"
                 />
@@ -114,7 +112,7 @@
       </t-space>
     </template>
     <template #footer>
-      <t-button theme="default" @click="settlementVisible = false">取消</t-button>
+      <t-button theme="default" @click="payDetailVisible = false">取消</t-button>
       <t-button theme="primary" @click="pay('bankCard')">银行卡支付</t-button>
       <t-button theme="primary" @click="pay('aliPay')">支付宝支付</t-button>
       <t-button theme="success" @click="pay('weChat')">微信支付</t-button>
@@ -127,8 +125,10 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {prefix} from "@/config/global";
-import {SETTLEMENT_TABLE_COLUMNS, WAIT_REBATE_TABLE_COLUMNS} from "./constants";
+import {BASE_URL, PAY_DETAIL_TABLE_COLUMNS, WAIT_REBATE_TABLE_COLUMNS} from "./constants";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
+import {request} from "@/utils/request";
+import {setObjToUrlParams} from "@/utils/request/utils";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -151,20 +151,7 @@ const getContainer = () => {
 // 待返款表格
 const waitRebateTable = reactive({
   tableLoading: false,// 表格加载
-  tableData: [
-    {
-      index: 1,
-      userName: "用户名称",
-      declarationNum: 2,
-      waitSettlementAmount: 1000
-    },
-    {
-      index: 2,
-      userName: "用户名称",
-      declarationNum: 5,
-      waitSettlementAmount: 3200
-    }
-  ],
+  tableData: [],
   searchText: "",
   // 表格分页
   pagination: {
@@ -175,47 +162,33 @@ const waitRebateTable = reactive({
 });
 
 // 结算表格
-const settlementTable = reactive({
+const payDetailTable = reactive({
   tableLoading: false,// 表格加载
-  tableData: [
-    {
-      index: 1,
-      orderId: "0000001",
-      commodity: "商品1",
-      payAmount: 13,
-      expectPayback: 1,
-      remark: "备注",
-      approvalRemark: "审批备注"
-    },
-    {
-      index: 2,
-      orderId: "0000002",
-      commodity: "商品2",
-      payAmount: 234,
-      expectPayback: 12,
-      remark: "备注",
-      approvalRemark: "审批备注"
-    }
-  ],
-  // 表格分页
-  pagination: {
-    total: 0,
-    current: 1,
-    pageSize: 20,
-    showPageSize: false
-  }
-});
-
-const settlementAccount = reactive({
-  name: "张三",
-  phone: "18908213728",
-  aliPayAccount: "1890821",
-  bank: "中国银行",
-  account: "3213412323123",
+  tableData: [],
+  accountInfo: {
+    userName: "张三",
+    phoneNum: "18908213728",
+    bankName: "中国银行",
+    bankNum: "3213412323123",
+    wxPic: "",
+    zfbPic: "",
+    zfbNum: ""
+  },
 });
 
 // 结算对话框
-const settlementVisible = ref(false);
+const payDetailVisible = ref(false);
+
+const currRequestBody = reactive({
+  pageNo: 1,
+  pageItems: 20,
+  commodity: null,
+  status: null,
+  startTime: null,
+  endTime: null,
+  reporter: null,
+  orderId: null
+})
 
 /**
  * methods区
@@ -223,7 +196,9 @@ const settlementVisible = ref(false);
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-
+  waitRebateTable.pagination.current = currRequestBody.pageNo;
+  waitRebateTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData()
 });
 
 /**
@@ -232,19 +207,65 @@ onMounted(() => {
 // 分页钩子
 const waitRebateTablePageChange = (curr: any) => {
   console.log("分页变化", curr);
-};
-
-const settlementTablePageChange = (curr: any) => {
-  console.log("分页变化", curr);
+  currRequestBody.pageNo = curr.current;
+  currRequestBody.pageItems = curr.pageSize;
+  waitRebateTable.pagination.current = currRequestBody.pageNo;
+  waitRebateTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData();
 };
 
 /**
  * 业务相关
  */
+const getTableData = () => {
+  waitRebateTable.tableData = [];
+  waitRebateTable.tableLoading = true;
+  request.post({
+    url: BASE_URL.listStat,
+    data: currRequestBody
+  }).then(res => {
+    waitRebateTable.pagination.total = res.totalRows;
+    waitRebateTable.tableData = res.list;
+    waitRebateTable.tableData.map((item, index) => {
+      item.index = (waitRebateTable.pagination.current - 1) * waitRebateTable.pagination.pageSize + index + 1;
+      item.paybackAmount += " 元";
+    })
+  }).catch(err => {
+  }).finally(() => {
+    waitRebateTable.tableLoading = false;
+  })
+}
 // 结算
-const settlement = (row: any) => {
+const payDetail = (row: any) => {
   console.log("结算", row);
-  settlementVisible.value = true;
+  payDetailTable.tableData = [];
+  payDetailTable.tableLoading = true;
+  let params = {
+    reporterId: row.reporterId
+  }
+  request.post({
+    url: setObjToUrlParams(BASE_URL.payDetail, params)
+  }).then(res => {
+    payDetailTable.tableData = res.payDetailList;
+    payDetailTable.tableData.map((item, index) => {
+      item.index = index + 1;
+      item.payAmount += " 元";
+      item.shouldPayback += " 元";
+    })
+    Object.assign(payDetailTable.accountInfo, {
+      userName: res.userName,
+      phoneNum: res.phoneNum,
+      bankName: res.bankName,
+      bankNum: res.bankNum,
+      wxPic: res.wxPic,
+      zfbPic: res.zfbPic,
+      zfbNum: res.zfbNum
+    })
+    payDetailVisible.value = true;
+  }).catch(err => {
+  }).finally(() => {
+    payDetailTable.tableLoading = false;
+  })
 }
 
 // 支付

@@ -36,9 +36,9 @@
         size="small"
         style="margin-top: 10px;"
     >
-      <template #settlementAmount="slotProps">
+      <template #payAmount="slotProps">
         <t-tag theme="primary" variant="light-outline">
-          {{ slotProps.row.settlementAmount }}
+          {{ slotProps.row.payAmount }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -90,7 +90,10 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {prefix} from "@/config/global";
-import {REBATED_DETAIL_TABLE_COLUMNS, REBATED_TABLE_COLUMNS} from "./constants";
+import {BASE_URL, REBATED_DETAIL_TABLE_COLUMNS, REBATED_TABLE_COLUMNS} from "./constants";
+import {request} from "@/utils/request";
+import {timestampToDateTime} from "@/utils/date";
+import {setObjToUrlParams} from "@/utils/request/utils";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -113,22 +116,7 @@ const getContainer = () => {
 // 待返款表格
 const rebatedTable = reactive({
   tableLoading: false,// 表格加载
-  tableData: [
-    {
-      index: 1,
-      userName: "用户名称",
-      settlementAmount: 1000,
-      settlementPerson: "张三",
-      settlementTime: "2023-08-04 13:58:08",
-    },
-    {
-      index: 1,
-      userName: "用户名称",
-      settlementAmount: 3200,
-      settlementPerson: "石磊",
-      settlementTime: "2023-08-04 12:21:43",
-    },
-  ],
+  tableData: [],
   searchText: "",
   // 表格分页
   pagination: {
@@ -144,7 +132,7 @@ const rebatedDetailTable = reactive({
   footData: [
     {
       index: '合计',
-      expectPayback: '100',
+      shouldPayback: "0",
     },
   ]
 })
@@ -152,13 +140,26 @@ const rebatedDetailTable = reactive({
 // 结算对话框
 const rebatedDetailVisible = ref(false);
 
+const currRequestBody = reactive({
+  pageNo: 1,
+  pageItems: 20,
+  commodity: null,
+  status: null,
+  startTime: null,
+  endTime: null,
+  reporter: null,
+  orderId: null
+})
+
 /**
  * methods区
  */
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-
+  rebatedTable.pagination.current = currRequestBody.pageNo;
+  rebatedTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData()
 });
 
 /**
@@ -167,28 +168,58 @@ onMounted(() => {
 // 分页钩子
 const rebatedTablePageChange = (curr: any) => {
   console.log("分页变化", curr);
+  currRequestBody.pageNo = curr.current;
+  currRequestBody.pageItems = curr.pageSize;
+  rebatedTable.pagination.current = currRequestBody.pageNo;
+  rebatedTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData();
 };
 
 /**
  * 业务相关
  */
+const getTableData = () => {
+  rebatedTable.tableData = [];
+  rebatedTable.tableLoading = true;
+  request.post({
+    url: BASE_URL.listSettle,
+    data: currRequestBody
+  }).then(res => {
+    rebatedTable.pagination.total = res.totalRows;
+    rebatedTable.tableData = res.list;
+    rebatedTable.tableData.map((item, index) => {
+      item.index = (rebatedTable.pagination.current - 1) * rebatedTable.pagination.pageSize + index + 1;
+      item.payAmount += " 元";
+      item.payTime = timestampToDateTime(item.payTime);
+    })
+  }).catch(err => {
+  }).finally(() => {
+    rebatedTable.tableLoading = false;
+  })
+}
 // 结算
 const rebatedDetail = (row: any) => {
   rebatedDetailTable.tableData = [];
   rebatedDetailTable.tableLoading = true;
   console.log("详情", row);
-  let obj = {
-    index: 1,
-    orderId: "0000001",
-    commodity: "商品1",
-    payAmount: 13,
-    expectPayback: 1,
-    remark: "备注",
-    approvalRemark: "审批备注"
-  };
-  rebatedDetailTable.tableData.push(obj);
-  rebatedDetailVisible.value = true;
-  rebatedDetailTable.tableLoading = false;
+  let params = {
+    statId: row.statId
+  }
+  request.post({
+    url: setObjToUrlParams(BASE_URL.getSettleDetail, params)
+  }).then(res => {
+    rebatedDetailTable.footData[0].shouldPayback = res.total + " 元";
+    rebatedDetailTable.tableData = res.list;
+    rebatedDetailTable.tableData.map((item, index) => {
+      item.index = index + 1;
+      item.payAmount += " 元";
+      item.shouldPayback += " 元";
+    })
+    rebatedDetailVisible.value = true;
+  }).catch(err => {
+  }).finally(() => {
+    rebatedDetailTable.tableLoading = false;
+  })
 }
 </script>
 

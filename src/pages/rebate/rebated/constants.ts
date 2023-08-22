@@ -4,7 +4,10 @@
  * @description
  * @version 0.1.0
  */
-export const BASE_URL = {};
+export const BASE_URL = {
+    listSettle: "/payback/listSettle",
+    getSettleDetail: "/payback/getSettleDetail",
+};
 
 export const REBATED_TABLE_COLUMNS = [
     // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
@@ -18,28 +21,28 @@ export const REBATED_TABLE_COLUMNS = [
         title: "用户名称",
         align: "center",
         colKey: "userName",
-        width: 120,
+        width: 100,
         ellipsis: true
     },
     {
         title: "结算金额",
         align: "center",
-        colKey: "settlementAmount",
+        colKey: "payAmount",
         width: 80,
         ellipsis: true
     },
     {
         title: "结算人",
         align: "center",
-        colKey: "settlementPerson",
-        width: 80,
+        colKey: "payUser",
+        width: 100,
         ellipsis: true
     },
     {
         title: "结算时间",
         align: "center",
-        colKey: "settlementTime",
-        width: 80,
+        colKey: "payTime",
+        width: 120,
         ellipsis: true
     },
     {
@@ -82,7 +85,7 @@ export const REBATED_DETAIL_TABLE_COLUMNS = [
     {
         title: "应返款金额",
         align: "center",
-        colKey: "expectPayback",
+        colKey: "shouldPayback",
         width: 80,
         ellipsis: true
     },

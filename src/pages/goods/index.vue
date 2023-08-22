@@ -203,6 +203,11 @@ onMounted(() => {
 // 分页钩子
 const goodsInfoTablePageChange = (curr: any) => {
   console.log("分页变化", curr);
+  currRequestBody.pageNo = curr.current;
+  currRequestBody.pageItems = curr.pageSize;
+  goodsInfoTable.pagination.current = currRequestBody.pageNo;
+  goodsInfoTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData();
 };
 
 /**
