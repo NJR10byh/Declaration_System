@@ -86,7 +86,22 @@ export function constructInitDashboardDataset(type: string) {
     return barDataset;
 }
 
-/** 柱状图数据源 */
+/**
+ * 柱状图数据源
+ * @param dateTime
+ * @param reportCountList
+ * @param placeholderColor
+ * @param borderColor
+ *
+ * tips：使用了 TypeScript 参数解构和类型注解的组合
+ * 外层的大括号 {} 表示这是一个对象解构。这意味着这个函数接受一个对象作为参数，并从这个对象中提取特定的属性值
+ * 内部的属性dateTime, reportCountList被赋予了默认值[]，意味着如果调用函数时没有传递这些属性，它们将为默认值[]
+ * placeholderColor 和 borderColor 是两个属性，它们没有默认值，因此它们是可选的
+ *
+ * 综上所述，这段代码定义了一个接受特定参数结构和类型的函数
+ * 当调用这个函数时，必须传递一个带有 dateTime 和 reportCountList 属性的对象
+ * 但 placeholderColor 和 borderColor 是可选的
+ */
 export function constructInitDataset(
     {
         dateTime = [],
@@ -97,8 +112,6 @@ export function constructInitDataset(
     // const dataset: Array<Array<string>> = [['时间'], ['入库'], ['出库']];
     const divideNum = 7;
     const timeArray = [];
-    console.log(dateTime)
-    console.log(reportCountList)
     const outArray = reportCountList;
     for (let i = 0; i < divideNum; i++) {
         // const [timeArray, inArray, outArray] = dataset;
