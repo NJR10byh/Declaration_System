@@ -20,8 +20,9 @@
           clearable
       />
       <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>
-      <t-date-range-picker class="inputStyle rangeInputStyle" :placeholder="['报单日期 起', '报单日期 止']" clearable/>
-      <t-button class="inputStyle" style="width: 100px;">
+      <t-date-range-picker v-model="reportDateRange" class="inputStyle rangeInputStyle"
+                           :placeholder="['报单时间 起', '报单时间 止']" enable-time-picker clearable/>
+      <t-button class="inputStyle" style="width: 100px;" @click="searchData">
         <template #icon>
           <t-icon name="search"></t-icon>
         </template>
@@ -142,7 +143,7 @@ import {prefix} from "@/config/global";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
 import {BASE_URL} from "@/pages/declaration/all/constants";
-import {timestampToDateTime} from "@/utils/date";
+import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
 import {declarationStatus} from "@/utils/chargeStatus";
 import {WAIT_APPROVAL_TABLE_COLUMNS} from "@/pages/declaration/waitApproval/constants";
 
@@ -160,6 +161,9 @@ const offsetTop = computed(() => {
 const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
+
+// 报单时间范围
+const reportDateRange = ref([])
 
 /**
  * 表格相关
@@ -266,6 +270,19 @@ const getAllCommodity = async () => {
     MessagePlugin.error(err);
   }).finally(() => {
   })
+}
+
+// 搜索
+const searchData = async () => {
+  waitApprovalTable.pagination.current = 1;
+  waitApprovalTable.pagination.pageSize = 20;
+  Object.assign(currRequestBody, {
+    pageNo: waitApprovalTable.pagination.current,
+    pageItems: waitApprovalTable.pagination.pageSize,
+    startTime: dateStringToTimestamp(reportDateRange.value[0]),
+    endTime: dateStringToTimestamp(reportDateRange.value[1])
+  })
+  await getTableData();
 }
 
 // 下单图预览trigger

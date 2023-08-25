@@ -70,14 +70,14 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
         title: "申请返款时间",
         align: "center",
         colKey: "applyPaybackTime",
-        width: 150,
+        width: 160,
         ellipsis: true
     },
     {
         title: "报单时间",
         align: "center",
         colKey: "reportTime",
-        width: 150,
+        width: 160,
         ellipsis: true
     },
     {

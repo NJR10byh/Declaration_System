@@ -68,14 +68,14 @@ export const WAIT_APPROVAL_TABLE_COLUMNS = [
         title: "申请返款时间",
         align: "center",
         colKey: "applyPaybackTime",
-        width: 150,
+        width: 170,
         ellipsis: true
     },
     {
         title: "报单时间",
         align: "center",
         colKey: "reportTime",
-        width: 150,
+        width: 170,
         ellipsis: true
     },
     {

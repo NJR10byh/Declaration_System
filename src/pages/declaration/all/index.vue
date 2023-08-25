@@ -28,7 +28,8 @@
           clearable
       />
       <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>
-      <t-date-range-picker class="inputStyle rangeInputStyle" :placeholder="['报单日期 起', '报单日期 止']" clearable/>
+      <t-date-range-picker class="inputStyle rangeInputStyle" v-model="reportDateRange"
+                           :placeholder="['报单时间 起', '报单时间 止']" enable-time-picker clearable/>
     </t-row>
   </t-card>
   <t-card class="all-declaration-card">
