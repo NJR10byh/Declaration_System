@@ -48,10 +48,10 @@
     >
       <template #aliPayCode="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.aliPayCode]">
+          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.zfbPic]">
             <template #trigger>
               <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.aliPayCode" class="tdesign-demo-image-viewer__ui-image--img"/>
+                <img alt="test" :src="slotProps.row.zfbPic" class="tdesign-demo-image-viewer__ui-image--img"/>
                 <div class="tdesign-demo-image-viewer__ui-image--hover" @click="qrCodeOpen">
                   <span><t-icon size="1.2em" name="browse"/> 预览</span>
                 </div>
@@ -62,10 +62,10 @@
       </template>
       <template #weChatCode="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.weChatCode]">
+          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.wxPic]">
             <template #trigger>
               <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.weChatCode" class="tdesign-demo-image-viewer__ui-image--img"/>
+                <img alt="test" :src="slotProps.row.wxPic" class="tdesign-demo-image-viewer__ui-image--img"/>
                 <div class="tdesign-demo-image-viewer__ui-image--hover" @click="qrCodeOpen">
                   <span><t-icon size="1.2em" name="browse"/> 预览</span>
                 </div>
@@ -75,7 +75,13 @@
         </div>
       </template>
       <template #phone="slotProps">
-        {{ slotProps.row.phone }}
+        {{ slotProps.row.phoneNum }}
+      </template>
+      <template #name="slotProps">
+        {{ slotProps.row.userName}}
+      </template>
+      <template #bankCard="slotProps">
+        {{ slotProps.row.bankName}}
       </template>
       <template #status="slotProps">
         <t-tag theme="warning" variant="light-outline" shape="round">
@@ -195,8 +201,11 @@ import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
-import {USER_LIST_TABLE_COLUMNS} from "./constants";
+import {BASE_URL,USER_LIST_TABLE_COLUMNS} from "./constants";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
+import {request} from "@/utils/request";
+import {timestampToDateTime} from "@/utils/date";
+import {chargeStatus} from "@/utils/userStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -225,38 +234,72 @@ const searchData = reactive({
  */
 const userListTable = reactive({
   tableLoading: false,// 表格加载
-  tableData: [
-    {
-      index: 1,
-      phone: "13209209271",
-      name: "张三",
-      bankName: "中国建设银行",
-      bankCard: "98708765457899007654",
-      aliPayCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      weChatCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1fxAIv.img?w=768&h=361&m=6",
-      status: "待审核",
-      registerTime: "2023-08-02 13:23:45"
-    },
-    {
-      index: 2,
-      phone: "19009209322",
-      name: "李四",
-      bankName: "中国农业银行",
-      bankCard: "345678908976545678369",
-      aliPayCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      weChatCode: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1fxAIv.img?w=768&h=361&m=6",
-      status: "待审核",
-      registerTime: "2023-08-03 17:56:21"
-    }
-  ],
+  tableData: [],
   // 表格分页
   pagination: {
     total: 0,
     current: 1,
     pageSize: 20
-  }
+  },
+  // searchData :{
+  //   phone: "",
+  //   name: "",
+  //   status: ""
+  //   }
 });
 
+// const currRequestBody = reactive({
+//   bankName: "string",
+//   bankNum: "string",
+//   phoneNum: "string",
+//   registerTime: 0,
+//   status: 0,
+//   userId: 0,
+//   userName: "string",
+//   wxPic: "string",
+//   zfbNum: "string",
+//   zfbPic: "string"
+// })
+
+const currRequestBody = reactive({
+  pageNo: 1,
+  pageItems: 20,
+  commodity: null,
+  status: null
+})
+
+/**
+ * methods区
+ */
+/* 生命周期 */
+// 组件挂载完成后执行
+onMounted(() => {
+  userListTable.pagination.current = currRequestBody.pageNo;
+  userListTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData()
+});
+
+const getTableData = () => {
+  userListTable.tableData = [];
+  userListTable.tableLoading = true;
+  request.post({
+    url: BASE_URL.userList,
+    data: currRequestBody
+  }).then(res => {
+    userListTable.pagination.total = res.totalRows;
+    userListTable.tableData = res.list;
+    userListTable.tableData.map((item,index)=>{
+      item.index = (userListTable.pagination.current - 1) * userListTable.pagination.pageSize + index + 1;
+      item.status = chargeStatus(item.status);
+      item.registerTime = timestampToDateTime(item.registerTime);
+    })
+    console.log("@",userListTable.tableData)
+  }).catch(err => {
+    console.error(err);
+  }).finally(() => {
+    userListTable.tableLoading = false;
+  })
+}
 // 用户状态选项
 const userStatusOptions = reactive([
   {label: '启用', value: '1'},
@@ -292,13 +335,7 @@ const resetPasswordFormData = reactive({
   password: "000000"
 })
 
-/**
- * methods区
- */
-/* 生命周期 */
-// 组件挂载完成后执行
-onMounted(() => {
-});
+
 
 /**
  * 操作钩子
@@ -325,30 +362,23 @@ const initPagination = () => {
   userListTable.pagination.current = 1;
 };
 const search = () => {
-  // alert("查询条目失败");
+  // userListTable.tableLoading = true;
+  // // alert("查询条目失败");
   // console.log(searchData);
-  // MessagePlugin.warning("暂未开放");
-  initPagination();
-  console.log(searchData);
-  let obj = {}
-  // obj = {
-  //   phone: searchData.phone,
-  //   name: searchData.name,
-  //   wechat:searchData.wechat,
-  //   statue:searchData.status,
-  // }
-
-  // let data = filter(obj, userListTable.tableData);
-  // console.log(data);
-  // if (data != '') {
-  //   userListTable.tableData = data
-  // } else {
-  MessagePlugin.warning(
-      `没有相关信息`,
-  );
-  //   data = [];
-  //   userListTable.tableData = data;
-  // }
+  // // MessagePlugin.warning("暂未开放");
+  // initPagination();
+  // console.log(searchData);
+  // request.post(BASE_URL.userList, {
+  //   params: searchData
+  // }).then(res => {
+  //   // 更新表格数据
+  //   userListTable.tableData = res.data;
+  // }).finally(() => {
+  //   userListTable.tableLoading = false;
+  // })
+  // MessagePlugin.warning(
+  //     `没有相关信息`,
+  // );
 
 }
 // 禁用

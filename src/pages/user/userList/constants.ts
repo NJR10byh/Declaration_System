@@ -4,7 +4,9 @@
  * @description
  * @version 0.1.0
  */
-export const BASE_URL = {};
+export const BASE_URL = {
+    userList: "/user/list"
+};
 
 export const USER_LIST_TABLE_COLUMNS = [
     // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
@@ -39,7 +41,7 @@ export const USER_LIST_TABLE_COLUMNS = [
         title: "银行卡号",
         align: "center",
         colKey: "bankCard",
-        width: 80,
+        width: 150,
         ellipsis: true
     },
     {
