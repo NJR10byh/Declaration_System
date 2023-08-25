@@ -179,6 +179,7 @@ const editFormData = reactive({
   endTime: ""
 });
 
+// 响应式对象 currRequestBody，包含当前页码、每条页数，以及搜索过滤参数
 const currRequestBody = reactive({
   pageNo: 1,
   pageItems: 20,
@@ -191,6 +192,8 @@ const currRequestBody = reactive({
  */
 /* 生命周期 */
 // 组件挂载完成后执行
+// 调用获取表格数据的方法,并设置分页参数,与定义的请求体对象有关联。
+// 可以重用请求体对象,避免重复设置分页参数。
 onMounted(() => {
   goodsInfoTable.pagination.current = currRequestBody.pageNo;
   goodsInfoTable.pagination.pageSize = currRequestBody.pageItems;
@@ -213,6 +216,7 @@ const goodsInfoTablePageChange = (curr: any) => {
 /**
  * 业务相关
  */
+// 获取表格数据并处理显示
 const getTableData = () => {
   goodsInfoTable.tableData = [];
   goodsInfoTable.tableLoading = true;
