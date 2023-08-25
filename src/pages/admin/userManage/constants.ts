@@ -5,7 +5,8 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-    adminList: "/admin/list"
+    adminList: "/admin/list",
+    adminEdit: "/admin/edit"
 };
 
 export const USER_MANAGE_TABLE_COLUMNS = [

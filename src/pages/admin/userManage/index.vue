@@ -49,7 +49,7 @@
       </template>
       <template #status="slotProps">
         <t-tag :theme="userTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
-          {{ slotProps.row.status }}
+          {{ userStatus(slotProps.row.status) }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -77,10 +77,13 @@
     <template #body>
       <t-form>
         <t-form-item label="手机号码">
-          <t-input v-model="editFormData.phone" placeholder="请输入手机号" clearable/>
+          <t-input v-model="editFormData.phoneNum" placeholder="请输入手机号" clearable/>
         </t-form-item>
         <t-form-item label="姓名">
           <t-input v-model="editFormData.name" placeholder="请输入姓名" clearable/>
+        </t-form-item>
+        <t-form-item label="密码">
+          <t-input type="password" v-model="editFormData.password" placeholder="请输入密码" clearable/>
         </t-form-item>
         <t-form-item label="用户状态">
           <t-select
@@ -139,8 +142,8 @@ const userManageTable = reactive({
 
 // 用户状态选项
 const userStatusOptions = reactive([
-  {label: '启用', value: '1'},
-  {label: '禁用', value: '0'}
+  {label: '启用', value: 1},
+  {label: '禁用', value: 0}
 ])
 
 // 对话框标题
@@ -149,7 +152,9 @@ const dialogTitle = ref("编辑管理员");
 const editVisible = ref(false);
 // 用户编辑表单
 const editFormData = reactive({
-  phone: "",
+  adminId: null,
+  phoneNum: "",
+  password: "000000",
   name: "",
   status: ""
 });
@@ -205,7 +210,6 @@ const getTableData = () => {
     userManageTable.tableData.map((item, index) => {
       item.index = (userManageTable.pagination.current - 1) * userManageTable.pagination.pageSize + index + 1;
       item.buildTime = timestampToDateTime(item.buildTime);
-      item.status = userStatus(item.status);
     })
   }).catch(err => {
   }).finally(() => {
@@ -220,7 +224,9 @@ const searchData = () => {
 const addUser = () => {
   dialogTitle.value = "新增管理员";
   Object.assign(editFormData, {
-    phone: "",
+    adminId: null,
+    phoneNum: "",
+    password: "000000",
     name: "",
     status: ""
   })
@@ -230,7 +236,9 @@ const addUser = () => {
 const editUser = (row: any) => {
   dialogTitle.value = "编辑管理员";
   Object.assign(editFormData, {
-    phone: row.phone,
+    adminId: row.adminId,
+    phoneNum: row.phoneNum,
+    password: "000000",
     name: row.name,
     status: row.status
   })
@@ -239,8 +247,18 @@ const editUser = (row: any) => {
 
 // 编辑确认
 const editConfirm = () => {
-  console.log(dialogTitle.value);
-  editVisible.value = false;
+  request.post({
+    url: BASE_URL.adminEdit,
+    data: editFormData
+  }).then(res => {
+    console.log(res)
+    MessagePlugin.success(dialogTitle.value + "成功");
+    getTableData();
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+    editVisible.value = false;
+  })
 }
 </script>
 
