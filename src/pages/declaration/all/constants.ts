@@ -88,7 +88,7 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
     {
         title: "完成图",
         align: "center",
-        colKey: "completePic",
+        colKey: "finishPic",
         width: 80
     },
     {

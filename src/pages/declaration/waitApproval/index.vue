@@ -37,7 +37,7 @@
         row-key="id"
         hover
         stripe
-        table-content-width="1600"
+        table-content-width="auto"
         :pagination="waitApprovalTable.pagination"
         :loading="waitApprovalTable.tableLoading"
         :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -66,13 +66,13 @@
           </t-image-viewer>
         </div>
       </template>
-      <template #completePic="slotProps">
+      <template #finishPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="completePicVisible" :images="[slotProps.row.completePic]">
+          <t-image-viewer v-model:visible="finishPicVisible" :images="[slotProps.row.finishPic]">
             <template #trigger>
               <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.completePic" class="tdesign-demo-image-viewer__ui-image--img"/>
-                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="completePicOpen">
+                <img alt="test" :src="slotProps.row.finishPic" class="tdesign-demo-image-viewer__ui-image--img"/>
+                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="finishPicOpen">
                   <span><t-icon size="1.2em" name="browse"/> 预览</span>
                 </div>
               </div>
@@ -127,6 +127,10 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
 import {WAIT_APPROVAL_TABLE_COLUMNS} from "./constants";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
+import {request} from "@/utils/request";
+import {BASE_URL} from "@/pages/declaration/all/constants";
+import {timestampToDateTime} from "@/utils/date";
+import {chargeStatus} from "@/utils/declarationStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -148,36 +152,7 @@ const getContainer = () => {
  */
 const waitApprovalTable = reactive({
   tableLoading: false,// 表格加载
-  tableData: [
-    {
-      index: 1,
-      orderId: "123456789",
-      commodity: "商品名称",
-      reporter: "报单人",
-      payAmount: "1000",
-      expectPayback: "800",
-      actualPayback: "700",
-      applyPaybackTime: "2023-08-01",
-      declarateTime: "2023-08-02",
-      status: "待审核",
-      orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-    },
-    {
-      index: 1,
-      orderId: "123456789",
-      commodity: "加长商品名称商品名称商品名称商品名称商品名称商品名称商品名称商品名称",
-      reporter: "报单人",
-      payAmount: "1000",
-      expectPayback: "800",
-      actualPayback: "700",
-      applyPaybackTime: "2023-08-01",
-      declarateTime: "2023-08-02",
-      status: "待审核",
-      orderPic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-      completePic: "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1eRF4j.img?w=1920&h=1080&q=60&m=2&f=jpg",
-    }
-  ],// 表格数据
+  tableData: [],
   searchText: "",
   // 表格分页
   pagination: {
@@ -199,7 +174,7 @@ const goodsOptions = reactive([
 // 下单图预览
 const orderPicVisible = ref(false);
 // 完成图预览
-const completePicVisible = ref(false);
+const finishPicVisible = ref(false);
 
 // 审批通过Dialog
 const approvedVisible = ref(false);
@@ -208,12 +183,26 @@ const approvedData = reactive({
   remark: ""
 });
 
+const currRequestBody = reactive({
+  pageNo: 1, // 页
+  pageItems: 20, // 条数
+  orderId: "", // 订单号
+  commodity: "",// 商品名称
+  reporter: "",// 报单人
+  startTime: null,
+  endTime: null,
+  status: 1 // 全部-不传 已报单-0 待审核-1
+})
+
 /**
  * methods区
  */
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
+  waitApprovalTable.pagination.current = currRequestBody.pageNo;
+  waitApprovalTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData()
 });
 
 /**
@@ -222,19 +211,47 @@ onMounted(() => {
 // 分页钩子
 const waitApprovalTablePageChange = (curr: any) => {
   console.log("分页变化", curr);
+  currRequestBody.pageNo = curr.current;
+  currRequestBody.pageItems = curr.pageSize;
+  waitApprovalTable.pagination.current = currRequestBody.pageNo;
+  waitApprovalTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData();
 };
 
 /**
  * 业务相关
  */
+const getTableData = () => {
+  waitApprovalTable.tableData = [];
+  waitApprovalTable.tableLoading = true;
+  request.post({
+    url: BASE_URL.queryList,
+    data: currRequestBody
+  }).then(res => {
+    waitApprovalTable.pagination.total = res.totalRows;
+    waitApprovalTable.tableData = res.list;
+    waitApprovalTable.tableData.map((item, index) => {
+      item.index = (waitApprovalTable.pagination.current - 1) * waitApprovalTable.pagination.pageSize + index + 1;
+      item.payAmount += " 元";
+      item.expectPayback += " 元";
+      item.actualPayback += " 元";
+      item.reportTime = timestampToDateTime(item.reportTime);
+      item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
+      item.status = chargeStatus(item.status);
+    })
+  }).catch(err => {
+  }).finally(() => {
+    waitApprovalTable.tableLoading = false;
+  })
+}
 // 下单图预览trigger
 const orderPicOpen = () => {
   orderPicVisible.value = true;
 }
 
 // 完成图预览trigger
-const completePicOpen = () => {
-  completePicVisible.value = true;
+const finishPicOpen = () => {
+  finishPicVisible.value = true;
 }
 
 // 审批通过

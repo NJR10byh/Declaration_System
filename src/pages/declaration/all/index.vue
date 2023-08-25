@@ -10,10 +10,10 @@
       <div class="cardTitle">搜索条件</div>
     </t-row>
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="allDeclarationTable.searchText" placeholder="请输入订单号" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
       <t-select
           class="inputStyle"
-          v-model="allDeclarationTable.searchText"
+          v-model="currRequestBody.commodity"
           placeholder="-请选择商品-"
           :options="goodsOptions"
           filterable
@@ -21,13 +21,13 @@
       />
       <t-select
           class="inputStyle"
-          v-model="allDeclarationTable.searchText"
+          v-model="currRequestBody.status"
           placeholder="-请选择订单状态-"
           :options="statusOptions"
           filterable
           clearable
       />
-      <t-input class="inputStyle" v-model="allDeclarationTable.searchText" placeholder="请输入报单人" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" :placeholder="['报单日期 起', '报单日期 止']" clearable/>
     </t-row>
   </t-card>
@@ -69,7 +69,7 @@
         row-key="id"
         hover
         stripe
-        table-content-width="1600"
+        table-content-width="auto"
         :pagination="allDeclarationTable.pagination"
         :loading="allDeclarationTable.tableLoading"
         :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -98,13 +98,13 @@
           </t-image-viewer>
         </div>
       </template>
-      <template #completePic="slotProps">
+      <template #finishPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="completePicVisible" :images="[slotProps.row.completePic]">
+          <t-image-viewer v-model:visible="finishPicVisible" :images="[slotProps.row.finishPic]">
             <template #trigger>
               <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.completePic" class="tdesign-demo-image-viewer__ui-image--img"/>
-                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="completePicOpen">
+                <img alt="test" :src="slotProps.row.finishPic" class="tdesign-demo-image-viewer__ui-image--img"/>
+                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="finishPicOpen">
                   <span><t-icon size="1.2em" name="browse"/> 预览</span>
                 </div>
               </div>
@@ -191,7 +191,6 @@ const getContainer = () => {
 const allDeclarationTable = reactive({
   tableLoading: false,// 表格加载
   tableData: [],// 表格数据
-  searchText: "",
   // 表格分页
   pagination: {
     total: 0,
@@ -218,7 +217,7 @@ const statusOptions = reactive([
 // 下单图预览
 const orderPicVisible = ref(false);
 // 完成图预览
-const completePicVisible = ref(false);
+const finishPicVisible = ref(false);
 // 编辑对话框
 const editVisible = ref(false);
 
@@ -276,7 +275,6 @@ const getTableData = () => {
     url: BASE_URL.queryList,
     data: currRequestBody
   }).then(res => {
-    console.log(res)
     allDeclarationTable.pagination.total = res.totalRows;
     allDeclarationTable.tableData = res.list;
     allDeclarationTable.tableData.map((item, index) => {
@@ -300,8 +298,8 @@ const orderPicOpen = () => {
 }
 
 // 完成图预览trigger
-const completePicOpen = () => {
-  completePicVisible.value = true;
+const finishPicOpen = () => {
+  finishPicVisible.value = true;
 }
 
 // 编辑报单
