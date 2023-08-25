@@ -10,7 +10,7 @@
         class="tableStyle"
         :data="waitRebateTable.tableData"
         :columns="WAIT_REBATE_TABLE_COLUMNS"
-        row-key="id"
+        row-key="index"
         hover
         stripe
         :pagination="waitRebateTable.pagination"
@@ -56,7 +56,7 @@
                 class="tableStyle"
                 :data="payDetailTable.tableData"
                 :columns="PAY_DETAIL_TABLE_COLUMNS"
-                row-key="id"
+                row-key="index"
                 hover
                 stripe
                 :loading="payDetailTable.tableLoading"

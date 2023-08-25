@@ -38,7 +38,7 @@
         class="tableStyle"
         :data="goodsInfoTable.tableData"
         :columns="GOODS_INFO_TABLE_COLUMNS"
-        row-key="id"
+        row-key="index"
         hover
         stripe
         table-layout="auto"
@@ -52,7 +52,7 @@
         style="margin-top: 10px;"
     >
       <template #status="slotProps">
-        <t-tag :theme="chargeStatusTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
+        <t-tag :theme="goodsTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
           {{ slotProps.row.status }}
         </t-tag>
       </template>
@@ -126,7 +126,7 @@ import {prefix} from "@/config/global";
 import {BASE_URL, GOODS_INFO_TABLE_COLUMNS} from "./constants";
 import {request} from "@/utils/request";
 import {timestampToDateTime} from "@/utils/date";
-import {chargeStatus, chargeStatusTagTheme} from "@/utils/goodsStatus";
+import {goodsStatus, goodsTagTheme} from "@/utils/chargeStatus";
 import {copyInfo} from "@/utils/tools";
 
 const store = useSettingStore();
@@ -233,7 +233,7 @@ const getTableData = () => {
       item.expectPayback += " 元";
       item.buildTime = timestampToDateTime(item.buildTime);
       item.endTime = timestampToDateTime(item.endTime);
-      item.status = chargeStatus(item.status);
+      item.status = goodsStatus(item.status);
     })
     console.log(goodsInfoTable.tableData)
   }).catch(err => {

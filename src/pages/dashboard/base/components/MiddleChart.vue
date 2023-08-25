@@ -102,6 +102,7 @@ const getWeekStat = async () => {
   await request.get({
     url: BASE_URL.weekStat
   }).then(res => {
+    console.log(res)
     res.map((i: { reportCount: number; }) => {
       reportCountList.value.push(i.reportCount.toString())
     })

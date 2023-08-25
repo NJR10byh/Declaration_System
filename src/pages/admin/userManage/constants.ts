@@ -4,7 +4,9 @@
  * @description
  * @version 0.1.0
  */
-export const BASE_URL = {};
+export const BASE_URL = {
+    adminList: "/admin/list"
+};
 
 export const USER_MANAGE_TABLE_COLUMNS = [
     {
@@ -16,7 +18,7 @@ export const USER_MANAGE_TABLE_COLUMNS = [
     {
         title: "手机号码",
         align: "center",
-        colKey: "phone",
+        colKey: "phoneNum",
         width: 80,
         ellipsis: true
     },
@@ -30,14 +32,14 @@ export const USER_MANAGE_TABLE_COLUMNS = [
     {
         title: "创建人",
         align: "center",
-        colKey: "creatUser",
+        colKey: "builder",
         width: 120,
         ellipsis: true
     },
     {
         title: "创建时间",
         align: "center",
-        colKey: "creatTime",
+        colKey: "buildTime",
         width: 120,
         ellipsis: true
     },

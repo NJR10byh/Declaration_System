@@ -10,8 +10,8 @@
       <div class="cardTitle">搜索条件</div>
     </t-row>
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="userManageTable.searchText" placeholder="请输入手机号" clearable/>
-      <t-input class="inputStyle" v-model="userManageTable.searchText" placeholder="请输入姓名" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.phoneNum" placeholder="请输入手机号" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.name" placeholder="请输入姓名" clearable/>
       <t-button class="inputStyle" style="width: 100px;">
         <template #icon>
           <t-icon name="search"></t-icon>
@@ -31,7 +31,7 @@
         class="tableStyle"
         :data="userManageTable.tableData"
         :columns="USER_MANAGE_TABLE_COLUMNS"
-        row-key="id"
+        row-key="index"
         hover
         stripe
         table-layout="auto"
@@ -44,11 +44,11 @@
         size="small"
         style="margin-top: 10px;"
     >
-      <template #phone="slotProps">
-        {{ slotProps.row.phone }}
+      <template #phoneNum="slotProps">
+        {{ slotProps.row.phoneNum }}
       </template>
       <template #status="slotProps">
-        <t-tag theme="warning" variant="light-outline" shape="round">
+        <t-tag :theme="userTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
           {{ slotProps.row.status }}
         </t-tag>
       </template>
@@ -102,8 +102,11 @@ import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
-import {USER_MANAGE_TABLE_COLUMNS} from "./constants";
+import {BASE_URL, USER_MANAGE_TABLE_COLUMNS} from "./constants";
 import {MessagePlugin} from "tdesign-vue-next";
+import {request} from "@/utils/request";
+import {timestampToDateTime} from "@/utils/date";
+import {userStatus, userTagTheme} from "@/utils/chargeStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -125,25 +128,7 @@ const getContainer = () => {
  */
 const userManageTable = reactive({
   tableLoading: false,// 表格加载
-  tableData: [
-    {
-      index: 1,
-      phone: "13209209271",
-      name: "张三",
-      creatUser: "石磊",
-      creatTime: "2023-08-02 13:23:45",
-      status: "启用"
-    },
-    {
-      index: 2,
-      phone: "19009209322",
-      name: "李四",
-      creatUser: "石磊",
-      creatTime: "2023-08-03 17:56:21",
-      status: "禁用",
-    }
-  ],// 表格数据
-  searchText: "",
+  tableData: [],
   // 表格分页
   pagination: {
     total: 0,
@@ -169,12 +154,22 @@ const editFormData = reactive({
   status: ""
 });
 
+const currRequestBody = reactive({
+  pageNo: 1, // 页
+  pageItems: 20, // 条数
+  name: null, // 姓名
+  phoneNum: null,// 手机号
+})
+
 /**
  * methods区
  */
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
+  userManageTable.pagination.current = currRequestBody.pageNo;
+  userManageTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData()
 });
 
 /**
@@ -183,6 +178,11 @@ onMounted(() => {
 // 分页钩子
 const userManageTablePageChange = (curr: any) => {
   console.log("分页变化", curr);
+  currRequestBody.pageNo = curr.current;
+  currRequestBody.pageItems = curr.pageSize;
+  userManageTable.pagination.current = currRequestBody.pageNo;
+  userManageTable.pagination.pageSize = currRequestBody.pageItems;
+  getTableData();
 };
 
 // 上传文件失败钩子
@@ -193,6 +193,25 @@ const uploadFail = ({file}) => {
 /**
  * 业务相关
  */
+const getTableData = () => {
+  userManageTable.tableData = [];
+  userManageTable.tableLoading = true;
+  request.post({
+    url: BASE_URL.adminList,
+    data: currRequestBody
+  }).then(res => {
+    userManageTable.pagination.total = res.totalRows;
+    userManageTable.tableData = res.list;
+    userManageTable.tableData.map((item, index) => {
+      item.index = (userManageTable.pagination.current - 1) * userManageTable.pagination.pageSize + index + 1;
+      item.buildTime = timestampToDateTime(item.buildTime);
+      item.status = userStatus(item.status);
+    })
+  }).catch(err => {
+  }).finally(() => {
+    userManageTable.tableLoading = false;
+  })
+}
 // 新增用户
 const addUser = () => {
   dialogTitle.value = "新增管理员";
