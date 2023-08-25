@@ -45,7 +45,7 @@ export default ({mode}: ConfigEnv): UserConfig => {
             host: "localhost",
             proxy: {
                 "/smartReport": { /* 测试环境 */
-                    target: "http://120.77.168.106:6700",
+                    target: "http://47.113.188.245:6700",
                     // 允许跨域
                     changeOrigin: true
                     // pathRewrite: { // 在发出请求后将 /patent 替换为''空值，这样不影响接口请求
