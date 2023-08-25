@@ -45,7 +45,7 @@ export const getNYearLaterDate = (nYears) => {
 };
 
 /**
- * 十位时间戳转 yyyy-MM-dd HH:mm:ss
+ * 十位时间戳 转 yyyy-MM-dd HH:mm:ss
  * @param timestamp
  */
 export const timestampToDateTime = (timestamp: number) => {
@@ -65,4 +65,12 @@ export const timestampToDateTime = (timestamp: number) => {
         const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
         return formattedDateTime;
     }
+}
+/**
+ * yyyy-MM-dd HH:mm:ss 转 十位时间戳
+ * @param dateString
+ */
+export const dateStringToTimestamp = (dateString: string) => {
+    const date = new Date(dateString);
+    return Math.floor(date.getTime() / 1000); // 除以1000以获取十位时间戳
 }

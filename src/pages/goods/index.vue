@@ -10,16 +10,16 @@
       <div class="cardTitle">搜索条件</div>
     </t-row>
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="goodsInfoTable.searchText" placeholder="请输入商品名称" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.commodity" placeholder="请输入商品名称" clearable/>
       <t-select
           class="inputStyle"
-          v-model="goodsInfoTable.searchText"
+          v-model="currRequestBody.status"
           placeholder="-请选择商品状态-"
           :options="goodsStatusOptions"
           filterable
           clearable
       />
-      <t-button class="inputStyle" style="width: 100px;">
+      <t-button class="inputStyle" style="width: 100px;" @click="searchData">
         <template #icon>
           <t-icon name="search"></t-icon>
         </template>
@@ -51,6 +51,15 @@
         size="small"
         style="margin-top: 10px;"
     >
+      <template #remainAmount="slotProps">
+        {{ slotProps.row.remainAmount + "元" }}
+      </template>
+      <template #totalAmount="slotProps">
+        {{ slotProps.row.totalAmount + "元" }}
+      </template>
+      <template #expectPayback="slotProps">
+        {{ slotProps.row.expectPayback + "元" }}
+      </template>
       <template #status="slotProps">
         <t-tag :theme="goodsTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
           {{ goodsStatus(slotProps.row.status) }}
@@ -101,13 +110,22 @@
           <t-input v-model="editFormData.commodity" placeholder="请输入商品名称"/>
         </t-form-item>
         <t-form-item label="商品链接">
-          <t-input v-model="editFormData.goodsLink" placeholder="请输入商品链接"/>
+          <t-input v-model="editFormData.shoppingUrl" placeholder="请输入商品链接"/>
+        </t-form-item>
+        <t-form-item label="商品状态">
+          <t-select
+              v-model="editFormData.status"
+              placeholder="-请选择商品状态-"
+              :options="goodsStatusOptions"
+              filterable
+              clearable
+          />
         </t-form-item>
         <t-form-item label="总金额">
-          <t-input v-model="editFormData.totalAmount" placeholder="请输入总金额" suffix="元"/>
+          <t-input type="number" v-model="editFormData.totalAmount" placeholder="请输入总金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="预计返款金额">
-          <t-input v-model="editFormData.expectPayback" placeholder="请输入预计返款金额" suffix="元"/>
+          <t-input type="number" v-model="editFormData.expectPayback" placeholder="请输入预计返款金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="截止时间">
           <t-date-picker v-model="editFormData.endTime" enable-time-picker placeholder="请选择截止时间"
@@ -125,9 +143,10 @@ import {useRouter} from "vue-router";
 import {prefix} from "@/config/global";
 import {BASE_URL, GOODS_INFO_TABLE_COLUMNS} from "./constants";
 import {request} from "@/utils/request";
-import {timestampToDateTime} from "@/utils/date";
+import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
 import {goodsStatus, goodsTagTheme} from "@/utils/chargeStatus";
 import {copyInfo} from "@/utils/tools";
+import {MessagePlugin} from "tdesign-vue-next";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -160,9 +179,8 @@ const goodsInfoTable = reactive({
 
 // 商品状态选项
 const goodsStatusOptions = reactive([
-  {label: '待审核', value: '1'},
-  {label: '审核中', value: '2'},
-  {label: '已审核', value: '3'}
+  {label: '启用', value: 1},
+  {label: '禁用', value: 0}
 ])
 
 // 对话框标题
@@ -172,8 +190,10 @@ const editVisible = ref(false);
 
 // 编辑表单
 const editFormData = reactive({
+  commodityId: null,
   commodity: "",
-  goodsLink: "",
+  status: 1,
+  shoppingUrl: "",
   totalAmount: "",
   expectPayback: "",
   endTime: ""
@@ -228,9 +248,6 @@ const getTableData = () => {
     goodsInfoTable.tableData = res.list;
     goodsInfoTable.tableData.map((item, index) => {
       item.index = (goodsInfoTable.pagination.current - 1) * goodsInfoTable.pagination.pageSize + index + 1;
-      item.remainAmount += " 元";
-      item.totalAmount += " 元";
-      item.expectPayback += " 元";
       item.buildTime = timestampToDateTime(item.buildTime);
       item.endTime = timestampToDateTime(item.endTime);
     })
@@ -240,12 +257,18 @@ const getTableData = () => {
     goodsInfoTable.tableLoading = false;
   })
 }
+// 搜索数据
+const searchData = () => {
+  getTableData();
+}
 // 新增
 const addGoodsInfo = () => {
   dialogTitle.value = "新增商品信息";
   Object.assign(editFormData, {
+    commodityId: null,
     commodity: "",
-    goodsLink: "",
+    status: 1,
+    shoppingUrl: "",
     totalAmount: "",
     expectPayback: "",
     endTime: ""
@@ -269,8 +292,11 @@ const disable = (row: any) => {
 const editInfo = (row: any) => {
   dialogTitle.value = "编辑商品信息";
   Object.assign(editFormData, {
+    commodityId: row.commodityId,
     commodity: row.commodity,
+    status: row.status,
     totalAmount: row.totalAmount,
+    shoppingUrl: row.shoppingUrl,
     expectPayback: row.expectPayback,
     endTime: row.endTime
   })
@@ -278,8 +304,22 @@ const editInfo = (row: any) => {
 }
 
 const editConfirm = () => {
-  console.log(dialogTitle);
-  editVisible.value = false;
+  Object.assign(editFormData, {
+    endTime: dateStringToTimestamp(editFormData.endTime)
+  })
+  console.log(editFormData);
+  request.post({
+    url: BASE_URL.editDetail,
+    data: editFormData
+  }).then(res => {
+    console.log(res);
+    MessagePlugin.success(dialogTitle.value + "成功");
+  }).catch(err => {
+    MessagePlugin.error("操作失败：" + err);
+  }).finally(() => {
+    getTableData();
+    editVisible.value = false;
+  })
 }
 </script>
 

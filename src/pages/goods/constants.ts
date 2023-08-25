@@ -5,7 +5,8 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-    commodityList: "/commodity/list"
+    commodityList: "/commodity/list",
+    editDetail: "/commodity/editDetail"
 };
 
 export const GOODS_INFO_TABLE_COLUMNS = [

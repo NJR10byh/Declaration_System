@@ -156,7 +156,7 @@ const editFormData = reactive({
   phoneNum: "",
   password: "000000",
   name: "",
-  status: ""
+  status: 1
 });
 
 const currRequestBody = reactive({
@@ -223,7 +223,7 @@ const addUser = () => {
     phoneNum: "",
     password: "000000",
     name: "",
-    status: ""
+    status: 1
   })
   editVisible.value = true;
 }
@@ -248,10 +248,10 @@ const editConfirm = () => {
   }).then(res => {
     console.log(res)
     MessagePlugin.success(dialogTitle.value + "成功");
-    getTableData();
   }).catch(err => {
-    MessagePlugin.error(err);
+    MessagePlugin.error("操作失败：" + err);
   }).finally(() => {
+    getTableData();
     editVisible.value = false;
   })
 }
