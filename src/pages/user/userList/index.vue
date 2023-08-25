@@ -204,8 +204,9 @@ import {prefix} from "@/config/global";
 import {BASE_URL,USER_LIST_TABLE_COLUMNS} from "./constants";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
-import {timestampToDateTime} from "@/utils/date";
+import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
 import {chargeStatus} from "@/utils/userStatus";
+import {setObjToUrlParams} from "@/utils/request/utils";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -241,11 +242,11 @@ const userListTable = reactive({
     current: 1,
     pageSize: 20
   },
-  // searchData :{
-  //   phone: "",
-  //   name: "",
-  //   status: ""
-  //   }
+  searchData :{
+    phone: "",
+    name: "",
+    status: ""
+    }
 });
 
 // const currRequestBody = reactive({
@@ -276,10 +277,11 @@ const currRequestBody = reactive({
 onMounted(() => {
   userListTable.pagination.current = currRequestBody.pageNo;
   userListTable.pagination.pageSize = currRequestBody.pageItems;
-  getTableData()
+
+  getTableData();
 });
 
-const getTableData = () => {
+const getTableData = async () => {
   userListTable.tableData = [];
   userListTable.tableLoading = true;
   request.post({
@@ -361,25 +363,16 @@ const qrCodeOpen = () => {
 const initPagination = () => {
   userListTable.pagination.current = 1;
 };
-const search = () => {
-  // userListTable.tableLoading = true;
-  // // alert("查询条目失败");
-  // console.log(searchData);
-  // // MessagePlugin.warning("暂未开放");
-  // initPagination();
-  // console.log(searchData);
-  // request.post(BASE_URL.userList, {
-  //   params: searchData
-  // }).then(res => {
-  //   // 更新表格数据
-  //   userListTable.tableData = res.data;
-  // }).finally(() => {
-  //   userListTable.tableLoading = false;
-  // })
-  // MessagePlugin.warning(
-  //     `没有相关信息`,
-  // );
+const search = async () => {
 
+  userListTable.pagination.current = 1;
+  userListTable.pagination.pageSize = 20;
+  Object.assign(currRequestBody, {
+    pageNo: userListTable.pagination.current,
+    pageItems: userListTable.pagination.pageSize,
+
+  })
+  await getTableData();
 }
 // 禁用
 const disableUser = (row: any) => {
