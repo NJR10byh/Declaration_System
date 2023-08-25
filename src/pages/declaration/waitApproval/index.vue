@@ -82,7 +82,7 @@
       </template>
       <template #status="slotProps">
         <t-tag theme="warning" variant="light-outline" shape="round">
-          {{ slotProps.row.status }}
+          {{ declarationStatus(slotProps.row.status) }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -236,7 +236,6 @@ const getTableData = () => {
       item.actualPayback += " 元";
       item.reportTime = timestampToDateTime(item.reportTime);
       item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
-      item.status = declarationStatus(item.status);
     })
   }).catch(err => {
   }).finally(() => {

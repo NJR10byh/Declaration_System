@@ -53,7 +53,7 @@
     >
       <template #status="slotProps">
         <t-tag :theme="goodsTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
-          {{ slotProps.row.status }}
+          {{ goodsStatus(slotProps.row.status) }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -233,7 +233,6 @@ const getTableData = () => {
       item.expectPayback += " 元";
       item.buildTime = timestampToDateTime(item.buildTime);
       item.endTime = timestampToDateTime(item.endTime);
-      item.status = goodsStatus(item.status);
     })
     console.log(goodsInfoTable.tableData)
   }).catch(err => {

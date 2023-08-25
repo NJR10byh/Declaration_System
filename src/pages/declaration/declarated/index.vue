@@ -82,7 +82,7 @@
       </template>
       <template #status="slotProps">
         <t-tag theme="success" variant="light-outline" shape="round">
-          {{ slotProps.row.status }}
+          {{ declarationStatus(slotProps.row.status) }}
         </t-tag>
       </template>
       <template #settings="slotProps">
@@ -149,7 +149,7 @@ import {DECLARATED_TABLE_COLUMNS} from "./constants";
 import {request} from "@/utils/request";
 import {BASE_URL} from "@/pages/declaration/all/constants";
 import {timestampToDateTime} from "@/utils/date";
-import {declarationStatus} from "@/utils/chargeStatus";
+import {declarationStatus} from "../../../utils/chargeStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -265,7 +265,6 @@ const getTableData = () => {
       item.actualPayback += " 元";
       item.reportTime = timestampToDateTime(item.reportTime);
       item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
-      item.status = declarationStatus(item.status);
     })
   }).catch(err => {
   }).finally(() => {

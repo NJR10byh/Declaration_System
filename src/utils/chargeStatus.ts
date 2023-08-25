@@ -27,17 +27,17 @@ export const declarationStatus = (status: number) => {
  * 根据报单状态返回Tag主题
  * @param status
  */
-export const declarationTagTheme = (status: string) => {
+export const declarationTagTheme = (status: number) => {
     switch (status) {
-        case "已报单":
+        case 0:
             return "success";
-        case "待审核":
+        case 1:
             return "warning";
-        case "待返款":
+        case 2:
             return "warning";
-        case "已返款":
+        case 3:
             return "success";
-        case "已作废":
+        case 4:
             return "danger";
     }
 };
@@ -60,11 +60,11 @@ export const goodsStatus = (status: number) => {
  * 根据商品状态返回Tag主题
  * @param status
  */
-export const goodsTagTheme = (status: string) => {
+export const goodsTagTheme = (status: number) => {
     switch (status) {
-        case "禁用":
+        case 0:
             return "danger";
-        case "启用":
+        case 1:
             return "success";
     }
 };
@@ -86,11 +86,11 @@ export const userStatus = (status: number) => {
  * 根据用户状态返回Tag主题
  * @param status
  */
-export const userTagTheme = (status: string) => {
+export const userTagTheme = (status: number) => {
     switch (status) {
-        case "禁用":
+        case 0:
             return "danger";
-        case "启用":
+        case 1:
             return "success";
     }
 }
