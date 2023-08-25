@@ -55,7 +55,7 @@
       </template>
       <template #trackNum="slotProps">
         <t-tag theme="default">
-          {{ slotProps.row.trackNum }}
+          {{ isNotEmpty(slotProps.row.trackNum) ? slotProps.row.trackNum : "暂无" }}
         </t-tag>
       </template>
       <template #payAmount="slotProps">
@@ -148,7 +148,7 @@
           <t-input v-model="editFormData.payAmount" placeholder="请输入实付金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="备注">
-          <t-textarea v-model="editFormData.remark" placeholder="请输入备注"/>
+          <t-textarea v-model="editFormData.notes" placeholder="请输入备注"/>
         </t-form-item>
       </t-form>
     </template>
@@ -165,6 +165,7 @@ import {request} from "@/utils/request";
 import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
 import {declarationStatus} from "../../../utils/chargeStatus";
 import {MessagePlugin} from "tdesign-vue-next";
+import {isNotEmpty} from "../../../utils/validate";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -202,9 +203,11 @@ const declaratedTable = reactive({
 const goodsOptions = ref([])
 // 状态选项
 const statusOptions = reactive([
-  {label: '全部', value: '0'},
-  {label: '审核中', value: '1'},
-  {label: '已审核', value: '2'}
+  {label: '已报单', value: 0},
+  {label: '待审核', value: 1},
+  {label: '待返款', value: 2},
+  {label: '已返款', value: 3},
+  {label: '已作废', value: 4}
 ])
 
 // 下单图预览
@@ -220,7 +223,7 @@ const editFormData = reactive({
   status: "",
   orderId: "",
   payAmount: "",
-  remark: ""
+  notes: ""
 });
 
 const currRequestBody = reactive({
@@ -326,21 +329,35 @@ const finishPicOpen = () => {
 
 // 编辑报单
 const editDeclaration = (row: any) => {
-  console.log(row);
   Object.assign(editFormData, {
+    id: row.id,
     commodity: row.commodity,
+    commodityId: row.commodityId,
     status: row.status,
     orderId: row.orderId,
     payAmount: row.payAmount,
-    remark: row.remark,
+    notes: row.notes,
   });
   editVisible.value = true;
 }
 
+
 // 编辑对话框确认
 const editConfirm = () => {
-  editVisible.value = false;
+  // editVisible.value = false;
   console.log(editFormData);
+  request.post({
+    url: BASE_URL.edit,
+    data: editFormData
+  }).then(res => {
+    console.log(res);
+    MessagePlugin.success("编辑成功");
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+    editVisible.value = false;
+    getTableData();
+  })
 }
 </script>
 

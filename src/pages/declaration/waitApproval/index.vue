@@ -55,7 +55,7 @@
       </template>
       <template #trackNum="slotProps">
         <t-tag theme="default">
-          {{ slotProps.row.trackNum }}
+          {{ isNotEmpty(slotProps.row.trackNum) ? slotProps.row.trackNum : "暂无" }}
         </t-tag>
       </template>
       <template #payAmount="slotProps">
@@ -130,7 +130,7 @@
   >
     <template #body>
       <div>确定要审批通过吗？</div>
-      <t-input style="margin-top: 10px;" v-model="approvedData.remark" placeholder="审批通过请填写备注"/>
+      <t-input style="margin-top: 10px;" v-model="approvedData.examineNotes" placeholder="审批通过请填写备注"/>
     </template>
   </t-dialog>
 </template>
@@ -142,10 +142,11 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
-import {BASE_URL} from "@/pages/declaration/all/constants";
+import {BASE_URL} from "./constants";
 import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
 import {declarationStatus} from "@/utils/chargeStatus";
 import {WAIT_APPROVAL_TABLE_COLUMNS} from "@/pages/declaration/waitApproval/constants";
+import {isNotEmpty} from "../../../utils/validate";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -190,8 +191,9 @@ const finishPicVisible = ref(false);
 // 审批通过Dialog
 const approvedVisible = ref(false);
 const approvedData = reactive({
-  orderId: "",
-  remark: ""
+  id: "",
+  status: 2,
+  examineNotes: ""
 });
 
 const currRequestBody = reactive({
@@ -298,14 +300,24 @@ const finishPicOpen = () => {
 // 审批通过
 const approved = (row: any) => {
   Object.assign(approvedData, {
-    orderId: row.orderId,
-    remark: ""
+    id: row.id,
+    status: 2,
+    examineNotes: ""
   })
   approvedVisible.value = true;
 }
 const approvedConfirm = () => {
-  console.log(approvedData);
-  approvedVisible.value = false;
+  request.post({
+    url: BASE_URL.examine,
+    data: approvedData
+  }).then(res => {
+    MessagePlugin.success("审批通过")
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+    approvedVisible.value = false;
+    getTableData()
+  })
 }
 
 
@@ -323,9 +335,23 @@ const cancel = (row: any) => {
     },
     cancelBtn: '取消',
     onConfirm: () => {
-      MessagePlugin.success("已作废")
-      // 请求成功后，销毁弹框
-      cancelConfirmDialog.destroy();
+      Object.assign(approvedData, {
+        id: row.id,
+        status: 4,
+        examineNotes: ""
+      })
+      request.post({
+        url: BASE_URL.examine,
+        data: approvedData
+      }).then(res => {
+        MessagePlugin.success("已作废")
+      }).catch(err => {
+        MessagePlugin.error(err);
+      }).finally(() => {
+        // 销毁弹框
+        cancelConfirmDialog.destroy();
+        getTableData()
+      })
     },
     onClose: () => {
       cancelConfirmDialog.hide();

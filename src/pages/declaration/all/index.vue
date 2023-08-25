@@ -13,7 +13,7 @@
       <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
       <t-select
           class="inputStyle"
-          v-model="currRequestBody.commodity"
+          v-model="currRequestBody.commodityId"
           placeholder="-请选择商品-"
           :options="goodsOptions"
           filterable
@@ -43,19 +43,19 @@
         </t-button>
       </div>
       <div>
-        <t-button theme="success">
+        <t-button theme="success" @click="exportExcel">
           <template #icon>
             <t-icon name="file-excel"></t-icon>
           </template>
           导出Excel
         </t-button>
-        <t-button theme="success">
+        <t-button theme="success" @click="exportPic(0)">
           <template #icon>
             <t-icon name="file-image"></t-icon>
           </template>
           导出下单图
         </t-button>
-        <t-button theme="success">
+        <t-button theme="success" @click="exportPic(1)">
           <template #icon>
             <t-icon name="file-image"></t-icon>
           </template>
@@ -87,7 +87,7 @@
       </template>
       <template #trackNum="slotProps">
         <t-tag theme="default">
-          {{ slotProps.row.trackNum }}
+          {{ isNotEmpty(slotProps.row.trackNum) ? slotProps.row.trackNum : "暂无" }}
         </t-tag>
       </template>
       <template #payAmount="slotProps">
@@ -165,10 +165,10 @@
           <t-input v-model="editFormData.orderId" placeholder="请输入订单号"/>
         </t-form-item>
         <t-form-item label="实付金额">
-          <t-input v-model="editFormData.payAmount" placeholder="请输入实付金额" suffix="元"/>
+          <t-input type="number" v-model="editFormData.payAmount" placeholder="请输入实付金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="备注">
-          <t-textarea v-model="editFormData.remark" placeholder="请输入备注"/>
+          <t-textarea v-model="editFormData.notes" placeholder="请输入备注"/>
         </t-form-item>
       </t-form>
     </template>
@@ -185,6 +185,9 @@ import {request} from "@/utils/request";
 import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
 import {declarationStatus, declarationTagTheme} from "@/utils/chargeStatus";
 import {MessagePlugin} from "tdesign-vue-next";
+import {isNotEmpty} from "../../../utils/validate";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {downloadFile} from "@/utils/files";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -222,9 +225,11 @@ const allDeclarationTable = reactive({
 const goodsOptions = ref([])
 // 状态选项
 const statusOptions = reactive([
-  {label: '全部', value: '0'},
-  {label: '审核中', value: '1'},
-  {label: '已审核', value: '2'}
+  {label: '已报单', value: 0},
+  {label: '待审核', value: 1},
+  {label: '待返款', value: 2},
+  {label: '已返款', value: 3},
+  {label: '已作废', value: 4}
 ])
 
 // 下单图预览
@@ -236,22 +241,25 @@ const editVisible = ref(false);
 
 // 编辑表单
 const editFormData = reactive({
+  id: "",
   commodity: "",
+  commodityId: "",
   status: "",
   orderId: "",
   payAmount: "",
-  remark: ""
+  notes: ""
 });
 
 const currRequestBody = reactive({
   pageNo: 1, // 页
   pageItems: 20, // 条数
   orderId: "", // 订单号
-  commodity: "",// 商品名称
+  commodityId: "",// 商品id
+  commodity: "",// 商品
   reporter: "",// 报单人
-  startTime: null,
-  endTime: null,
-  status: null // 全部-不传 已报单-0 待审核-1
+  startTime: "",
+  endTime: "",
+  status: "" // 全部-不传 已报单-0 待审核-1
 })
 
 /**
@@ -308,11 +316,10 @@ const getAllCommodity = async () => {
   request.get({
     url: BASE_URL.listCommodity
   }).then(res => {
-    console.log(res);
-    res.map((item: { commodityName: any; }) => {
+    res.map((item: { commodityName: any; commodityId: any; }) => {
       goodsOptions.value.push({
         label: item.commodityName,
-        value: item.commodityName
+        value: item.commodityId
       })
     })
   }).catch(err => {
@@ -328,10 +335,39 @@ const searchData = async () => {
   Object.assign(currRequestBody, {
     pageNo: allDeclarationTable.pagination.current,
     pageItems: allDeclarationTable.pagination.pageSize,
-    startTime: dateStringToTimestamp(reportDateRange.value[0]),
-    endTime: dateStringToTimestamp(reportDateRange.value[1])
+    startTime: isNotEmpty(reportDateRange.value[0]) ? dateStringToTimestamp(reportDateRange.value[0]) : null,
+    endTime: isNotEmpty(reportDateRange.value[1]) ? dateStringToTimestamp(reportDateRange.value[1]) : null
   })
   await getTableData();
+}
+
+// 导出Excel
+const exportExcel = () => {
+  console.log(currRequestBody)
+  let reportParams = {
+    orderId: currRequestBody.orderId,
+    commodity: currRequestBody.commodity,
+    reporter: currRequestBody.reporter,
+    startTime: currRequestBody.startTime,
+    endTime: currRequestBody.endTime,
+    status: currRequestBody.status
+  }
+  downloadFile(setObjToUrlParams(BASE_URL.downloadExcel, reportParams))
+}
+
+// 导出图片 0-下单图 1-完成图
+const exportPic = (picFlag: number) => {
+  console.log(currRequestBody)
+  let reportParams = {
+    orderId: currRequestBody.orderId,
+    commodity: currRequestBody.commodity,
+    reporter: currRequestBody.reporter,
+    startTime: currRequestBody.startTime,
+    endTime: currRequestBody.endTime,
+    status: currRequestBody.status,
+    picFlag: picFlag
+  }
+  downloadFile(setObjToUrlParams(BASE_URL.downloadPic, reportParams))
 }
 
 // 下单图预览trigger
@@ -346,22 +382,34 @@ const finishPicOpen = () => {
 
 // 编辑报单
 const editDeclaration = (row: any) => {
-  console.log(row);
   Object.assign(editFormData, {
+    id: row.id,
     commodity: row.commodity,
+    commodityId: row.commodityId,
     status: row.status,
     orderId: row.orderId,
     payAmount: row.payAmount,
-    remark: row.remark,
+    notes: row.notes,
   });
   editVisible.value = true;
 }
 
 // 编辑对话框确认
 const editConfirm = () => {
-  editVisible.value = false;
+  // editVisible.value = false;
   console.log(editFormData);
-
+  request.post({
+    url: BASE_URL.edit,
+    data: editFormData
+  }).then(res => {
+    console.log(res);
+    MessagePlugin.success("编辑成功");
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+    editVisible.value = false;
+    getTableData();
+  })
 }
 </script>
 

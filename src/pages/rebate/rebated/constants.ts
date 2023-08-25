@@ -92,14 +92,14 @@ export const REBATED_DETAIL_TABLE_COLUMNS = [
     {
         title: "备注",
         align: "left",
-        colKey: "remark",
+        colKey: "notes",
         width: 100,
         ellipsis: true
     },
     {
         title: "审核备注",
         align: "left",
-        colKey: "approvalRemark",
+        colKey: "approvalnotes",
         width: 100,
         ellipsis: true
     },

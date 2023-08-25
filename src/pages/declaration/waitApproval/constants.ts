@@ -5,7 +5,9 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-    queryList: "/reports/queryList"
+    queryList: "/reports/queryList",
+    listCommodity: "/reports/listCommodity",
+    examine: "/reports/examine"
 };
 
 export const WAIT_APPROVAL_TABLE_COLUMNS = [
@@ -26,7 +28,7 @@ export const WAIT_APPROVAL_TABLE_COLUMNS = [
         title: "物流单号",
         align: "center",
         colKey: "trackNum",
-        width: 130,
+        width: 140,
         ellipsis: true
     },
     {

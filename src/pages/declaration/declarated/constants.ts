@@ -6,7 +6,8 @@
  */
 export const BASE_URL = {
     queryList: "/reports/queryList",
-    listCommodity: "/reports/listCommodity"
+    listCommodity: "/reports/listCommodity",
+    edit: "/reports/edit",
 };
 
 export const DECLARATED_TABLE_COLUMNS = [
