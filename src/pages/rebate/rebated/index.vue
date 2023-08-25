@@ -24,7 +24,7 @@
         class="tableStyle"
         :data="rebatedTable.tableData"
         :columns="REBATED_TABLE_COLUMNS"
-        row-key="id"
+        row-key="index"
         hover
         stripe
         :pagination="rebatedTable.pagination"
@@ -67,7 +67,7 @@
           class="tableStyle"
           :data="rebatedDetailTable.tableData"
           :columns="REBATED_DETAIL_TABLE_COLUMNS"
-          row-key="id"
+          row-key="index"
           hover
           stripe
           bordered

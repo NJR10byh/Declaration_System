@@ -66,7 +66,7 @@
         class="tableStyle"
         :data="allDeclarationTable.tableData"
         :columns="ALL_DECLARATION_TABLE_COLUMNS"
-        row-key="id"
+        row-key="index"
         hover
         stripe
         table-content-width="auto"
@@ -113,7 +113,7 @@
         </div>
       </template>
       <template #status="slotProps">
-        <t-tag :theme="chargeStatusTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
+        <t-tag :theme="declarationTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
           {{ slotProps.row.status }}
         </t-tag>
       </template>
@@ -168,7 +168,7 @@ import {prefix} from "@/config/global";
 import {ALL_DECLARATION_TABLE_COLUMNS, BASE_URL} from "./constants";
 import {request} from "@/utils/request";
 import {timestampToDateTime} from "@/utils/date";
-import {chargeStatus, chargeStatusTagTheme} from "@/utils/declarationStatus";
+import {declarationStatus, declarationTagTheme} from "@/utils/chargeStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -284,7 +284,7 @@ const getTableData = () => {
       item.actualPayback += " 元";
       item.reportTime = timestampToDateTime(item.reportTime);
       item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
-      item.status = chargeStatus(item.status);
+      item.status = declarationStatus(item.status);
     })
   }).catch(err => {
   }).finally(() => {

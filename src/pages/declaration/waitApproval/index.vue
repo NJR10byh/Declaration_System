@@ -10,16 +10,16 @@
       <div class="cardTitle">搜索条件</div>
     </t-row>
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="waitApprovalTable.searchText" placeholder="请输入订单号" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
       <t-select
           class="inputStyle"
-          v-model="waitApprovalTable.searchText"
+          v-model="currRequestBody.commodity"
           placeholder="-请选择商品-"
           :options="goodsOptions"
           filterable
           clearable
       />
-      <t-input class="inputStyle" v-model="waitApprovalTable.searchText" placeholder="请输入报单人" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" :placeholder="['报单日期 起', '报单日期 止']" clearable/>
       <t-button class="inputStyle" style="width: 100px;">
         <template #icon>
@@ -34,7 +34,7 @@
         class="tableStyle"
         :data="waitApprovalTable.tableData"
         :columns="WAIT_APPROVAL_TABLE_COLUMNS"
-        row-key="id"
+        row-key="index"
         hover
         stripe
         table-content-width="auto"
@@ -130,7 +130,7 @@ import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
 import {BASE_URL} from "@/pages/declaration/all/constants";
 import {timestampToDateTime} from "@/utils/date";
-import {chargeStatus} from "@/utils/declarationStatus";
+import {declarationStatus} from "@/utils/chargeStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -153,7 +153,6 @@ const getContainer = () => {
 const waitApprovalTable = reactive({
   tableLoading: false,// 表格加载
   tableData: [],
-  searchText: "",
   // 表格分页
   pagination: {
     total: 0,
@@ -237,7 +236,7 @@ const getTableData = () => {
       item.actualPayback += " 元";
       item.reportTime = timestampToDateTime(item.reportTime);
       item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
-      item.status = chargeStatus(item.status);
+      item.status = declarationStatus(item.status);
     })
   }).catch(err => {
   }).finally(() => {

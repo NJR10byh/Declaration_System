@@ -34,7 +34,7 @@
         class="tableStyle"
         :data="declaratedTable.tableData"
         :columns="DECLARATED_TABLE_COLUMNS"
-        row-key="id"
+        row-key="index"
         hover
         stripe
         table-content-width="1500"
@@ -149,7 +149,7 @@ import {DECLARATED_TABLE_COLUMNS} from "./constants";
 import {request} from "@/utils/request";
 import {BASE_URL} from "@/pages/declaration/all/constants";
 import {timestampToDateTime} from "@/utils/date";
-import {chargeStatus} from "@/utils/declarationStatus";
+import {declarationStatus} from "@/utils/chargeStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -265,7 +265,7 @@ const getTableData = () => {
       item.actualPayback += " 元";
       item.reportTime = timestampToDateTime(item.reportTime);
       item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
-      item.status = chargeStatus(item.status);
+      item.status = declarationStatus(item.status);
     })
   }).catch(err => {
   }).finally(() => {

@@ -23,9 +23,9 @@ const transform: AxiosTransform = {
         // }
 
         // 会话过期，重新登录
-        if (res.request.responseURL.indexOf("i.njupt.edu.cn") != -1) {
-            window.location.href = res.request.responseURL;
-        }
+        // if (res.request.responseURL.indexOf("i.njupt.edu.cn") != -1) {
+        //     window.location.href = res.request.responseURL;
+        // }
 
         // 需要获取原生响应头 或者 相应格式为blob流时，返回原生响应头
         if (isReturnNativeResponse || res.request.responseType == "blob") {
@@ -173,8 +173,6 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
                     isJoinPrefix: true,
                     /**
                      * 接口前缀
-                     * 例如: https://www.baidu.com/api
-                     * 开发环境
                      */
                     urlPrefix: "/smartReport",
                     // 是否返回原生响应头 比如：需要获取响应头时使用该属性
