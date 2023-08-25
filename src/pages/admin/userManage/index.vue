@@ -190,11 +190,6 @@ const userManageTablePageChange = (curr: any) => {
   getTableData();
 };
 
-// 上传文件失败钩子
-const uploadFail = ({file}) => {
-  MessagePlugin.error(`文件 ${file.name} 上传失败`);
-};
-
 /**
  * 业务相关
  */
