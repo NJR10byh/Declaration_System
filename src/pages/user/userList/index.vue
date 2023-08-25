@@ -10,17 +10,17 @@
       <div class="cardTitle">搜索条件</div>
     </t-row>
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="searchData.phone" placeholder="请输入手机号" clearable/>
-      <t-input class="inputStyle" v-model="searchData.name" placeholder="请输入姓名" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.phoneNum" placeholder="请输入手机号" clearable/>
+      <t-input class="inputStyle" v-model="currRequestBody.userName" placeholder="请输入姓名" clearable/>
       <t-select
           class="inputStyle"
-          v-model="searchData.status"
+          v-model="currRequestBody.status"
           placeholder="-请选择用户状态-"
           :options="userStatusOptions"
           filterable
           clearable
       />
-      <t-button class="inputStyle" @click="search" style="width: 100px;">
+      <t-button class="inputStyle" @click="searchData" style="width: 100px;">
         <template #icon>
           <t-icon name="search"></t-icon>
         </template>
@@ -46,7 +46,7 @@
         size="small"
         style="margin-top: 10px;"
     >
-      <template #aliPayCode="slotProps">
+      <template #zfbPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
           <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.zfbPic]">
             <template #trigger>
@@ -60,7 +60,7 @@
           </t-image-viewer>
         </div>
       </template>
-      <template #weChatCode="slotProps">
+      <template #wxPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
           <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.wxPic]">
             <template #trigger>
@@ -74,23 +74,20 @@
           </t-image-viewer>
         </div>
       </template>
-      <template #phone="slotProps">
-        {{ slotProps.row.phoneNum }}
-      </template>
-      <template #name="slotProps">
-        {{ slotProps.row.userName}}
-      </template>
-      <template #bankCard="slotProps">
-        {{ slotProps.row.bankName}}
-      </template>
       <template #status="slotProps">
-        <t-tag theme="warning" variant="light-outline" shape="round">
-          {{ slotProps.row.status }}
+        <t-tag :theme="goodsTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
+          {{ goodsStatus(slotProps.row.status) }}
         </t-tag>
       </template>
       <template #settings="slotProps">
         <div class="settingBtns">
-          <t-button theme="danger" @click="disableUser(slotProps.row)">
+          <t-button v-show="slotProps.row.status===0" theme="success" @click="enableUser(slotProps.row)">
+            <template #icon>
+              <t-icon name="check-circle"></t-icon>
+            </template>
+            启用
+          </t-button>
+          <t-button v-show="slotProps.row.status===1" theme="danger" @click="disableUser(slotProps.row)">
             <template #icon>
               <t-icon name="close-circle"></t-icon>
             </template>
@@ -113,10 +110,10 @@
     </t-table>
   </t-card>
 
-  <!--  新增、编辑对话框  -->
+  <!--  编辑对话框  -->
   <t-dialog
       v-model:visible="editVisible"
-      :header="dialogTitle"
+      header="用户编辑"
       attach="body"
       :confirm-on-enter="true"
       :on-confirm="editConfirm"
@@ -125,16 +122,16 @@
     <template #body>
       <t-form>
         <t-form-item label="手机号码">
-          <t-input v-model="editFormData.phone" placeholder="请输入手机号" clearable/>
+          <t-input v-model="editFormData.phoneNum" placeholder="请输入手机号" clearable/>
         </t-form-item>
         <t-form-item label="姓名">
-          <t-input v-model="editFormData.name" placeholder="请输入姓名" clearable/>
+          <t-input v-model="editFormData.userName" placeholder="请输入姓名" clearable/>
         </t-form-item>
         <t-form-item label="开户行">
           <t-input v-model="editFormData.bankName" placeholder="请输入开户行" clearable/>
         </t-form-item>
         <t-form-item label="银行卡号">
-          <t-input v-model="editFormData.bankCard" placeholder="请输入银行卡号" clearable/>
+          <t-input v-model="editFormData.bankNum" placeholder="请输入银行卡号" clearable/>
         </t-form-item>
         <t-form-item label="用户状态">
           <t-select
@@ -149,7 +146,7 @@
         <t-form-item label="支付宝收款码">
           <t-upload
               ref="uploadQrcode"
-              v-model="editFormData.aliPayCode"
+              v-model="editFormData.zfbPic"
               :abridge-name="[10,8]"
               theme="image"
               accept="image/*"
@@ -160,7 +157,7 @@
         <t-form-item label="微信收款码">
           <t-upload
               ref="uploadQrcode"
-              v-model="editFormData.weChatCode"
+              v-model="editFormData.wxPic"
               :abridge-name="[10,8]"
               theme="image"
               accept="image/*"
@@ -201,12 +198,11 @@ import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
-import {BASE_URL,USER_LIST_TABLE_COLUMNS} from "./constants";
+import {BASE_URL, USER_LIST_TABLE_COLUMNS} from "./constants";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
-import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
-import {chargeStatus} from "@/utils/userStatus";
-import {setObjToUrlParams} from "@/utils/request/utils";
+import {timestampToDateTime} from "@/utils/date";
+import {goodsStatus, goodsTagTheme} from "../../../utils/chargeStatus";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -223,13 +219,6 @@ const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
 
-// 搜索条件
-const searchData = reactive({
-  phone: "",
-  name: "",
-  status: ""
-})
-
 /**
  * 表格相关
  */
@@ -242,30 +231,48 @@ const userListTable = reactive({
     current: 1,
     pageSize: 20
   },
-  searchData :{
-    phone: "",
-    name: "",
-    status: ""
-    }
 });
 
-// const currRequestBody = reactive({
-//   bankName: "string",
-//   bankNum: "string",
-//   phoneNum: "string",
-//   registerTime: 0,
-//   status: 0,
-//   userId: 0,
-//   userName: "string",
-//   wxPic: "string",
-//   zfbNum: "string",
-//   zfbPic: "string"
-// })
+// 用户状态选项
+const userStatusOptions = reactive([
+  {label: '启用', value: 1},
+  {label: '禁用', value: 0}
+])
+
+// 上传收款码
+const uploadQrcode = ref();
+// 收款码预览
+const qrCodeVisible = ref(false);
+
+// 编辑对话框
+const editVisible = ref(false);
+// 用户编辑表单
+const editFormData = reactive({
+  phoneNum: "",
+  userId: "",
+  userName: "",
+  bankName: "",
+  bankNum: "",
+  status: 0,
+  zfbNum: "",
+  zfbPic: [],
+  wxPic: [],
+});
+
+// 重置密码对话框
+const resetPasswordVisible = ref(false);
+// 重置密码对话框表单
+const resetPasswordFormData = reactive({
+  phone: "",
+  name: "",
+  password: "000000"
+})
 
 const currRequestBody = reactive({
   pageNo: 1,
   pageItems: 20,
-  commodity: null,
+  phoneNum: null,
+  userName: null,
   status: null
 })
 
@@ -275,9 +282,6 @@ const currRequestBody = reactive({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
-  userListTable.pagination.current = currRequestBody.pageNo;
-  userListTable.pagination.pageSize = currRequestBody.pageItems;
-
   getTableData();
 });
 
@@ -290,54 +294,17 @@ const getTableData = async () => {
   }).then(res => {
     userListTable.pagination.total = res.totalRows;
     userListTable.tableData = res.list;
-    userListTable.tableData.map((item,index)=>{
+    userListTable.tableData.map((item, index) => {
       item.index = (userListTable.pagination.current - 1) * userListTable.pagination.pageSize + index + 1;
-      item.status = chargeStatus(item.status);
       item.registerTime = timestampToDateTime(item.registerTime);
     })
-    console.log("@",userListTable.tableData)
+    console.log("@", userListTable.tableData)
   }).catch(err => {
     console.error(err);
   }).finally(() => {
     userListTable.tableLoading = false;
   })
 }
-// 用户状态选项
-const userStatusOptions = reactive([
-  {label: '启用', value: '1'},
-  {label: '禁用', value: '0'}
-])
-
-// 上传收款码
-const uploadQrcode = ref();
-// 收款码预览
-const qrCodeVisible = ref(false);
-
-// 编辑对话框
-const editVisible = ref(false);
-// 用户编辑对话框标题
-const dialogTitle = ref("用户编辑");
-// 用户编辑表单
-const editFormData = reactive({
-  phone: "",
-  name: "",
-  bankName: "",
-  bankCard: "",
-  status: "",
-  aliPayCode: [],
-  weChatCode: [],
-});
-
-// 重置密码对话框
-const resetPasswordVisible = ref(false);
-// 重置密码对话框表单
-const resetPasswordFormData = reactive({
-  phone: "",
-  name: "",
-  password: "000000"
-})
-
-
 
 /**
  * 操作钩子
@@ -360,19 +327,57 @@ const qrCodeOpen = () => {
   qrCodeVisible.value = true;
 }
 
-const initPagination = () => {
-  userListTable.pagination.current = 1;
-};
-const search = async () => {
-
+const searchData = async () => {
   userListTable.pagination.current = 1;
   userListTable.pagination.pageSize = 20;
   Object.assign(currRequestBody, {
     pageNo: userListTable.pagination.current,
     pageItems: userListTable.pagination.pageSize,
-
   })
   await getTableData();
+}
+// 启用
+const enableUser = (row: any) => {
+  console.log(row);
+  const cancelConfirmDialog = DialogPlugin.confirm({
+    header: '提示',
+    theme: "warning",
+    body: '确定要启用该用户吗？',
+    confirmBtn: {
+      content: '确认',
+      variant: 'base',
+      theme: 'success',
+    },
+    cancelBtn: '取消',
+    onConfirm: () => {
+      let params = {
+        phoneNum: row.phoneNum,
+        userId: row.userId,
+        userName: row.userName,
+        bankName: row.bankName,
+        bankNum: row.bankNum,
+        status: 1,
+        zfbNum: row.zfbNum,
+        zfbPic: row.zfbPic,
+        wxPic: row.wxPic,
+      }
+      request.post({
+        url: BASE_URL.userEdit,
+        data: params
+      }).then(res => {
+        MessagePlugin.success("已启用");
+      }).catch(err => {
+        console.error(err);
+      }).finally(() => {
+        // 销毁弹框
+        cancelConfirmDialog.destroy();
+        getTableData();
+      })
+    },
+    onClose: () => {
+      cancelConfirmDialog.hide();
+    },
+  });
 }
 // 禁用
 const disableUser = (row: any) => {
@@ -388,9 +393,29 @@ const disableUser = (row: any) => {
     },
     cancelBtn: '取消',
     onConfirm: () => {
-      MessagePlugin.success("已禁用")
-      // 请求成功后，销毁弹框
-      cancelConfirmDialog.destroy();
+      let params = {
+        phoneNum: row.phoneNum,
+        userId: row.userId,
+        userName: row.userName,
+        bankName: row.bankName,
+        bankNum: row.bankNum,
+        status: 0,
+        zfbNum: row.zfbNum,
+        zfbPic: row.zfbPic,
+        wxPic: row.wxPic,
+      }
+      request.post({
+        url: BASE_URL.userEdit,
+        data: params
+      }).then(res => {
+        MessagePlugin.success("已禁用");
+      }).catch(err => {
+        console.error(err);
+      }).finally(() => {
+        // 销毁弹框
+        cancelConfirmDialog.destroy();
+        getTableData();
+      })
     },
     onClose: () => {
       cancelConfirmDialog.hide();
@@ -400,16 +425,19 @@ const disableUser = (row: any) => {
 
 // 编辑用户
 const editUser = (row: any) => {
-  dialogTitle.value = "用户编辑";
-  Object.assign(editFormData, {
-    phone: row.phone,
-    name: row.name,
-    bankName: row.bankName,
-    bankCard: row.bankCard,
-    status: row.status,
-    qrCode: [],
-  })
-  editVisible.value = true;
+  MessagePlugin.warning("编辑功能暂未开放");
+  // Object.assign(editFormData, {
+  //   phoneNum: row.phoneNum,
+  //   userId: row.userId,
+  //   userName: row.userName,
+  //   bankName: row.bankName,
+  //   bankNum: row.bankNum,
+  //   status: row.status,
+  //   zfbNum: row.zfbNum,
+  //   zfbPic: [{url: row.zfbPic}],
+  //   wxPic: [{url: row.wxPic}],
+  // });
+  // editVisible.value = true;
 }
 
 // 上传收款码-支付宝
@@ -461,8 +489,17 @@ const uploadWeChatCode = (file: any) => {
 
 // 编辑确认
 const editConfirm = () => {
-  console.log(editFormData);
-  editVisible.value = false;
+  request.post({
+    url: BASE_URL.userEdit,
+    data: editFormData
+  }).then(res => {
+    MessagePlugin.success("编辑成功");
+  }).catch(err => {
+    console.error(err);
+  }).finally(() => {
+    editVisible.value = false;
+    getTableData();
+  })
 }
 
 // 重置密码

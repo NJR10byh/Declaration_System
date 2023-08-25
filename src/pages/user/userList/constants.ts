@@ -5,7 +5,8 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-    userList: "/user/list"
+    userList: "/user/list",
+    userEdit: "/user/edit"
 };
 
 export const USER_LIST_TABLE_COLUMNS = [
@@ -19,14 +20,14 @@ export const USER_LIST_TABLE_COLUMNS = [
     {
         title: "手机号码",
         align: "center",
-        colKey: "phone",
+        colKey: "phoneNum",
         width: 80,
         ellipsis: true
     },
     {
         title: "姓名",
         align: "center",
-        colKey: "name",
+        colKey: "userName",
         width: 80,
         ellipsis: true
     },
@@ -40,20 +41,20 @@ export const USER_LIST_TABLE_COLUMNS = [
     {
         title: "银行卡号",
         align: "center",
-        colKey: "bankCard",
+        colKey: "bankNum",
         width: 150,
         ellipsis: true
     },
     {
         title: "支付宝收款码",
         align: "center",
-        colKey: "aliPayCode",
+        colKey: "zfbPic",
         width: 100
     },
     {
         title: "微信收款码",
         align: "center",
-        colKey: "weChatCode",
+        colKey: "wxPic",
         width: 100
     },
     {
