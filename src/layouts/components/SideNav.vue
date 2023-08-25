@@ -12,8 +12,8 @@
         <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome" class="header-logo-container">
 <!--          <component :is="getLogo()" :class="`${prefix}-side-nav-logo-${collapsed ? 't' : 'tdesign'}-logo`" />-->
           <!--          <img :src="`@/assets/assets-njupt${collapsed ? '-' : '-full'}-logo.png`" style="width: 100%;height: 100%;" />-->
-          <img v-if="collapsed" src="@/assets/assets-njupt-logo.png" class="logo"/>
-          <img v-else src="@/assets/assets-njupt-full-logo.png" class="logo"/>
+          <img src="@/assets/assets-logo.jpg" class="logo"/>
+          <img v-if="!collapsed" src="@/assets/assets-full-logo.jpg" class="logo"/>
         </span>
       </template>
       <menu-content :nav-data="menu"/>
@@ -124,7 +124,7 @@ onMounted(() => {
 });
 
 const goHome = () => {
-  router.push("/user/userInfo");
+  router.push("/dashboard/mainInfo");
 };
 
 const getLogo = () => {

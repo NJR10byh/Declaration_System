@@ -12,7 +12,7 @@
     <t-row justify="start" class="cardTop">
       <t-input class="inputStyle" v-model="currRequestBody.phoneNum" placeholder="请输入手机号" clearable/>
       <t-input class="inputStyle" v-model="currRequestBody.name" placeholder="请输入姓名" clearable/>
-      <t-button class="inputStyle" style="width: 100px;">
+      <t-button class="inputStyle" style="width: 100px;" @click="searchData">
         <template #icon>
           <t-icon name="search"></t-icon>
         </template>
@@ -211,6 +211,10 @@ const getTableData = () => {
   }).finally(() => {
     userManageTable.tableLoading = false;
   })
+}
+// 搜索数据
+const searchData = () => {
+  getTableData();
 }
 // 新增用户
 const addUser = () => {
