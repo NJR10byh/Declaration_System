@@ -5,7 +5,8 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-    queryList: "/reports/queryList"
+    queryList: "/reports/queryList",
+    listCommodity: "/reports/listCommodity"
 };
 
 export const ALL_DECLARATION_TABLE_COLUMNS = [
@@ -21,6 +22,13 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
         align: "center",
         colKey: "orderId",
         width: 120,
+        ellipsis: true
+    },
+    {
+        title: "物流单号",
+        align: "center",
+        colKey: "trackNum",
+        width: 130,
         ellipsis: true
     },
     {

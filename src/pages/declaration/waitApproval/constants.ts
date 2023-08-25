@@ -23,6 +23,13 @@ export const WAIT_APPROVAL_TABLE_COLUMNS = [
         ellipsis: true
     },
     {
+        title: "物流单号",
+        align: "center",
+        colKey: "trackNum",
+        width: 130,
+        ellipsis: true
+    },
+    {
         title: "商品",
         align: "left",
         colKey: "commodity",
@@ -84,17 +91,17 @@ export const WAIT_APPROVAL_TABLE_COLUMNS = [
         colKey: "orderPic",
         width: 80
     },
-    // {
-    //     title: "完成图",
-    //     align: "center",
-    //     colKey: "finishPic",
-    //     width: 80
-    // },
+    {
+        title: "完成图",
+        align: "center",
+        colKey: "finishPic",
+        width: 80
+    },
     {
         title: "操作",
         align: "left",
         colKey: "settings",
         fixed: "right",
-        width: 100
+        width: 240
     }
 ];

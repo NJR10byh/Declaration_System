@@ -34,7 +34,7 @@
   <t-card class="all-declaration-card">
     <t-row justify="space-between" class="cardTop">
       <div>
-        <t-button>
+        <t-button @click="searchData">
           <template #icon>
             <t-icon name="search"></t-icon>
           </template>
@@ -69,7 +69,7 @@
         row-key="index"
         hover
         stripe
-        table-content-width="auto"
+        table-content-width="1600"
         :pagination="allDeclarationTable.pagination"
         :loading="allDeclarationTable.tableLoading"
         :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -83,6 +83,20 @@
         <t-tag theme="primary" variant="light-outline">
           {{ slotProps.row.orderId }}
         </t-tag>
+      </template>
+      <template #trackNum="slotProps">
+        <t-tag theme="default">
+          {{ slotProps.row.trackNum }}
+        </t-tag>
+      </template>
+      <template #payAmount="slotProps">
+        {{ slotProps.row.payAmount + "元" }}
+      </template>
+      <template #expectPayback="slotProps">
+        {{ slotProps.row.expectPayback + "元" }}
+      </template>
+      <template #actualPayback="slotProps">
+        {{ slotProps.row.actualPayback + "元" }}
       </template>
       <template #orderPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
@@ -167,8 +181,9 @@ import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
 import {ALL_DECLARATION_TABLE_COLUMNS, BASE_URL} from "./constants";
 import {request} from "@/utils/request";
-import {timestampToDateTime} from "@/utils/date";
+import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
 import {declarationStatus, declarationTagTheme} from "@/utils/chargeStatus";
+import {MessagePlugin} from "tdesign-vue-next";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -185,6 +200,9 @@ const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
 
+// 报单日期范围
+const reportDateRange = ref([])
+
 /**
  * 表格相关
  */
@@ -200,13 +218,7 @@ const allDeclarationTable = reactive({
 });
 
 // 商品选项
-const goodsOptions = reactive([
-  {label: '选项一', value: '1'},
-  {label: '选项二', value: '2'},
-  {label: '选项三', value: '3'},
-  {label: 'option4', value: '4'},
-  {label: 'OPTION5', value: '5'}
-])
+const goodsOptions = ref([])
 // 状态选项
 const statusOptions = reactive([
   {label: '全部', value: '0'},
@@ -246,10 +258,11 @@ const currRequestBody = reactive({
  */
 /* 生命周期 */
 // 组件挂载完成后执行
-onMounted(() => {
+onMounted(async () => {
   allDeclarationTable.pagination.current = currRequestBody.pageNo;
   allDeclarationTable.pagination.pageSize = currRequestBody.pageItems;
-  getTableData()
+  await getTableData()
+  await getAllCommodity()
 });
 
 /**
@@ -268,7 +281,7 @@ const allDeclarationTablePageChange = (curr: any) => {
 /**
  * 业务相关
  */
-const getTableData = () => {
+const getTableData = async () => {
   allDeclarationTable.tableData = [];
   allDeclarationTable.tableLoading = true;
   request.post({
@@ -279,16 +292,45 @@ const getTableData = () => {
     allDeclarationTable.tableData = res.list;
     allDeclarationTable.tableData.map((item, index) => {
       item.index = (allDeclarationTable.pagination.current - 1) * allDeclarationTable.pagination.pageSize + index + 1;
-      item.payAmount += " 元";
-      item.expectPayback += " 元";
-      item.actualPayback += " 元";
       item.reportTime = timestampToDateTime(item.reportTime);
       item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
     })
   }).catch(err => {
+    MessagePlugin.error(err);
   }).finally(() => {
     allDeclarationTable.tableLoading = false;
   })
+}
+
+// 获取全部商品
+const getAllCommodity = async () => {
+  request.get({
+    url: BASE_URL.listCommodity
+  }).then(res => {
+    console.log(res);
+    res.map((item: { commodityName: any; }) => {
+      goodsOptions.value.push({
+        label: item.commodityName,
+        value: item.commodityName
+      })
+    })
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+  })
+}
+
+// 搜索
+const searchData = async () => {
+  allDeclarationTable.pagination.current = 1;
+  allDeclarationTable.pagination.pageSize = 20;
+  Object.assign(currRequestBody, {
+    pageNo: allDeclarationTable.pagination.current,
+    pageItems: allDeclarationTable.pagination.pageSize,
+    startTime: dateStringToTimestamp(reportDateRange.value[0]),
+    endTime: dateStringToTimestamp(reportDateRange.value[1])
+  })
+  await getTableData();
 }
 
 // 下单图预览trigger

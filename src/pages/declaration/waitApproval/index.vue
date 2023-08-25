@@ -37,7 +37,7 @@
         row-key="index"
         hover
         stripe
-        table-content-width="auto"
+        table-content-width="1600"
         :pagination="waitApprovalTable.pagination"
         :loading="waitApprovalTable.tableLoading"
         :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -51,6 +51,20 @@
         <t-tag theme="primary" variant="light-outline">
           {{ slotProps.row.orderId }}
         </t-tag>
+      </template>
+      <template #trackNum="slotProps">
+        <t-tag theme="default">
+          {{ slotProps.row.trackNum }}
+        </t-tag>
+      </template>
+      <template #payAmount="slotProps">
+        {{ slotProps.row.payAmount + "元" }}
+      </template>
+      <template #expectPayback="slotProps">
+        {{ slotProps.row.expectPayback + "元" }}
+      </template>
+      <template #actualPayback="slotProps">
+        {{ slotProps.row.actualPayback + "元" }}
       </template>
       <template #orderPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
@@ -125,12 +139,12 @@ import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
-import {WAIT_APPROVAL_TABLE_COLUMNS} from "./constants";
 import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
 import {BASE_URL} from "@/pages/declaration/all/constants";
 import {timestampToDateTime} from "@/utils/date";
 import {declarationStatus} from "@/utils/chargeStatus";
+import {WAIT_APPROVAL_TABLE_COLUMNS} from "@/pages/declaration/waitApproval/constants";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -162,13 +176,7 @@ const waitApprovalTable = reactive({
 });
 
 // 商品选项
-const goodsOptions = reactive([
-  {label: '选项一', value: '1'},
-  {label: '选项二', value: '2'},
-  {label: '选项三', value: '3'},
-  {label: 'option4', value: '4'},
-  {label: 'OPTION5', value: '5'}
-])
+const goodsOptions = ref([])
 
 // 下单图预览
 const orderPicVisible = ref(false);
@@ -198,10 +206,11 @@ const currRequestBody = reactive({
  */
 /* 生命周期 */
 // 组件挂载完成后执行
-onMounted(() => {
+onMounted(async () => {
   waitApprovalTable.pagination.current = currRequestBody.pageNo;
   waitApprovalTable.pagination.pageSize = currRequestBody.pageItems;
-  getTableData()
+  await getTableData()
+  await getAllCommodity()
 });
 
 /**
@@ -220,7 +229,7 @@ const waitApprovalTablePageChange = (curr: any) => {
 /**
  * 业务相关
  */
-const getTableData = () => {
+const getTableData = async () => {
   waitApprovalTable.tableData = [];
   waitApprovalTable.tableLoading = true;
   request.post({
@@ -231,17 +240,34 @@ const getTableData = () => {
     waitApprovalTable.tableData = res.list;
     waitApprovalTable.tableData.map((item, index) => {
       item.index = (waitApprovalTable.pagination.current - 1) * waitApprovalTable.pagination.pageSize + index + 1;
-      item.payAmount += " 元";
-      item.expectPayback += " 元";
-      item.actualPayback += " 元";
       item.reportTime = timestampToDateTime(item.reportTime);
       item.applyPaybackTime = timestampToDateTime(item.applyPaybackTime);
     })
   }).catch(err => {
+    MessagePlugin.error(err);
   }).finally(() => {
     waitApprovalTable.tableLoading = false;
   })
 }
+
+// 获取全部商品
+const getAllCommodity = async () => {
+  request.get({
+    url: BASE_URL.listCommodity
+  }).then(res => {
+    console.log(res);
+    res.map((item: { commodityName: any; }) => {
+      goodsOptions.value.push({
+        label: item.commodityName,
+        value: item.commodityName
+      })
+    })
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+  })
+}
+
 // 下单图预览trigger
 const orderPicOpen = () => {
   orderPicVisible.value = true;

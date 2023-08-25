@@ -5,7 +5,8 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-    queryList: "/reports/queryList"
+    queryList: "/reports/queryList",
+    listCommodity: "/reports/listCommodity"
 };
 
 export const DECLARATED_TABLE_COLUMNS = [
@@ -20,6 +21,13 @@ export const DECLARATED_TABLE_COLUMNS = [
         align: "center",
         colKey: "orderId",
         width: 120,
+        ellipsis: true
+    },
+    {
+        title: "物流单号",
+        align: "center",
+        colKey: "trackNum",
+        width: 130,
         ellipsis: true
     },
     {
@@ -84,12 +92,12 @@ export const DECLARATED_TABLE_COLUMNS = [
         colKey: "orderPic",
         width: 80
     },
-    // {
-    //     title: "完成图",
-    //     align: "center",
-    //     colKey: "finishPic",
-    //     width: 80
-    // },
+    {
+        title: "完成图",
+        align: "center",
+        colKey: "finishPic",
+        width: 80
+    },
     {
         title: "操作",
         align: "left",
