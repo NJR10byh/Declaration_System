@@ -9,7 +9,8 @@ export const BASE_URL = {
     updateInvitedCode: "/user/updateInvitedCode",
     userList: "/user/list",
     userEdit: "/user/edit",
-    updatePassword: "/user/updatePassword"
+    updatePassword: "/user/updatePassword",
+    uploadUserPic: "/user/uploadUserPic"
 };
 
 export const USER_LIST_TABLE_COLUMNS = [

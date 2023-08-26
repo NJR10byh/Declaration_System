@@ -160,23 +160,31 @@
         </t-form-item>
         <t-form-item label="支付宝收款码">
           <t-upload
-              ref="uploadQrcode"
-              v-model="editFormData.zfbPic"
+              ref="aLiPayCode"
+              v-model="editFormData.zfbPicFile"
               :abridge-name="[10,8]"
+              :auto-upload="false"
               theme="image"
               accept="image/*"
+              :before-upload="beforeUpload"
               :request-method="uploadALiPayCode"
+              :size-limit="{ size: 10, unit: 'MB' }"
+              @validate="validateFile"
               @fail="uploadFail"
           />
         </t-form-item>
         <t-form-item label="微信收款码">
           <t-upload
-              ref="uploadQrcode"
-              v-model="editFormData.wxPic"
+              ref="weChatCode"
+              v-model="editFormData.wxPicFile"
               :abridge-name="[10,8]"
+              :auto-upload="false"
               theme="image"
               accept="image/*"
+              :before-upload="beforeUpload"
               :request-method="uploadWeChatCode"
+              :size-limit="{ size: 10, unit: 'MB' }"
+              @validate="validateFile"
               @fail="uploadFail"
           />
         </t-form-item>
@@ -220,6 +228,7 @@ import {timestampToDateTime} from "@/utils/date";
 import {goodsStatus, goodsTagTheme} from "../../../utils/chargeStatus";
 import {setObjToUrlParams} from "@/utils/request/utils";
 import {copyInfo} from "@/utils/tools";
+import {uploadFile, validateFile, validateFileType} from "@/utils/files";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -240,6 +249,9 @@ const getContainer = () => {
 const invitedCode = ref("")
 // 编辑邀请码
 const newInvitedCode = ref("")
+
+const aLiPayCode = ref();
+const weChatCode = ref();
 
 /**
  * 表格相关
@@ -277,8 +289,10 @@ const editFormData = reactive({
   bankNum: "",
   status: 0,
   zfbNum: "",
-  zfbPic: [],
-  wxPic: [],
+  zfbPicFile: [],
+  wxPicFile: [],
+  zfbPic: "",
+  wxPic: "",
 });
 
 // 重置密码对话框
@@ -489,72 +503,77 @@ const editUser = (row: any) => {
     bankNum: row.bankNum,
     status: row.status,
     zfbNum: row.zfbNum,
-    zfbPic: [{url: row.zfbPic}],
-    wxPic: [{url: row.wxPic}],
+    zfbPicFile: [{url: row.zfbPic}],
+    wxPicFile: [{url: row.wxPic}],
+    zfbPic: row.zfbPic,
+    wxPic: row.wxPic
   });
   editVisible.value = true;
 }
 
+/**
+ * 上传
+ */
+const beforeUpload = (file: { type: string; }) => {
+  return validateFileType("image/*", file.type);
+};
+
 // 上传收款码-支付宝
 const uploadALiPayCode = (file: any) => {
-  console.log(file);
-  return new Promise((resolve) => {
-    // 上传进度控制示例
-    let percent = 0;
-    const percentTimer = setInterval(() => {
-      if (percent + 10 < 99) {
-        percent += 10;
-        uploadQrcode.value.uploadFilePercent({file, percent});
-      } else {
-        clearInterval(percentTimer);
-      }
-    }, 100);
-
-    const timer = setTimeout(() => {
-      // resolve 参数为关键代码
-      resolve({status: 'success', response: {url: 'https://tdesign.gtimg.com/site/avatar.jpg'}});
-      clearTimeout(timer);
-      clearInterval(percentTimer);
-    }, 1000);
-  });
-}
-// 上传收款码-微信
-const uploadWeChatCode = (file: any) => {
-  console.log(file);
-  return new Promise((resolve) => {
-    // 上传进度控制示例
-    let percent = 0;
-    const percentTimer = setInterval(() => {
-      if (percent + 10 < 99) {
-        percent += 10;
-        uploadQrcode.value.uploadFilePercent({file, percent});
-      } else {
-        clearInterval(percentTimer);
-      }
-    }, 100);
-
-    const timer = setTimeout(() => {
-      // resolve 参数为关键代码
-      resolve({status: 'success', response: {url: 'https://tdesign.gtimg.com/site/avatar.jpg'}});
-      clearTimeout(timer);
-      clearInterval(percentTimer);
-    }, 1000);
-  });
-}
-
-// 编辑确认
-const editConfirm = () => {
-  request.post({
-    url: BASE_URL.userEdit,
-    data: editFormData
+  let params = {
+    phoneNum: editFormData.userId,
+    userName: file,
+    fileFlag: 2
+  }
+  let fileFormData = new FormData();
+  fileFormData.append("file", file.raw);
+  let requestUrl = setObjToUrlParams(BASE_URL.uploadUserPic, params);
+  uploadFile(requestUrl, fileFormData, percentCompleted => {
   }).then(res => {
-    MessagePlugin.success("编辑成功");
+    console.log(res);
+    editFormData.zfbPic = res.toString();
   }).catch(err => {
     console.error(err);
   }).finally(() => {
-    editVisible.value = false;
-    getTableData();
   })
+}
+// 上传收款码-微信
+const uploadWeChatCode = (file: any) => {
+  let params = {
+    phoneNum: editFormData.phoneNum,
+    userName: editFormData.userName,
+    fileFlag: 3
+  }
+  let fileFormData = new FormData();
+  fileFormData.append("file", file.raw);
+  let requestUrl = setObjToUrlParams(BASE_URL.uploadUserPic, params);
+  uploadFile(requestUrl, fileFormData, percentCompleted => {
+  }).then(res => {
+    console.log(res);
+    editFormData.wxPic = res.toString();
+  }).catch(err => {
+    console.error(err);
+  }).finally(() => {
+  })
+}
+
+// 编辑确认
+const editConfirm = async () => {
+  await aLiPayCode.value.uploadFiles();
+  await weChatCode.value.uploadFiles();
+  console.log(editFormData);
+  await MessagePlugin.warning("编辑功能暂未开放");
+  // request.post({
+  //   url: BASE_URL.userEdit,
+  //   data: editFormData
+  // }).then(res => {
+  //   MessagePlugin.success("编辑成功");
+  // }).catch(err => {
+  //   console.error(err);
+  // }).finally(() => {
+  //   editVisible.value = false;
+  //   getTableData();
+  // })
 }
 
 // 重置密码
