@@ -229,6 +229,7 @@ import {goodsStatus, goodsTagTheme} from "../../../utils/chargeStatus";
 import {setObjToUrlParams} from "@/utils/request/utils";
 import {copyInfo} from "@/utils/tools";
 import {uploadFile, validateFile, validateFileType} from "@/utils/files";
+import {isNotEmpty} from "@/utils/validate";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -503,8 +504,8 @@ const editUser = (row: any) => {
     bankNum: row.bankNum,
     status: row.status,
     zfbNum: row.zfbNum,
-    zfbPicFile: [{url: row.zfbPic}],
-    wxPicFile: [{url: row.wxPic}],
+    zfbPicFile: isNotEmpty(row.zfbPic) ? [{url: row.zfbPic}] : [],
+    wxPicFile: isNotEmpty(row.wxPic) ? [{url: row.wxPic}] : [],
     zfbPic: row.zfbPic,
     wxPic: row.wxPic
   });
@@ -520,60 +521,73 @@ const beforeUpload = (file: { type: string; }) => {
 
 // 上传收款码-支付宝
 const uploadALiPayCode = (file: any) => {
-  let params = {
-    phoneNum: editFormData.userId,
-    userName: file,
-    fileFlag: 2
+  if (isNotEmpty(file.raw)) {
+    return new Promise((resolve, reject) => {
+      let params = {
+        phoneNum: editFormData.phoneNum,
+        userName: editFormData.userName,
+        fileFlag: 2
+      }
+      let fileFormData = new FormData();
+      fileFormData.append("file", file.raw);
+      let requestUrl = setObjToUrlParams(BASE_URL.uploadUserPic, params);
+      uploadFile(requestUrl, fileFormData, percentCompleted => {
+      }).then(res => {
+        Object.assign(editFormData, {
+          zfbPic: String(res)
+        });
+        resolve(res);
+      }).catch(err => {
+        console.error(err);
+        reject(err);
+      }).finally(() => {
+      })
+    })
   }
-  let fileFormData = new FormData();
-  fileFormData.append("file", file.raw);
-  let requestUrl = setObjToUrlParams(BASE_URL.uploadUserPic, params);
-  uploadFile(requestUrl, fileFormData, percentCompleted => {
-  }).then(res => {
-    console.log(res);
-    editFormData.zfbPic = res.toString();
-  }).catch(err => {
-    console.error(err);
-  }).finally(() => {
-  })
 }
 // 上传收款码-微信
 const uploadWeChatCode = (file: any) => {
-  let params = {
-    phoneNum: editFormData.phoneNum,
-    userName: editFormData.userName,
-    fileFlag: 3
+  if (isNotEmpty(file.raw)) {
+    return new Promise((resolve, reject) => {
+      let params = {
+        phoneNum: editFormData.phoneNum,
+        userName: editFormData.userName,
+        fileFlag: 3
+      }
+      let fileFormData = new FormData();
+      fileFormData.append("file", file.raw);
+      let requestUrl = setObjToUrlParams(BASE_URL.uploadUserPic, params);
+      uploadFile(requestUrl, fileFormData, percentCompleted => {
+      }).then(res => {
+        Object.assign(editFormData, {
+          wxPic: String(res)
+        });
+        resolve(res);
+      }).catch(err => {
+        console.error(err);
+        reject(err);
+      }).finally(() => {
+      })
+    })
   }
-  let fileFormData = new FormData();
-  fileFormData.append("file", file.raw);
-  let requestUrl = setObjToUrlParams(BASE_URL.uploadUserPic, params);
-  uploadFile(requestUrl, fileFormData, percentCompleted => {
-  }).then(res => {
-    console.log(res);
-    editFormData.wxPic = res.toString();
-  }).catch(err => {
-    console.error(err);
-  }).finally(() => {
-  })
 }
 
 // 编辑确认
 const editConfirm = async () => {
-  await aLiPayCode.value.uploadFiles();
-  await weChatCode.value.uploadFiles();
-  console.log(editFormData);
-  await MessagePlugin.warning("编辑功能暂未开放");
-  // request.post({
-  //   url: BASE_URL.userEdit,
-  //   data: editFormData
-  // }).then(res => {
-  //   MessagePlugin.success("编辑成功");
-  // }).catch(err => {
-  //   console.error(err);
-  // }).finally(() => {
-  //   editVisible.value = false;
-  //   getTableData();
-  // })
+  await Promise.all([aLiPayCode.value.uploadFiles(), weChatCode.value.uploadFiles()]);
+  setTimeout(() => {
+    request.post({
+      url: BASE_URL.userEdit,
+      data: editFormData
+    }).then(res => {
+      MessagePlugin.success("编辑成功");
+    }).catch(err => {
+      console.error(err);
+    }).finally(() => {
+      editVisible.value = false;
+      getTableData();
+    })
+  }, 500);
 }
 
 // 重置密码
