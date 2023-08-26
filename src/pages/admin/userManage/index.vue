@@ -6,18 +6,17 @@
 -->
 <template>
   <t-card class="user-manage-card">
-    <t-row justify="start" class="cardTop">
-      <div class="cardTitle">搜索条件</div>
-    </t-row>
-    <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="currRequestBody.phoneNum" placeholder="请输入手机号" clearable/>
-      <t-input class="inputStyle" v-model="currRequestBody.name" placeholder="请输入姓名" clearable/>
-      <t-button class="inputStyle" style="width: 100px;" @click="searchData">
-        <template #icon>
-          <t-icon name="search"></t-icon>
-        </template>
-        查询
-      </t-button>
+    <t-row justify="space-between" class="cardTop">
+      <div style="display: flex;justify-content: start;">
+        <t-input class="inputStyle" v-model="currRequestBody.phoneNum" placeholder="请输入手机号" clearable/>
+        <t-input class="inputStyle" v-model="currRequestBody.name" placeholder="请输入姓名" clearable/>
+        <t-button class="inputStyle" style="width: 100px;" @click="searchData">
+          <template #icon>
+            <t-icon name="search"></t-icon>
+          </template>
+          查询
+        </t-button>
+      </div>
       <t-button class="inputStyle" style="width: 100px;" @click="addUser">
         <template #icon>
           <t-icon name="add"></t-icon>

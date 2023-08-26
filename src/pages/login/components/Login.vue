@@ -51,6 +51,9 @@
 import {reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {checkAuth, userInfoToCache} from "@/utils/auth";
+import {request} from "@/utils/request";
+import {BASE_URL} from "./constants";
+import {MessagePlugin} from "tdesign-vue-next";
 
 const FORM_RULES = {
   phoneNum: [{required: true, message: "账号必填", type: "error"}],
@@ -73,7 +76,7 @@ const userInfo = reactive({
   bankNum: "card1111111111",
   id: "1",
   phoneNum: "19825089387",
-  userName: "shilei",
+  userName: "石磊",
   zfbNum: "19825089387",
   role: "superadmin"
 });
@@ -82,20 +85,19 @@ const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {
     loginBtnLoading.value = true;
     if (!checkAuth()) {
-      // loginData.value.password = md5(loginData.value.password);
       localStorage.removeItem("token");
-      // await request.post({
-      //   url: BASE_URL.login,
-      //   data: loginData.value
-      // }).then(async res => {
-      //   console.log(res);
-      //   localStorage.setItem("token", res.token);
-      //   await userInfoToCache(res.userInfo);
-      // }).catch(err => {
-      //   MessagePlugin.error(err.message);
-      // }).finally(() => {
-      //   loginBtnLoading.value = false;
-      // });
+      await request.post({
+        url: BASE_URL.login,
+        data: loginData.value
+      }).then(async res => {
+        console.log(res);
+        localStorage.setItem("token", res.token);
+        await userInfoToCache(res.userInfo);
+      }).catch(err => {
+        MessagePlugin.error(err.message);
+      }).finally(() => {
+        loginBtnLoading.value = false;
+      });
       await userInfoToCache(userInfo);
     } else {
       loginBtnLoading.value = false;

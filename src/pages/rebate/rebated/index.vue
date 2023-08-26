@@ -7,9 +7,6 @@
 <template>
   <t-card class="rebated-card">
     <t-row justify="start" class="cardTop">
-      <div class="cardTitle">搜索条件</div>
-    </t-row>
-    <t-row justify="start" class="cardTop">
       <t-input class="inputStyle" v-model="rebatedTable.searchText" placeholder="请输入用户名称" clearable/>
       <t-button class="inputStyle" style="width: 100px;">
         <template #icon>

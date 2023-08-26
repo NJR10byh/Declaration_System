@@ -6,25 +6,24 @@
 -->
 <template>
   <t-card class="goods-card">
-    <t-row justify="start" class="cardTop">
-      <div class="cardTitle">搜索条件</div>
-    </t-row>
-    <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="currRequestBody.commodity" placeholder="请输入商品名称" clearable/>
-      <t-select
-          class="inputStyle"
-          v-model="currRequestBody.status"
-          placeholder="-请选择商品状态-"
-          :options="goodsStatusOptions"
-          filterable
-          clearable
-      />
-      <t-button class="inputStyle" style="width: 100px;" @click="searchData">
-        <template #icon>
-          <t-icon name="search"></t-icon>
-        </template>
-        查询
-      </t-button>
+    <t-row justify="space-between" class="cardTop">
+      <div style="display: flex;justify-content: start;">
+        <t-input class="inputStyle" v-model="currRequestBody.commodity" placeholder="请输入商品名称" clearable/>
+        <t-select
+            class="inputStyle"
+            v-model="currRequestBody.status"
+            placeholder="-请选择商品状态-"
+            :options="goodsStatusOptions"
+            filterable
+            clearable
+        />
+        <t-button class="inputStyle" style="width: 100px;" @click="searchData">
+          <template #icon>
+            <t-icon name="search"></t-icon>
+          </template>
+          查询
+        </t-button>
+      </div>
       <t-button class="inputStyle" style="width: 100px;" @click="addGoodsInfo()">
         <template #icon>
           <t-icon name="add"></t-icon>

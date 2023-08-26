@@ -5,12 +5,14 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
+    getInvitedCode: "/user/getInvitedCode",
+    updateInvitedCode: "/user/updateInvitedCode",
     userList: "/user/list",
-    userEdit: "/user/edit"
+    userEdit: "/user/edit",
+    updatePassword: "/user/updatePassword"
 };
 
 export const USER_LIST_TABLE_COLUMNS = [
-    // { colKey: "row-select", type: "multiple", width: 10, fixed: "left" },
     {
         title: "序号",
         align: "center",

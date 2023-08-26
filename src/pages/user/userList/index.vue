@@ -6,26 +6,41 @@
 -->
 <template>
   <t-card class="user-list-card">
-    <t-row justify="start" class="cardTop">
-      <div class="cardTitle">搜索条件</div>
-    </t-row>
-    <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="currRequestBody.phoneNum" placeholder="请输入手机号" clearable/>
-      <t-input class="inputStyle" v-model="currRequestBody.userName" placeholder="请输入姓名" clearable/>
-      <t-select
-          class="inputStyle"
-          v-model="currRequestBody.status"
-          placeholder="-请选择用户状态-"
-          :options="userStatusOptions"
-          filterable
-          clearable
-      />
-      <t-button class="inputStyle" @click="searchData" style="width: 100px;">
-        <template #icon>
-          <t-icon name="search"></t-icon>
-        </template>
-        查询
-      </t-button>
+    <t-row justify="space-between" class="cardTop">
+      <div>
+        <t-input-adornment prepend="邀请码">
+          <t-input align="right" readonly v-model="invitedCode" placeholder="邀请码" @click="copyInvitedCode">
+            <template #suffixIcon>
+              <t-popconfirm theme="default" @confirm="editInvitedCode">
+                <template #content>
+                  <p style="margin-bottom: 10px;">修改邀请码</p>
+                  <t-input v-model="newInvitedCode" placeholder="请输入邀请码" clearable
+                  />
+                </template>
+                <t-icon name="edit" :style="{ cursor: 'pointer' }"/>
+              </t-popconfirm>
+            </template>
+          </t-input>
+        </t-input-adornment>
+      </div>
+      <div style="display: flex;justify-content: start;">
+        <t-input class="inputStyle" v-model="currRequestBody.phoneNum" placeholder="请输入手机号" clearable/>
+        <t-input class="inputStyle" v-model="currRequestBody.userName" placeholder="请输入姓名" clearable/>
+        <t-select
+            class="inputStyle"
+            v-model="currRequestBody.status"
+            placeholder="-请选择用户状态-"
+            :options="userStatusOptions"
+            filterable
+            clearable
+        />
+        <t-button class="inputStyle" @click="searchData" style="width: 100px;">
+          <template #icon>
+            <t-icon name="search"></t-icon>
+          </template>
+          查询
+        </t-button>
+      </div>
     </t-row>
   </t-card>
   <t-card class="user-list-card">
@@ -180,10 +195,10 @@
     <template #body>
       <t-form>
         <t-form-item label="手机号码">
-          <t-input v-model="resetPasswordFormData.phone" placeholder="请输入手机号" clearable/>
+          <t-input v-model="resetPasswordFormData.phoneNum" placeholder="请输入手机号" readonly disabled/>
         </t-form-item>
         <t-form-item label="姓名">
-          <t-input v-model="resetPasswordFormData.name" placeholder="请输入姓名" clearable/>
+          <t-input v-model="resetPasswordFormData.userName" placeholder="请输入姓名" readonly disabled/>
         </t-form-item>
         <t-form-item label="密码">
           <t-input type="password" v-model="resetPasswordFormData.password" placeholder="请输入密码" clearable/>
@@ -203,6 +218,8 @@ import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
 import {timestampToDateTime} from "@/utils/date";
 import {goodsStatus, goodsTagTheme} from "../../../utils/chargeStatus";
+import {setObjToUrlParams} from "@/utils/request/utils";
+import {copyInfo} from "@/utils/tools";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -218,6 +235,11 @@ const offsetTop = computed(() => {
 const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
+
+// 邀请码
+const invitedCode = ref("")
+// 编辑邀请码
+const newInvitedCode = ref("")
 
 /**
  * 表格相关
@@ -263,8 +285,9 @@ const editFormData = reactive({
 const resetPasswordVisible = ref(false);
 // 重置密码对话框表单
 const resetPasswordFormData = reactive({
-  phone: "",
-  name: "",
+  userId: "",
+  phoneNum: "",
+  userName: "",
   password: "000000"
 })
 
@@ -282,9 +305,43 @@ const currRequestBody = reactive({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(() => {
+  getInvitedCode();
   getTableData();
 });
 
+/**
+ * 操作钩子
+ */
+// 分页钩子
+const userListTablePageChange = (curr: any) => {
+  console.log("分页变化", curr);
+};
+
+// 上传文件失败钩子
+const uploadFail = ({file}) => {
+  MessagePlugin.error(`文件 ${file.name} 上传失败`);
+};
+
+/**
+ * 业务相关
+ */
+// 获取邀请码
+const getInvitedCode = () => {
+  invitedCode.value = "";
+  request.get({
+    url: BASE_URL.getInvitedCode
+  }).then(res => {
+    invitedCode.value = res;
+  }).catch(err => {
+    console.error(err);
+  }).finally(() => {
+  })
+}
+
+// 复制邀请码
+const copyInvitedCode = () => {
+  copyInfo(invitedCode.value)
+}
 const getTableData = async () => {
   userListTable.tableData = [];
   userListTable.tableLoading = true;
@@ -306,22 +363,20 @@ const getTableData = async () => {
   })
 }
 
-/**
- * 操作钩子
- */
-// 分页钩子
-const userListTablePageChange = (curr: any) => {
-  console.log("分页变化", curr);
-};
+// 编辑邀请码
+const editInvitedCode = () => {
+  console.log(newInvitedCode.value);
+  request.post({
+    url: setObjToUrlParams(BASE_URL.updateInvitedCode, {invitedCode: newInvitedCode.value})
+  }).then(res => {
+    MessagePlugin.success("修改成功");
+  }).catch(err => {
+    console.error(err);
+  }).finally(() => {
+    getInvitedCode();
+  })
+}
 
-// 上传文件失败钩子
-const uploadFail = ({file}) => {
-  MessagePlugin.error(`文件 ${file.name} 上传失败`);
-};
-
-/**
- * 业务相关
- */
 // 下单图预览trigger
 const qrCodeOpen = () => {
   qrCodeVisible.value = true;
@@ -425,19 +480,19 @@ const disableUser = (row: any) => {
 
 // 编辑用户
 const editUser = (row: any) => {
-  MessagePlugin.warning("编辑功能暂未开放");
-  // Object.assign(editFormData, {
-  //   phoneNum: row.phoneNum,
-  //   userId: row.userId,
-  //   userName: row.userName,
-  //   bankName: row.bankName,
-  //   bankNum: row.bankNum,
-  //   status: row.status,
-  //   zfbNum: row.zfbNum,
-  //   zfbPic: [{url: row.zfbPic}],
-  //   wxPic: [{url: row.wxPic}],
-  // });
-  // editVisible.value = true;
+  // MessagePlugin.warning("编辑功能暂未开放");
+  Object.assign(editFormData, {
+    phoneNum: row.phoneNum,
+    userId: row.userId,
+    userName: row.userName,
+    bankName: row.bankName,
+    bankNum: row.bankNum,
+    status: row.status,
+    zfbNum: row.zfbNum,
+    zfbPic: [{url: row.zfbPic}],
+    wxPic: [{url: row.wxPic}],
+  });
+  editVisible.value = true;
 }
 
 // 上传收款码-支付宝
@@ -506,16 +561,29 @@ const editConfirm = () => {
 const resetPassword = (row: any) => {
   console.log(row);
   Object.assign(resetPasswordFormData, {
-    phone: row.phone,
-    name: row.name,
+    userId: row.userId,
+    phoneNum: row.phoneNum,
+    userName: row.userName,
     password: "000000",
   });
   resetPasswordVisible.value = true;
 }
 
 const resetPasswordConfirm = () => {
-  console.log(resetPasswordFormData);
-  resetPasswordVisible.value = false;
+  let params = {
+    userId: resetPasswordFormData.userId,
+    password: resetPasswordFormData.password,
+  }
+  request.post({
+    url: setObjToUrlParams(BASE_URL.updatePassword, params)
+  }).then(res => {
+    MessagePlugin.success("重置成功");
+  }).catch(err => {
+    console.error(err);
+  }).finally(() => {
+    resetPasswordVisible.value = false;
+    getTableData();
+  })
 }
 </script>
 

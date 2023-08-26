@@ -7,9 +7,6 @@
 <template>
   <t-card class="all-declaration-card">
     <t-row justify="start" class="cardTop">
-      <div class="cardTitle">搜索条件</div>
-    </t-row>
-    <t-row justify="start" class="cardTop">
       <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
       <t-select
           class="inputStyle"
@@ -30,38 +27,34 @@
       <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>
       <t-date-range-picker class="inputStyle rangeInputStyle" v-model="reportDateRange"
                            :placeholder="['报单时间 起', '报单时间 止']" enable-time-picker clearable/>
+      <t-button @click="searchData" style="margin-left: 5px;width: 100px;">
+        <template #icon>
+          <t-icon name="search"></t-icon>
+        </template>
+        查询
+      </t-button>
     </t-row>
   </t-card>
   <t-card class="all-declaration-card">
-    <t-row justify="space-between" class="cardTop">
-      <div>
-        <t-button @click="searchData">
-          <template #icon>
-            <t-icon name="search"></t-icon>
-          </template>
-          查询
-        </t-button>
-      </div>
-      <div>
-        <t-button theme="success" @click="exportExcel">
-          <template #icon>
-            <t-icon name="file-excel"></t-icon>
-          </template>
-          导出Excel
-        </t-button>
-        <t-button theme="success" @click="exportPic(0)">
-          <template #icon>
-            <t-icon name="file-image"></t-icon>
-          </template>
-          导出下单图
-        </t-button>
-        <t-button theme="success" @click="exportPic(1)">
-          <template #icon>
-            <t-icon name="file-image"></t-icon>
-          </template>
-          导出完成图
-        </t-button>
-      </div>
+    <t-row justify="end" class="cardTop">
+      <t-button theme="success" @click="exportExcel">
+        <template #icon>
+          <t-icon name="file-excel"></t-icon>
+        </template>
+        导出Excel
+      </t-button>
+      <t-button theme="success" @click="exportPic(0)">
+        <template #icon>
+          <t-icon name="file-image"></t-icon>
+        </template>
+        导出下单图
+      </t-button>
+      <t-button theme="success" @click="exportPic(1)">
+        <template #icon>
+          <t-icon name="file-image"></t-icon>
+        </template>
+        导出完成图
+      </t-button>
     </t-row>
     <t-table
         class="tableStyle"
@@ -433,12 +426,12 @@ const editConfirm = () => {
     }
 
     .inputStyle {
-      width: 200px;
+      width: 190px;
       margin: 5px;
     }
 
     .rangeInputStyle {
-      width: 410px;
+      width: 390px;
     }
   }
 

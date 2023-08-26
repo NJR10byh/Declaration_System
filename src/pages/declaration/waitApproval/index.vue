@@ -7,9 +7,6 @@
 <template>
   <t-card class="wait-approval-card">
     <t-row justify="start" class="cardTop">
-      <div class="cardTitle">搜索条件</div>
-    </t-row>
-    <t-row justify="start" class="cardTop">
       <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
       <t-select
           class="inputStyle"
