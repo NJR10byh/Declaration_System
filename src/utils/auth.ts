@@ -6,7 +6,7 @@
  */
 import {getPermissionStore, getUserStore, usePermissionStore, useSettingStore, useUserStore} from "@/store";
 import {MessagePlugin} from "tdesign-vue-next";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 import router from "@/router";
 import STYLE_CONFIG from "@/config/style";
 import {chargeTheme} from "@/utils/date";
@@ -14,10 +14,10 @@ import {isNotEmpty} from "@/utils/validate";
 
 const userStore = useUserStore();
 const permissionStore = usePermissionStore();
-const userInfo = ref({
+const userInfo = reactive({
+    id: "",
     bankName: "",
     bankNum: "",
-    id: "",
     phoneNum: "",
     userName: "",
     zfbNum: "",
@@ -38,10 +38,6 @@ const initStyleConfig = () => {
 };
 
 const formData = ref({...initStyleConfig()});
-
-
-const getUserContactInfoUrl = ref("/user/getUserContactInfo");
-
 
 export const checkAuth = () => {
     const userStore = getUserStore();
@@ -70,14 +66,14 @@ export const userInfoToCache = async (info: {
     role: string;
 }) => {
     console.log(info)
-    userInfo.value.bankName = info.bankName;
-    userInfo.value.bankNum = info.bankNum;
-    userInfo.value.id = info.id;
-    userInfo.value.phoneNum = info.phoneNum;
-    userInfo.value.userName = info.userName;
-    userInfo.value.zfbNum = info.zfbNum;
-    userInfo.value.role = info.role;
-    userStore.getUserInfo(userInfo.value);
+    userInfo.bankName = info.bankName;
+    userInfo.bankNum = info.bankNum;
+    userInfo.id = info.id;
+    userInfo.phoneNum = info.phoneNum;
+    userInfo.userName = info.userName;
+    userInfo.zfbNum = info.zfbNum;
+    userInfo.role = info.role;
+    userStore.getUserInfo(userInfo);
     await permissionStore.initRoutes(info.role);
     /* 处理主题 */
     formData.value.mode = chargeTheme(); // 根据当前系统时间切换主题模式（light、dark）
@@ -88,19 +84,5 @@ export const userInfoToCache = async (info: {
     formData.value.brandTheme = "default";
     settingStore.updateConfig(formData.value);
     await router.push("/dashboard/mainInfo");
-};
-
-/**
- * 获取权限名称
- * @param role
- */
-export const getRoleName = (role: any) => {
-    let roleName = "";
-    switch (role) {
-        case "superadmin":
-            roleName = "超级管理员";
-            break;
-    }
-    return roleName;
 };
 

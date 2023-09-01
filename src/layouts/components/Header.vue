@@ -194,7 +194,6 @@ const handleLogout = () => {
   }).finally(() => {
     window.location.reload();
   });
-
 };
 
 const navToGitHub = () => {

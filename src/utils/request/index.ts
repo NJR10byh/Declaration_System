@@ -45,7 +45,6 @@ const transform: AxiosTransform = {
         }
 
         //  这里 code为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
-        // @ts-ignore
         const {code} = data;
 
         // 这里逻辑可以根据项目进行修改
@@ -54,7 +53,8 @@ const transform: AxiosTransform = {
             return data.data;
         }
 
-        throw new Error(data.data.errMsg);
+
+        throw new Error(data.msg);
     },
 
     // 请求前处理配置

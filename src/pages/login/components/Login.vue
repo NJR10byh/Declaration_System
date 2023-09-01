@@ -51,9 +51,9 @@
 import {reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {checkAuth, userInfoToCache} from "@/utils/auth";
+import {MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
 import {BASE_URL} from "./constants";
-import {MessagePlugin} from "tdesign-vue-next";
 
 const FORM_RULES = {
   phoneNum: [{required: true, message: "账号必填", type: "error"}],
@@ -62,7 +62,7 @@ const FORM_RULES = {
 
 const type = ref("password");
 
-const loginData = ref({
+const loginData = reactive({
   phoneNum: "19825089387",
   password: "zhbd123"
 });
@@ -71,15 +71,15 @@ const showPsw = ref(false);
 const loginBtnLoading = ref(false);
 const router = useRouter();
 
-const userInfo = reactive({
-  bankName: "中国建设银行",
-  bankNum: "card1111111111",
-  id: "1",
-  phoneNum: "19825089387",
-  userName: "石磊",
-  zfbNum: "19825089387",
-  role: "superadmin"
-});
+// const userInfo = reactive({
+//   bankName: "中国建设银行",
+//   bankNum: "card1111111111",
+//   id: "1",
+//   phoneNum: "19825089387",
+//   userName: "石磊",
+//   zfbNum: "19825089387",
+//   role: "superadmin"
+// });
 
 const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {
@@ -88,7 +88,7 @@ const onSubmit = async ({validateResult}) => {
       localStorage.removeItem("token");
       await request.post({
         url: BASE_URL.login,
-        data: loginData.value
+        data: loginData
       }).then(async res => {
         console.log(res);
         localStorage.setItem("token", res.token);
@@ -98,7 +98,6 @@ const onSubmit = async ({validateResult}) => {
       }).finally(() => {
         loginBtnLoading.value = false;
       });
-      await userInfoToCache(userInfo);
     } else {
       loginBtnLoading.value = false;
     }
