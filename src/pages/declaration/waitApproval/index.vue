@@ -66,30 +66,22 @@
       </template>
       <template #orderPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="orderPicVisible" :images="[slotProps.row.orderPic]">
-            <template #trigger>
-              <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.orderPic" class="tdesign-demo-image-viewer__ui-image--img"/>
-                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="orderPicOpen">
-                  <span><t-icon size="1.2em" name="browse"/> 预览</span>
-                </div>
-              </div>
-            </template>
-          </t-image-viewer>
+          <t-image
+              :src="slotProps.row.orderPic"
+              fit="contain"
+              class="imageStyle"
+              @click="picOpen(slotProps.row.orderPic)"
+          />
         </div>
       </template>
       <template #finishPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="finishPicVisible" :images="[slotProps.row.finishPic]">
-            <template #trigger>
-              <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.finishPic" class="tdesign-demo-image-viewer__ui-image--img"/>
-                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="finishPicOpen">
-                  <span><t-icon size="1.2em" name="browse"/> 预览</span>
-                </div>
-              </div>
-            </template>
-          </t-image-viewer>
+          <t-image
+              :src="slotProps.row.finishPic"
+              fit="contain"
+              class="imageStyle"
+              @click="picOpen(slotProps.row.finishPic)"
+          />
         </div>
       </template>
       <template #status="slotProps">
@@ -284,14 +276,9 @@ const searchData = async () => {
   await getTableData();
 }
 
-// 下单图预览trigger
-const orderPicOpen = () => {
-  orderPicVisible.value = true;
-}
-
-// 完成图预览trigger
-const finishPicOpen = () => {
-  finishPicVisible.value = true;
+// 图片预览
+const picOpen = (imageUrl: any) => {
+  window.open(imageUrl);
 }
 
 // 审批通过
@@ -390,85 +377,14 @@ const cancel = (row: any) => {
     width: 100%;
     margin-top: 10px;
 
-    .tdesign-demo-image-viewer__base {
+    .imageStyle {
       width: 100%;
       height: 100px;
       max-height: 200px;
       margin: 10px;
-      border: 4px solid var(--td-bg-color-secondarycontainer);
-      border-radius: var(--td-radius-medium);
 
-      .tdesign-demo-image-viewer__ui-image {
-        width: 100%;
-        height: 100%;
-        display: inline-flex;
-        position: relative;
-        justify-content: center;
-        align-items: center;
-        border-radius: var(--td-radius-small);
-        overflow: hidden;
-
-        &--hover {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: absolute;
-          left: 0;
-          top: 0;
-          opacity: 0;
-          background-color: rgba(0, 0, 0, 0.6);
-          color: var(--td-text-color-anti);
-          line-height: 22px;
-          transition: 0.2s;
-
-          &:hover {
-            opacity: 1;
-            cursor: pointer;
-          }
-        }
-
-        &--img {
-          width: auto;
-          height: auto;
-          max-width: 100%;
-          max-height: 100%;
-          cursor: pointer;
-          position: absolute;
-        }
-
-        &--footer {
-          padding: 0 16px;
-          height: 56px;
-          width: 100%;
-          line-height: 56px;
-          font-size: 16px;
-          position: absolute;
-          bottom: 0;
-          color: var(--td-text-color-anti);
-          background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
-          display: flex;
-          box-sizing: border-box;
-
-          &--title {
-            flex: 1;
-          }
-        }
-
-        &--icons {
-          .tdesign-demo-icon {
-            cursor: pointer;
-          }
-        }
-
-        &__base {
-          width: 160px;
-          height: 160px;
-          margin: 10px;
-          border: 4px solid var(--td-bg-color-secondarycontainer);
-          border-radius: var(--td-radius-medium);
-        }
+      :hover {
+        cursor: pointer;
       }
     }
 

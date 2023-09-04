@@ -63,30 +63,22 @@
     >
       <template #zfbPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.zfbPic]">
-            <template #trigger>
-              <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.zfbPic" class="tdesign-demo-image-viewer__ui-image--img"/>
-                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="qrCodeOpen">
-                  <span><t-icon size="1.2em" name="browse"/> 预览</span>
-                </div>
-              </div>
-            </template>
-          </t-image-viewer>
+          <t-image
+              :src="slotProps.row.zfbPic"
+              fit="contain"
+              class="imageStyle"
+              @click="picOpen(slotProps.row.zfbPic)"
+          />
         </div>
       </template>
       <template #wxPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
-          <t-image-viewer v-model:visible="qrCodeVisible" :images="[slotProps.row.wxPic]">
-            <template #trigger>
-              <div class="tdesign-demo-image-viewer__ui-image">
-                <img alt="test" :src="slotProps.row.wxPic" class="tdesign-demo-image-viewer__ui-image--img"/>
-                <div class="tdesign-demo-image-viewer__ui-image--hover" @click="qrCodeOpen">
-                  <span><t-icon size="1.2em" name="browse"/> 预览</span>
-                </div>
-              </div>
-            </template>
-          </t-image-viewer>
+          <t-image
+              :src="slotProps.row.wxPic"
+              fit="contain"
+              class="imageStyle"
+              @click="picOpen(slotProps.row.wxPic)"
+          />
         </div>
       </template>
       <template #status="slotProps">
@@ -274,11 +266,6 @@ const userStatusOptions = reactive([
   {label: '禁用', value: 0}
 ])
 
-// 上传收款码
-const uploadQrcode = ref();
-// 收款码预览
-const qrCodeVisible = ref(false);
-
 // 编辑对话框
 const editVisible = ref(false);
 // 用户编辑表单
@@ -392,9 +379,9 @@ const editInvitedCode = () => {
   })
 }
 
-// 下单图预览trigger
-const qrCodeOpen = () => {
-  qrCodeVisible.value = true;
+// 图片预览
+const picOpen = (imageUrl: any) => {
+  window.open(imageUrl);
 }
 
 const searchData = async () => {
@@ -653,85 +640,14 @@ const resetPasswordConfirm = () => {
     width: 100%;
     margin-top: 10px;
 
-    .tdesign-demo-image-viewer__base {
+    .imageStyle {
       width: 100%;
       height: 100px;
       max-height: 200px;
       margin: 10px;
-      border: 4px solid var(--td-bg-color-secondarycontainer);
-      border-radius: var(--td-radius-medium);
 
-      .tdesign-demo-image-viewer__ui-image {
-        width: 100%;
-        height: 100%;
-        display: inline-flex;
-        position: relative;
-        justify-content: center;
-        align-items: center;
-        border-radius: var(--td-radius-small);
-        overflow: hidden;
-
-        &--hover {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: absolute;
-          left: 0;
-          top: 0;
-          opacity: 0;
-          background-color: rgba(0, 0, 0, 0.6);
-          color: var(--td-text-color-anti);
-          line-height: 22px;
-          transition: 0.2s;
-
-          &:hover {
-            opacity: 1;
-            cursor: pointer;
-          }
-        }
-
-        &--img {
-          width: auto;
-          height: auto;
-          max-width: 100%;
-          max-height: 100%;
-          cursor: pointer;
-          position: absolute;
-        }
-
-        &--footer {
-          padding: 0 16px;
-          height: 56px;
-          width: 100%;
-          line-height: 56px;
-          font-size: 16px;
-          position: absolute;
-          bottom: 0;
-          color: var(--td-text-color-anti);
-          background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
-          display: flex;
-          box-sizing: border-box;
-
-          &--title {
-            flex: 1;
-          }
-        }
-
-        &--icons {
-          .tdesign-demo-icon {
-            cursor: pointer;
-          }
-        }
-
-        &__base {
-          width: 160px;
-          height: 160px;
-          margin: 10px;
-          border: 4px solid var(--td-bg-color-secondarycontainer);
-          border-radius: var(--td-radius-medium);
-        }
+      :hover {
+        cursor: pointer;
       }
     }
 

@@ -63,7 +63,7 @@ const FORM_RULES = {
 const type = ref("password");
 
 const loginData = reactive({
-  phoneNum: "19825089387",
+  phoneNum: "13378827722",
   password: "zhbd123"
 });
 const showPsw = ref(false);
