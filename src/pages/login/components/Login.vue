@@ -63,23 +63,13 @@ const FORM_RULES = {
 const type = ref("password");
 
 const loginData = reactive({
-  phoneNum: "13378827722",
-  password: "zhbd123"
+  phoneNum: "",
+  password: ""
 });
 const showPsw = ref(false);
 
 const loginBtnLoading = ref(false);
 const router = useRouter();
-
-// const userInfo = reactive({
-//   bankName: "中国建设银行",
-//   bankNum: "card1111111111",
-//   id: "1",
-//   phoneNum: "19825089387",
-//   userName: "石磊",
-//   zfbNum: "19825089387",
-//   role: "superadmin"
-// });
 
 const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {

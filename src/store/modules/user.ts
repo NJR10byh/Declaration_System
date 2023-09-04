@@ -2,12 +2,9 @@ import {defineStore} from "pinia";
 import {store, usePermissionStore} from "@/store";
 
 const userInfo = {
-    bankName: "",
-    bankNum: "",
     id: "",
     phoneNum: "",
-    userName: "",
-    zfbNum: "",
+    name: "",
     role: ""
 };
 
@@ -26,12 +23,9 @@ export const useUserStore = defineStore("user", {
         },
         logout() {
             this.userInfo = {
-                bankName: "",
-                bankNum: "",
                 id: "",
                 phoneNum: "",
-                userName: "",
-                zfbNum: "",
+                name: "",
                 role: ""
             };
         }

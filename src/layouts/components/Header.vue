@@ -34,32 +34,6 @@
       <!--      />-->
       <template #operations>
         <div class="operations-container">
-          <!-- 搜索框 -->
-          <!--          <search v-if="layout !== 'side'" :layout="layout" />-->
-
-          <!-- 全局通知 -->
-          <!--          <notice />-->
-
-          <!--          <t-tooltip placement="bottom" content="代码仓库">-->
-          <!--            <t-button-->
-          <!--              theme="default"-->
-          <!--              shape="square"-->
-          <!--              variant="text"-->
-          <!--              @click="navToGitHub"-->
-          <!--            >-->
-          <!--              <t-icon name="logo-github" />-->
-          <!--            </t-button>-->
-          <!--          </t-tooltip>-->
-          <!--          <t-tooltip placement="bottom" content="帮助文档">-->
-          <!--            <t-button-->
-          <!--              theme="default"-->
-          <!--              shape="square"-->
-          <!--              variant="text"-->
-          <!--              @click="navToHelper"-->
-          <!--            >-->
-          <!--              <t-icon name="help-circle" />-->
-          <!--            </t-button>-->
-          <!--          </t-tooltip>-->
           <t-dropdown :min-column-width="135" trigger="click">
             <template #dropdown>
               <t-dropdown-menu>
@@ -78,7 +52,7 @@
               </template>
               <div class="header-user-account">
                 你好，
-                <span style="color: var(--td-brand-color);font-weight: bold">{{ userStore.userInfo.userName }}</span>
+                <span style="color: var(--td-brand-color);font-weight: bold">{{ userStore.userInfo.name }}</span>
                 <t-icon name="chevron-down"/>
               </div>
             </t-button>

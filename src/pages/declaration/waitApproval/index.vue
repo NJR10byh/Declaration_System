@@ -46,9 +46,7 @@
         style="margin-top: 10px;"
     >
       <template #orderId="slotProps">
-        <t-tag theme="primary" variant="light-outline">
-          {{ slotProps.row.orderId }}
-        </t-tag>
+        {{ slotProps.row.orderId }}
       </template>
       <template #trackNum="slotProps">
         <t-tag theme="default">
@@ -122,6 +120,29 @@
       <t-input style="margin-top: 10px;" v-model="approvedData.examineNotes" placeholder="审批通过请填写备注"/>
     </template>
   </t-dialog>
+
+  <!-- 作废Dialog -->
+  <t-dialog
+      v-model:visible="cancelVisible"
+      header="作废"
+      theme="warning"
+      attach="body"
+      :confirm-on-enter="true"
+      :on-confirm="cancelConfirm"
+  >
+    <template #body>
+      <div>确定要作废吗？</div>
+      <t-input style="margin-top: 10px;" v-model="cancelData.examineNotes" placeholder="作废请填写备注"/>
+    </template>
+  </t-dialog>
+
+  <!-- 图片 -->
+  <t-dialog v-model:visible="picDialog.visible" :footer="false">
+    <t-image
+        :src="picDialog.url"
+        fit="contain"
+    />
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
@@ -129,7 +150,7 @@ import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {computed, onMounted, reactive, ref} from "vue";
 import {prefix} from "@/config/global";
-import {DialogPlugin, MessagePlugin} from "tdesign-vue-next";
+import {MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
 import {BASE_URL} from "./constants";
 import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
@@ -185,6 +206,13 @@ const approvedData = reactive({
   examineNotes: ""
 });
 
+const cancelVisible = ref(false);
+const cancelData = reactive({
+  id: "",
+  status: 2,
+  examineNotes: ""
+});
+
 const currRequestBody = reactive({
   pageNo: 1, // 页
   pageItems: 20, // 条数
@@ -194,6 +222,12 @@ const currRequestBody = reactive({
   startTime: null,
   endTime: null,
   status: 1 // 全部-不传 已报单-0 待审核-1
+})
+
+// 图片预览
+const picDialog = reactive({
+  visible: false,
+  url: ""
 })
 
 /**
@@ -278,7 +312,8 @@ const searchData = async () => {
 
 // 图片预览
 const picOpen = (imageUrl: any) => {
-  window.open(imageUrl);
+  picDialog.url = imageUrl;
+  picDialog.visible = true;
 }
 
 // 审批通过
@@ -307,40 +342,26 @@ const approvedConfirm = () => {
 
 // 作废
 const cancel = (row: any) => {
+  Object.assign(cancelData, {
+    id: row.id,
+    status: 4,
+    examineNotes: ""
+  })
+  cancelVisible.value = true;
+}
+const cancelConfirm = (row: any) => {
   console.log(row);
-  const cancelConfirmDialog = DialogPlugin.confirm({
-    header: '提示',
-    theme: "warning",
-    body: '确定要作废吗？',
-    confirmBtn: {
-      content: '确认',
-      variant: 'base',
-      theme: 'danger',
-    },
-    cancelBtn: '取消',
-    onConfirm: () => {
-      Object.assign(approvedData, {
-        id: row.id,
-        status: 4,
-        examineNotes: ""
-      })
-      request.post({
-        url: BASE_URL.examine,
-        data: approvedData
-      }).then(res => {
-        MessagePlugin.success("已作废")
-      }).catch(err => {
-        MessagePlugin.error(err);
-      }).finally(() => {
-        // 销毁弹框
-        cancelConfirmDialog.destroy();
-        getTableData()
-      })
-    },
-    onClose: () => {
-      cancelConfirmDialog.hide();
-    },
-  });
+  request.post({
+    url: BASE_URL.examine,
+    data: cancelData
+  }).then(res => {
+    MessagePlugin.success("已作废")
+  }).catch(err => {
+    MessagePlugin.error(err);
+  }).finally(() => {
+    cancelVisible.value = false;
+    getTableData()
+  })
 }
 </script>
 

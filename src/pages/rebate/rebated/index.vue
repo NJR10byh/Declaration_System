@@ -67,7 +67,6 @@
           row-key="index"
           hover
           stripe
-          bordered
           :loading="rebatedDetailTable.tableLoading"
           :foot-data="rebatedDetailTable.footData"
           size="small"

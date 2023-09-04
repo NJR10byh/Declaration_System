@@ -53,8 +53,11 @@ const transform: AxiosTransform = {
             return data.data;
         }
 
-
-        throw new Error(data.msg);
+        if (code === 401) {
+            window.location.href = "http://47.115.206.210:3000/#/login";
+        } else {
+            throw new Error(data.msg);
+        }
     },
 
     // 请求前处理配置

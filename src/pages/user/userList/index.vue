@@ -206,6 +206,14 @@
       </t-form>
     </template>
   </t-dialog>
+
+  <!-- 图片 -->
+  <t-dialog v-model:visible="picDialog.visible" :footer="false">
+    <t-image
+        :src="picDialog.url"
+        fit="contain"
+    />
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
@@ -301,6 +309,12 @@ const currRequestBody = reactive({
   status: null
 })
 
+// 图片预览
+const picDialog = reactive({
+  visible: false,
+  url: ""
+})
+
 /**
  * methods区
  */
@@ -381,7 +395,8 @@ const editInvitedCode = () => {
 
 // 图片预览
 const picOpen = (imageUrl: any) => {
-  window.open(imageUrl);
+  picDialog.url = imageUrl;
+  picDialog.visible = true;
 }
 
 const searchData = async () => {

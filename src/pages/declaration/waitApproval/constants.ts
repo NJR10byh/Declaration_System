@@ -56,14 +56,14 @@ export const WAIT_APPROVAL_TABLE_COLUMNS = [
         title: "预计返款金额",
         align: "center",
         colKey: "expectPayback",
-        width: 80,
+        width: 120,
         ellipsis: true
     },
     {
         title: "实际返款金额",
         align: "center",
         colKey: "actualPayback",
-        width: 80,
+        width: 120,
         ellipsis: true
     },
     {
@@ -97,6 +97,12 @@ export const WAIT_APPROVAL_TABLE_COLUMNS = [
         title: "完成图",
         align: "center",
         colKey: "finishPic",
+        width: 80
+    },
+    {
+        title: "备注",
+        align: "left",
+        colKey: "notes",
         width: 80
     },
     {

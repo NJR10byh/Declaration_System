@@ -60,7 +60,7 @@ const renderStokeChart = () => {
     stokeContainer = document.getElementById('stokeContainer');
   }
   stokeChart = echarts.init(stokeContainer);
-  console.log(reportCountList)
+  console.log(reportCountList.value)
   stokeChart.setOption(constructInitDataset({
     dateTime: LAST_7_DAYS, reportCountList: reportCountList.value, ...chartColors.value
   }));
@@ -102,9 +102,8 @@ const getWeekStat = async () => {
   await request.get({
     url: BASE_URL.weekStat
   }).then(res => {
-    console.log(res)
     res.map((i: { reportCount: number; }) => {
-      reportCountList.value.push(i.reportCount.toString())
+      reportCountList.value.unshift(i.reportCount.toString())
     })
     renderCharts();
   });

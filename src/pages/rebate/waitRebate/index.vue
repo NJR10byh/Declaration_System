@@ -60,6 +60,7 @@
                 hover
                 stripe
                 :loading="payDetailTable.tableLoading"
+                :foot-data="payDetailTable.footData"
                 size="small"
             >
               <template #orderId="slotProps">
@@ -122,7 +123,7 @@
 
 <script setup lang="ts">
 import {computed, onMounted, reactive, ref} from "vue";
-import {useSettingStore} from "@/store";
+import {useSettingStore, useUserStore} from "@/store";
 import {useRouter} from "vue-router";
 import {prefix} from "@/config/global";
 import {BASE_URL, PAY_DETAIL_TABLE_COLUMNS, WAIT_REBATE_TABLE_COLUMNS} from "./constants";
@@ -132,6 +133,10 @@ import {setObjToUrlParams} from "@/utils/request/utils";
 
 const store = useSettingStore();
 const router = useRouter();
+
+const userStore = useUserStore();
+const {userInfo} = userStore;
+
 
 /**
  * data
@@ -174,6 +179,12 @@ const payDetailTable = reactive({
     zfbPic: "",
     zfbNum: ""
   },
+  footData: [
+    {
+      index: '合计',
+      shouldPayback: "0",
+    },
+  ]
 });
 
 // 结算对话框
@@ -261,6 +272,9 @@ const payDetail = (row: any) => {
       zfbPic: res.zfbPic,
       zfbNum: res.zfbNum
     })
+    Object.assign(payDetailTable.footData[0], {
+      shouldPayback: res.total + " 元"
+    })
     payDetailVisible.value = true;
   }).catch(err => {
   }).finally(() => {
@@ -277,17 +291,36 @@ const pay = (method: any) => {
     confirmBtn: '确认支付',
     cancelBtn: '取消',
     onConfirm: () => {
+      console.log(userStore.userInfo)
+      let params = {
+        reporterId: userInfo.id,
+        payWay: 0
+      }
       switch (method) {
+        case "bankCard":
+          params.payWay = 0;
+          break;
         case "aliPay":
-          console.log("支付宝支付");
+          params.payWay = 1;
           break;
         case "weChat":
-          console.log("微信支付");
+          params.payWay = 2;
           break;
       }
-      MessagePlugin.success("已支付")
-      // 请求成功后，销毁弹框
-      payConfirmDialog.destroy();
+      request.post({
+        url: setObjToUrlParams(BASE_URL.settle, params)
+      }).then(res => {
+        console.log(res)
+        MessagePlugin.success("支付成功")
+        // 请求成功后，销毁弹框
+        payConfirmDialog.destroy();
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        // 请求成功后，销毁弹框
+        payConfirmDialog.destroy();
+        payDetailVisible.value = false;
+      });
     },
     onClose: () => {
       payConfirmDialog.hide();

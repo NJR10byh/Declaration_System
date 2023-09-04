@@ -46,9 +46,7 @@
         style="margin-top: 10px;"
     >
       <template #orderId="slotProps">
-        <t-tag theme="primary" variant="light-outline">
-          {{ slotProps.row.orderId }}
-        </t-tag>
+        {{ slotProps.row.orderId }}
       </template>
       <template #trackNum="slotProps">
         <t-tag theme="default">
@@ -142,6 +140,14 @@
       </t-form>
     </template>
   </t-dialog>
+
+  <!-- 图片 -->
+  <t-dialog v-model:visible="picDialog.visible" :footer="false">
+    <t-image
+        :src="picDialog.url"
+        fit="contain"
+    />
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
@@ -220,6 +226,12 @@ const currRequestBody = reactive({
   startTime: null,
   endTime: null,
   status: 0 // 全部-不传 已报单-0 待审核-1
+})
+
+// 图片预览
+const picDialog = reactive({
+  visible: false,
+  url: ""
 })
 
 /**
@@ -304,7 +316,8 @@ const searchData = async () => {
 
 // 图片预览
 const picOpen = (imageUrl: any) => {
-  window.open(imageUrl);
+  picDialog.url = imageUrl;
+  picDialog.visible = true;
 }
 
 // 编辑报单

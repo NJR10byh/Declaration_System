@@ -4,7 +4,7 @@
       <t-card
           :title="item.title"
           :style="{ height: '168px' }"
-          :class="{ 'dashboard-item': true, 'dashboard-item--main-color': index == 0 }"
+          class="dashboard-item"
       >
         <div class="dashboard-item-top">
           <span :style="{ fontSize: `${resizeTime * 36}px` }">{{ item.number }}</span>

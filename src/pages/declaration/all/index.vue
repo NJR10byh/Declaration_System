@@ -36,20 +36,20 @@
     </t-row>
   </t-card>
   <t-card class="all-declaration-card">
-    <t-row justify="end" class="cardTop">
+    <t-row justify="start" class="cardTop">
       <t-button theme="success" @click="exportExcel">
         <template #icon>
           <t-icon name="file-excel"></t-icon>
         </template>
         导出Excel
       </t-button>
-      <t-button theme="success" @click="exportPic(0)">
+      <t-button theme="primary" @click="exportPic(0)">
         <template #icon>
           <t-icon name="file-image"></t-icon>
         </template>
         导出下单图
       </t-button>
-      <t-button theme="success" @click="exportPic(1)">
+      <t-button theme="danger" @click="exportPic(1)">
         <template #icon>
           <t-icon name="file-image"></t-icon>
         </template>
@@ -74,9 +74,7 @@
         style="margin-top: 10px;"
     >
       <template #orderId="slotProps">
-        <t-tag theme="primary" variant="light-outline">
-          {{ slotProps.row.orderId }}
-        </t-tag>
+        {{ slotProps.row.orderId }}
       </template>
       <template #trackNum="slotProps">
         <t-tag theme="default">
@@ -94,6 +92,7 @@
       </template>
       <template #orderPic="slotProps">
         <t-image
+            v-if="isNotEmpty(slotProps.row.orderPic)"
             :src="slotProps.row.orderPic"
             fit="contain"
             class="imageStyle"
@@ -102,7 +101,8 @@
       </template>
       <template #finishPic="slotProps">
         <t-image
-            :src="slotProps.row.orderPic"
+            v-if="isNotEmpty(slotProps.row.finishPic)"
+            :src="slotProps.row.finishPic"
             fit="contain"
             class="imageStyle"
             @click="picOpen(slotProps.row.finishPic)"
@@ -153,6 +153,14 @@
         </t-form-item>
       </t-form>
     </template>
+  </t-dialog>
+
+  <!-- 图片 -->
+  <t-dialog v-model:visible="picDialog.visible" :footer="false">
+    <t-image
+        :src="picDialog.url"
+        fit="contain"
+    />
   </t-dialog>
 </template>
 
@@ -237,6 +245,12 @@ const currRequestBody = reactive({
   startTime: "",
   endTime: "",
   status: "" // 全部-不传 已报单-0 待审核-1
+})
+
+// 图片预览
+const picDialog = reactive({
+  visible: false,
+  url: ""
 })
 
 /**
@@ -325,9 +339,9 @@ const exportExcel = () => {
     orderId: currRequestBody.orderId,
     commodity: currRequestBody.commodity,
     reporter: currRequestBody.reporter,
-    startTime: currRequestBody.startTime,
-    endTime: currRequestBody.endTime,
-    status: currRequestBody.status
+    startTime: isNotEmpty(currRequestBody.startTime) ? currRequestBody.startTime : "",
+    endTime: isNotEmpty(currRequestBody.endTime) ? currRequestBody.endTime : "",
+    status: isNotEmpty(currRequestBody.status) ? currRequestBody.status : ""
   }
   downloadFile(setObjToUrlParams(BASE_URL.downloadExcel, reportParams))
 }
@@ -339,9 +353,9 @@ const exportPic = (picFlag: number) => {
     orderId: currRequestBody.orderId,
     commodity: currRequestBody.commodity,
     reporter: currRequestBody.reporter,
-    startTime: currRequestBody.startTime,
-    endTime: currRequestBody.endTime,
-    status: currRequestBody.status,
+    startTime: isNotEmpty(currRequestBody.startTime) ? currRequestBody.startTime : "",
+    endTime: isNotEmpty(currRequestBody.endTime) ? currRequestBody.endTime : "",
+    status: isNotEmpty(currRequestBody.status) ? currRequestBody.status : "",
     picFlag: picFlag
   }
   downloadFile(setObjToUrlParams(BASE_URL.downloadPic, reportParams))
@@ -349,7 +363,8 @@ const exportPic = (picFlag: number) => {
 
 // 图片预览
 const picOpen = (imageUrl: any) => {
-  window.open(imageUrl);
+  picDialog.url = imageUrl;
+  picDialog.visible = true;
 }
 
 // 编辑报单
@@ -368,7 +383,6 @@ const editDeclaration = (row: any) => {
 
 // 编辑对话框确认
 const editConfirm = () => {
-  // editVisible.value = false;
   console.log(editFormData);
   request.post({
     url: BASE_URL.edit,

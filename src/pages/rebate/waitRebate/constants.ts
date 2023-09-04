@@ -6,7 +6,8 @@
  */
 export const BASE_URL = {
     listStat: "/payback/listStat",
-    payDetail: "/payback/payDetail"
+    payDetail: "/payback/payDetail",
+    settle: "/payback/settle"
 };
 
 export const WAIT_REBATE_TABLE_COLUMNS = [
