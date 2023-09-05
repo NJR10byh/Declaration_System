@@ -53,7 +53,7 @@
       </template>
       <template #settings="slotProps">
         <div class="settingBtns">
-          <t-button theme="primary" @click="editUser(slotProps.row)">
+          <t-button theme="primary" @click="editUser(slotProps.row)" v-if="isNotEmpty(slotProps.row.builder)">
             <template #icon>
               <t-icon name="edit"></t-icon>
             </template>
@@ -109,6 +109,7 @@ import {MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
 import {timestampToDateTime} from "@/utils/date";
 import {userStatus, userTagTheme} from "@/utils/chargeStatus";
+import {isNotEmpty} from "@/utils/validate";
 
 const store = useSettingStore();
 const router = useRouter();

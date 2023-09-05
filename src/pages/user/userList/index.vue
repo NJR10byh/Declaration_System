@@ -371,7 +371,6 @@ const getTableData = async () => {
       item.index = (userListTable.pagination.current - 1) * userListTable.pagination.pageSize + index + 1;
       item.registerTime = timestampToDateTime(item.registerTime);
     })
-    console.log("@", userListTable.tableData)
   }).catch(err => {
     console.error(err);
   }).finally(() => {
