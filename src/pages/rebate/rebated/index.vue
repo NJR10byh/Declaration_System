@@ -197,6 +197,7 @@ const getTableData = () => {
 const rebatedDetail = (row: any) => {
   rebatedDetailTable.tableData = [];
   rebatedDetailTable.tableLoading = true;
+  rebatedDetailVisible.value = true;
   console.log("详情", row);
   let params = {
     statId: row.statId
@@ -211,7 +212,6 @@ const rebatedDetail = (row: any) => {
       item.payAmount += " 元";
       item.shouldPayback += " 元";
     })
-    rebatedDetailVisible.value = true;
   }).catch(err => {
   }).finally(() => {
     rebatedDetailTable.tableLoading = false;

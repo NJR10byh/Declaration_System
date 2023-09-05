@@ -200,6 +200,7 @@ const currRequestBody = reactive({
   reporter: null,
   orderId: null
 })
+const currReportId = ref("")
 
 /**
  * methods区
@@ -251,6 +252,8 @@ const payDetail = (row: any) => {
   console.log("结算", row);
   payDetailTable.tableData = [];
   payDetailTable.tableLoading = true;
+  payDetailVisible.value = true;
+  currReportId.value = row.reporterId;
   let params = {
     reporterId: row.reporterId
   }
@@ -275,10 +278,11 @@ const payDetail = (row: any) => {
     Object.assign(payDetailTable.footData[0], {
       shouldPayback: res.total + " 元"
     })
-    payDetailVisible.value = true;
   }).catch(err => {
+    MessagePlugin.error(err.message)
   }).finally(() => {
     payDetailTable.tableLoading = false;
+    getTableData();
   })
 }
 
@@ -293,7 +297,7 @@ const pay = (method: any) => {
     onConfirm: () => {
       console.log(userStore.userInfo)
       let params = {
-        reporterId: userInfo.id,
+        reporterId: currReportId.value,
         payWay: 0
       }
       switch (method) {
