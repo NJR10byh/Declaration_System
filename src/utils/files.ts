@@ -95,14 +95,17 @@ export const downloadFile = async (requestUrl: any) => {
     const link = document.createElement("a");
     link.style.display = "none";
     document.body.appendChild(link);
-    LoadingPlugin(true);
+    const instance = LoadingPlugin({
+        fullscreen: true,
+        attach: 'body',
+        text: "正在加载，请稍后..."
+    });
     await request.get({
         url: requestUrl,
         responseType: "blob"
     }).then(res => {
-        console.log(res)
-        NotifyPlugin.success({
-            title: "成功",
+        NotifyPlugin.warning({
+            title: "提示",
             content: "已进入后台开始下载，您可以进行其他操作"
         });
         let fileName = "文件";
@@ -120,6 +123,6 @@ export const downloadFile = async (requestUrl: any) => {
         console.log(err);
         MessagePlugin.error(err);
     }).finally(() => {
-        LoadingPlugin(false);
+        instance.hide();
     });
 };

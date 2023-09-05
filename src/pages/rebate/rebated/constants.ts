@@ -99,7 +99,7 @@ export const REBATED_DETAIL_TABLE_COLUMNS = [
     {
         title: "审核备注",
         align: "left",
-        colKey: "approvalnotes",
+        colKey: "examineNotes",
         width: 100,
         ellipsis: true
     },

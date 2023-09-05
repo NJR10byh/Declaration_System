@@ -324,6 +324,7 @@ const pay = (method: any) => {
         // 请求成功后，销毁弹框
         payConfirmDialog.destroy();
         payDetailVisible.value = false;
+        getTableData();
       });
     },
     onClose: () => {

@@ -7,8 +7,8 @@
 <template>
   <t-card class="rebated-card">
     <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="rebatedTable.searchText" placeholder="请输入用户名称" clearable/>
-      <t-button class="inputStyle" style="width: 100px;">
+      <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入用户名称" clearable/>
+      <t-button class="inputStyle" style="width: 100px;" @click="searchData">
         <template #icon>
           <t-icon name="search"></t-icon>
         </template>
@@ -192,6 +192,11 @@ const getTableData = () => {
   }).finally(() => {
     rebatedTable.tableLoading = false;
   })
+}
+const searchData = () => {
+  currRequestBody.pageNo = 1;
+  rebatedTable.pagination.current = currRequestBody.pageNo;
+  getTableData();
 }
 // 结算
 const rebatedDetail = (row: any) => {

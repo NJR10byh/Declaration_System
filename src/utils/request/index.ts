@@ -194,8 +194,8 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
                     withToken: true,
                     // 重试
                     retry: {
-                        count: 3,
-                        delay: 1000
+                        count: 0,
+                        delay: 3000
                     }
                 }
             },
