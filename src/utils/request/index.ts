@@ -195,7 +195,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
                     // 重试
                     retry: {
                         count: 0,
-                        delay: 3000
+                        delay: 3 * 1000
                     }
                 }
             },

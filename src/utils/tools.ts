@@ -1,5 +1,6 @@
-import {MessagePlugin} from "tdesign-vue-next";
 import {isNotEmpty} from "@/utils/validate";
+import copy from "copy-to-clipboard";
+import {MessagePlugin} from "tdesign-vue-next";
 
 /**
  * @author baoyuhao
@@ -14,9 +15,8 @@ import {isNotEmpty} from "@/utils/validate";
  */
 export const copyInfo = (info: string) => {
     if (isNotEmpty(info)) {
-        navigator.clipboard.writeText(info);
-        MessagePlugin.success("已复制");
+        copy(info) ? MessagePlugin.success("已复制") : MessagePlugin.error("复制失败");
     } else {
-        MessagePlugin.error("复制值为空");
+        MessagePlugin.error("复制值为空")
     }
 };
