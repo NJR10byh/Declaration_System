@@ -129,7 +129,7 @@
     <template #body>
       <t-form>
         <t-form-item label="手机号码">
-          <t-input v-model="editFormData.phoneNum" placeholder="请输入手机号" clearable/>
+          <t-input v-model="editFormData.phoneNum" placeholder="请输入手机号" disabled readonly/>
         </t-form-item>
         <t-form-item label="姓名">
           <t-input v-model="editFormData.userName" placeholder="请输入姓名" clearable/>
@@ -160,7 +160,7 @@
               accept="image/*"
               :before-upload="beforeUpload"
               :request-method="uploadALiPayCode"
-              :size-limit="{ size: 10, unit: 'MB' }"
+              :size-limit="{ size: 5, unit: 'MB' }"
               @validate="validateFile"
               @fail="uploadFail"
           />
@@ -175,7 +175,7 @@
               accept="image/*"
               :before-upload="beforeUpload"
               :request-method="uploadWeChatCode"
-              :size-limit="{ size: 10, unit: 'MB' }"
+              :size-limit="{ size: 5, unit: 'MB' }"
               @validate="validateFile"
               @fail="uploadFail"
           />
