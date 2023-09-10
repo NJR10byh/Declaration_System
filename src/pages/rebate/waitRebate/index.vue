@@ -46,7 +46,9 @@
       width="1000px"
       header="结算"
       attach="body"
+      class="payDetailStyle"
       :confirm-on-enter="true"
+      z-index="1999"
   >
     <template #body>
       <t-space direction="vertical">
@@ -99,12 +101,14 @@
                 <t-image
                     :src="payDetailTable.accountInfo.wxPic"
                     fit="contain"
-                    :style="{ width: '200px', height: '200px' }"
+                    class="imageStyle"
+                    @click="picOpen(payDetailTable.accountInfo.wxPic)"
                 />
                 <t-image
                     :src="payDetailTable.accountInfo.zfbPic"
                     fit="contain"
-                    :style="{ width: '200px', height: '200px' }"
+                    class="imageStyle"
+                    @click="picOpen(payDetailTable.accountInfo.zfbPic)"
                 />
               </t-row>
             </t-card>
@@ -118,6 +122,14 @@
       <t-button theme="primary" @click="pay('aliPay')">支付宝支付</t-button>
       <t-button theme="success" @click="pay('weChat')">微信支付</t-button>
     </template>
+  </t-dialog>
+
+  <!-- 图片 -->
+  <t-dialog v-model:visible="picDialog.visible" :footer="false" z-index="2000">
+    <t-image
+        :src="picDialog.url"
+        fit="contain"
+    />
   </t-dialog>
 </template>
 
@@ -149,6 +161,12 @@ const offsetTop = computed(() => {
 const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
+
+// 图片预览
+const picDialog = reactive({
+  visible: false,
+  url: ""
+})
 
 /**
  * 表格相关
@@ -332,6 +350,12 @@ const pay = (method: any) => {
     },
   });
 }
+
+// 图片预览
+const picOpen = (imageUrl: any) => {
+  picDialog.url = imageUrl;
+  picDialog.visible = true;
+}
 </script>
 
 <style lang="less" scoped>
@@ -365,6 +389,17 @@ const pay = (method: any) => {
       overflow: auto;
     }
   }
+}
 
+.payDetailStyle {
+
+  .imageStyle {
+    width: 200px;
+    height: 200px;
+
+    :hover {
+      cursor: pointer;
+    }
+  }
 }
 </style>
