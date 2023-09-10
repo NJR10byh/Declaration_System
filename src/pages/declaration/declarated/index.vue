@@ -65,6 +65,7 @@
       <template #orderPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
           <t-image
+              v-if="isNotEmpty(slotProps.row.orderPic)"
               :src="slotProps.row.orderPic"
               fit="contain"
               class="imageStyle"
@@ -75,6 +76,7 @@
       <template #finishPic="slotProps">
         <div class="tdesign-demo-image-viewer__base">
           <t-image
+              v-if="isNotEmpty(slotProps.row.finishPic)"
               :src="slotProps.row.finishPic"
               fit="contain"
               class="imageStyle"
