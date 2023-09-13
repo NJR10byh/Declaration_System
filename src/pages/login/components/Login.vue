@@ -69,14 +69,11 @@ const loginBtnLoading = ref(false);
 const router = useRouter();
 
 onMounted(() => {
-  // const localForm = Cookies.get('LOCAL_KEY')
   const localForm = localStorage.getItem('LOCAL_KEY');
-  console.log(localForm)
   if (localForm) {
     rememberMe.value = true;
     try {
       const {phoneNum, password} = JSON.parse(localForm)
-      console.log(phoneNum, password)
       Object.assign(loginData, {
         phoneNum: Base64.decode(phoneNum),
         password: Base64.decode(password)
@@ -91,7 +88,6 @@ onMounted(() => {
 
 const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {
-    console.log(loginData)
     loginBtnLoading.value = true;
     if (!checkAuth()) {
       localStorage.removeItem("token");
@@ -99,7 +95,6 @@ const onSubmit = async ({validateResult}) => {
         url: BASE_URL.login,
         data: loginData
       }).then(async res => {
-        console.log(res);
         localStorage.setItem("token", res.token);
         if (rememberMe.value) {
           const localForm = {
