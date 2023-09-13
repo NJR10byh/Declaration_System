@@ -1,58 +1,56 @@
 <template>
   <t-form
       ref="form"
-      :class="['item-container', `login-${type}`]"
+      :class="['item-container', 'login-password']"
       :data="loginData"
       :rules="FORM_RULES"
       label-width="0"
       @submit="onSubmit"
   >
-    <template v-if="type == 'password'">
-      <t-form-item name="phoneNum">
-        <t-input
-            v-model="loginData.phoneNum"
-            size="large"
-            placeholder="请输入账号"
-        >
-          <template #prefix-icon>
-            <t-icon name="user"/>
-          </template>
-        </t-input>
-      </t-form-item>
-
-      <t-form-item name="password">
-        <t-input
-            v-model="loginData.password"
-            size="large"
-            :type="showPsw ? 'text' : 'password'"
-            clearable
-            placeholder="请输入登录密码"
-        >
-          <template #prefix-icon>
-            <t-icon name="lock-on"/>
-          </template>
-          <template #suffix-icon>
-            <t-icon
-                :name="showPsw ? 'browse' : 'browse-off'"
-                @click="showPsw = !showPsw"
-            />
-          </template>
-        </t-input>
-      </t-form-item>
-    </template>
-
-    <t-form-item v-if="type !== 'qrcode'" class="btn-container">
-      <t-button block size="large" type="submit" :loading="loginBtnLoading">登 录</t-button>
+    <t-form-item name="phoneNum">
+      <t-input
+          v-model="loginData.phoneNum"
+          size="large"
+          placeholder="请输入账号"
+      >
+        <template #prefix-icon>
+          <t-icon name="user"/>
+        </template>
+      </t-input>
+    </t-form-item>
+    <t-form-item name="password">
+      <t-input
+          v-model="loginData.password"
+          size="large"
+          type="password"
+          clearable
+          placeholder="请输入登录密码"
+      >
+        <template #prefix-icon>
+          <t-icon name="lock-on"/>
+        </template>
+        <template #suffix-icon>
+          <t-icon
+              :name="showPsw ? 'browse' : 'browse-off'"
+              @click="showPsw = !showPsw"
+          />
+        </template>
+      </t-input>
+    </t-form-item>
+    <t-form-item style="width: 100%;">
+      <t-checkbox style="width: 20%;" v-model="rememberMe">记住我</t-checkbox>
+      <t-button style="width: 80%;" block size="large" type="submit" :loading="loginBtnLoading">登 录</t-button>
     </t-form-item>
   </t-form>
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
+import {Base64} from 'js-base64';
 import {checkAuth, userInfoToCache} from "@/utils/auth";
-import {MessagePlugin} from "tdesign-vue-next";
 import {request} from "@/utils/request";
+import {MessagePlugin} from "tdesign-vue-next";
 import {BASE_URL} from "./constants";
 
 const FORM_RULES = {
@@ -60,19 +58,40 @@ const FORM_RULES = {
   password: [{required: true, message: "密码必填", type: "error"}]
 };
 
-const type = ref("password");
-
 const loginData = reactive({
   phoneNum: "",
   password: ""
 });
+const rememberMe = ref(false);
 const showPsw = ref(false);
 
 const loginBtnLoading = ref(false);
 const router = useRouter();
 
+onMounted(() => {
+  // const localForm = Cookies.get('LOCAL_KEY')
+  const localForm = localStorage.getItem('LOCAL_KEY');
+  console.log(localForm)
+  if (localForm) {
+    rememberMe.value = true;
+    try {
+      const {phoneNum, password} = JSON.parse(localForm)
+      console.log(phoneNum, password)
+      Object.assign(loginData, {
+        phoneNum: Base64.decode(phoneNum),
+        password: Base64.decode(password)
+      })
+    } catch (error) {
+      console.error('本地数据解析失败~', error)
+    }
+  } else {
+    rememberMe.value = false;
+  }
+})
+
 const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {
+    console.log(loginData)
     loginBtnLoading.value = true;
     if (!checkAuth()) {
       localStorage.removeItem("token");
@@ -82,6 +101,15 @@ const onSubmit = async ({validateResult}) => {
       }).then(async res => {
         console.log(res);
         localStorage.setItem("token", res.token);
+        if (rememberMe.value) {
+          const localForm = {
+            phoneNum: Base64.encode(loginData.phoneNum),
+            password: Base64.encode(loginData.password)
+          }
+          localStorage.setItem("LOCAL_KEY", JSON.stringify(localForm));
+        } else {
+          localStorage.removeItem("LOCAL_KEY");
+        }
         await userInfoToCache(res.userInfo);
       }).catch(err => {
         MessagePlugin.error(err.message);
