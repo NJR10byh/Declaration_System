@@ -50,7 +50,6 @@
         :columns="USER_LIST_TABLE_COLUMNS"
         row-key="index"
         hover
-        stripe
         table-layout="auto"
         :pagination="userListTable.pagination"
         :loading="userListTable.tableLoading"

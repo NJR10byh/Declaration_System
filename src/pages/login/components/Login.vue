@@ -111,6 +111,7 @@ const onSubmit = async ({validateResult}) => {
       }).finally(() => {
         loginBtnLoading.value = false;
       });
+      await request.get({url: BASE_URL.checkCommodity});
     } else {
       loginBtnLoading.value = false;
     }

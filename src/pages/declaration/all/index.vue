@@ -62,7 +62,6 @@
         :columns="ALL_DECLARATION_TABLE_COLUMNS"
         row-key="index"
         hover
-        stripe
         table-content-width="1600"
         :pagination="allDeclarationTable.pagination"
         :loading="allDeclarationTable.tableLoading"
@@ -73,12 +72,14 @@
         size="small"
         style="margin-top: 10px;"
     >
-      <template #orderId="slotProps">
-        {{ slotProps.row.orderId }}
-      </template>
       <template #trackNum="slotProps">
         <t-tag theme="default">
           {{ isNotEmpty(slotProps.row.trackNum) ? slotProps.row.trackNum : "暂无" }}
+        </t-tag>
+      </template>
+      <template #schemeName="slotProps">
+        <t-tag theme="primary" variant="light-outline">
+          {{ slotProps.row.schemeName }}
         </t-tag>
       </template>
       <template #payAmount="slotProps">
@@ -206,7 +207,7 @@ const allDeclarationTable = reactive({
   pagination: {
     total: 0,
     current: 1,
-    pageSize: 20
+    pageSize: 10
   }
 });
 
@@ -237,7 +238,7 @@ const editFormData = reactive({
 
 const currRequestBody = reactive({
   pageNo: 1, // 页
-  pageItems: 20, // 条数
+  pageItems: 10, // 条数
   orderId: "", // 订单号
   commodityId: "",// 商品id
   commodity: "",// 商品
@@ -322,7 +323,7 @@ const getAllCommodity = async () => {
 // 搜索
 const searchData = async () => {
   allDeclarationTable.pagination.current = 1;
-  allDeclarationTable.pagination.pageSize = 20;
+  allDeclarationTable.pagination.pageSize = 10;
   Object.assign(currRequestBody, {
     pageNo: allDeclarationTable.pagination.current,
     pageItems: allDeclarationTable.pagination.pageSize,

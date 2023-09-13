@@ -12,7 +12,6 @@
         :columns="WAIT_REBATE_TABLE_COLUMNS"
         row-key="index"
         hover
-        stripe
         :pagination="waitRebateTable.pagination"
         :loading="waitRebateTable.tableLoading"
         :header-affixed-top="{ offsetTop, container: getContainer }"

@@ -21,7 +21,7 @@ export const GOODS_INFO_TABLE_COLUMNS = [
         title: "商品名称",
         align: "left",
         colKey: "commodity",
-        width: 160,
+        width: 120,
         ellipsis: true
     },
     {
@@ -71,6 +71,7 @@ export const GOODS_INFO_TABLE_COLUMNS = [
         align: "left",
         colKey: "settings",
         fixed: "right",
+        stopPropagation: true,
         width: 200
     }
 ];

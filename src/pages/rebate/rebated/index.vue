@@ -23,7 +23,6 @@
         :columns="REBATED_TABLE_COLUMNS"
         row-key="index"
         hover
-        stripe
         :pagination="rebatedTable.pagination"
         :loading="rebatedTable.tableLoading"
         :header-affixed-top="{ offsetTop, container: getContainer }"

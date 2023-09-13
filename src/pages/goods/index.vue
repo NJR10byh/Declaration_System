@@ -33,13 +33,13 @@
     </t-row>
   </t-card>
   <t-card class="goods-card">
-    <t-table
+    <t-enhanced-table
         class="tableStyle"
         :data="goodsInfoTable.tableData"
         :columns="GOODS_INFO_TABLE_COLUMNS"
-        row-key="index"
+        :tree="treeConfig"
+        row-key="commodityId"
         hover
-        stripe
         table-layout="auto"
         :pagination="goodsInfoTable.pagination"
         :loading="goodsInfoTable.tableLoading"
@@ -47,17 +47,24 @@
         :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
         :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
         @page-change="goodsInfoTablePageChange"
+        @expanded-tree-nodes-change="goodsInfoTableExpandedTreeNodesChange"
         size="small"
         style="margin-top: 10px;"
     >
       <template #remainAmount="slotProps">
-        {{ slotProps.row.remainAmount + "元" }}
+        {{ isNotEmpty(slotProps.row.remainAmount) ? slotProps.row.remainAmount + "元" : "" }}
       </template>
       <template #totalAmount="slotProps">
-        {{ slotProps.row.totalAmount + "元" }}
+        {{ isNotEmpty(slotProps.row.totalAmount) ? slotProps.row.totalAmount + "元" : "" }}
       </template>
       <template #expectPayback="slotProps">
-        {{ slotProps.row.expectPayback + "元" }}
+        {{ isNotEmpty(slotProps.row.expectPayback) ? slotProps.row.expectPayback + "元" : "" }}
+      </template>
+      <template #buildTime="slotProps">
+        {{ timestampToDateTime(slotProps.row.buildTime) }}
+      </template>
+      <template #endTime="slotProps">
+        {{ timestampToDateTime(slotProps.row.endTime) }}
       </template>
       <template #status="slotProps">
         <t-tag :theme="goodsTagTheme(slotProps.row.status)" variant="light-outline" shape="round">
@@ -72,27 +79,21 @@
             </template>
             复制
           </t-button>
-          <t-button theme="success" @click="enable(slotProps.row)" v-show="slotProps.row.status==='禁用'">
-            <template #icon>
-              <t-icon name="check-circle"></t-icon>
-            </template>
-            启用
-          </t-button>
-          <t-button theme="danger" @click="disable(slotProps.row)" v-show="slotProps.row.status==='启用'">
-            <template #icon>
-              <t-icon name="close-circle"></t-icon>
-            </template>
-            禁用
-          </t-button>
           <t-button theme="warning" @click="editInfo(slotProps.row)">
             <template #icon>
               <t-icon name="edit"></t-icon>
             </template>
             编辑
           </t-button>
+          <t-button theme="primary" @click="addScheme(slotProps.row)" v-show="slotProps.row.parentId==='-1'">
+            <template #icon>
+              <t-icon name="add"></t-icon>
+            </template>
+            新增方案
+          </t-button>
         </div>
       </template>
-    </t-table>
+    </t-enhanced-table>
   </t-card>
 
   <!--  新增、编辑对话框  -->
@@ -133,6 +134,43 @@
       </t-form>
     </template>
   </t-dialog>
+
+  <!--  新增方案对话框  -->
+  <t-dialog
+      v-model:visible="addSchemeVisible"
+      header="新增方案"
+      :confirm-on-enter="true"
+      :on-confirm="addSchemeConfirm"
+  >
+    <template #body>
+      <t-form>
+        <t-form-item label="方案名称">
+          <t-input v-model="addSchemeFormData.schemeName" placeholder="请输入方案名称"/>
+        </t-form-item>
+        <t-form-item label="方案状态">
+          <t-select
+              v-model="addSchemeFormData.status"
+              placeholder="-请选择方案状态-"
+              :options="goodsStatusOptions"
+              filterable
+              clearable
+          />
+        </t-form-item>
+        <t-form-item label="总金额">
+          <t-input type="number" v-model="addSchemeFormData.totalAmount" placeholder="请输入总金额" suffix="元"/>
+        </t-form-item>
+        <t-form-item label="预计返款金额">
+          <t-input type="number" v-model="addSchemeFormData.expectPayback" placeholder="请输入预计返款金额"
+                   suffix="元"/>
+        </t-form-item>
+        <t-form-item label="截止时间">
+          <t-date-picker v-model="addSchemeFormData.endTime" enable-time-picker placeholder="请选择截止时间"
+                         format="YYYY-MM-DD HH:mm:ss" valueType="YYYY-MM-DD HH:mm:ss"
+                         :disable-date="{after:addSchemeFormData.endTime}"/>
+        </t-form-item>
+      </t-form>
+    </template>
+  </t-dialog>
 </template>
 
 <script setup lang="ts">
@@ -146,6 +184,7 @@ import {dateStringToTimestamp, timestampToDateTime} from "@/utils/date";
 import {goodsStatus, goodsTagTheme} from "@/utils/chargeStatus";
 import {copyInfo} from "@/utils/tools";
 import {MessagePlugin} from "tdesign-vue-next";
+import {isNotEmpty} from "../../utils/validate";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -175,6 +214,11 @@ const goodsInfoTable = reactive({
     pageSize: 20
   }
 });
+const treeConfig = reactive({
+  childrenKey: 'childCommodities',
+  expandTreeNodeOnClick: false,
+  treeNodeColumnIndex: 1,
+});
 
 // 商品状态选项
 const goodsStatusOptions = reactive([
@@ -186,7 +230,6 @@ const goodsStatusOptions = reactive([
 const dialogTitle = ref("编辑商品信息");
 // 编辑对话框
 const editVisible = ref(false);
-
 // 编辑表单
 const editFormData = reactive({
   commodityId: null,
@@ -197,6 +240,18 @@ const editFormData = reactive({
   expectPayback: "",
   endTime: ""
 });
+
+// 新增方案对话框
+const addSchemeVisible = ref(false);
+const addSchemeFormData = reactive({
+  commodityId: null,
+  schemeName: "",
+  status: 1,
+  totalAmount: "",
+  expectPayback: "",
+  endTime: ""
+});
+const addSchemeDeadLine = ref("");
 
 // 响应式对象 currRequestBody，包含当前页码、每条页数，以及搜索过滤参数
 const currRequestBody = reactive({
@@ -231,6 +286,10 @@ const goodsInfoTablePageChange = (curr: any) => {
   goodsInfoTable.pagination.pageSize = currRequestBody.pageItems;
   getTableData();
 };
+// 节点展开钩子
+const goodsInfoTableExpandedTreeNodesChange = (expandedTreeNodes, context) => {
+  console.log(expandedTreeNodes, context);
+};
 
 /**
  * 业务相关
@@ -247,8 +306,6 @@ const getTableData = () => {
     goodsInfoTable.tableData = res.list;
     goodsInfoTable.tableData.map((item, index) => {
       item.index = (goodsInfoTable.pagination.current - 1) * goodsInfoTable.pagination.pageSize + index + 1;
-      item.buildTime = timestampToDateTime(item.buildTime);
-      item.endTime = timestampToDateTime(item.endTime);
     })
     console.log(goodsInfoTable.tableData)
   }).catch(err => {
@@ -275,21 +332,10 @@ const addGoodsInfo = () => {
   editVisible.value = true;
 }
 
-// 启用
-const enable = (row: any) => {
-  console.log("启用");
-  console.log(row);
-}
-
-// 禁用
-const disable = (row: any) => {
-  console.log("禁用");
-  console.log(row);
-}
-
 // 编辑
 const editInfo = (row: any) => {
   dialogTitle.value = "编辑商品信息";
+  console.log(row)
   Object.assign(editFormData, {
     commodityId: row.commodityId,
     commodity: row.commodity,
@@ -297,7 +343,7 @@ const editInfo = (row: any) => {
     totalAmount: row.totalAmount,
     shoppingUrl: row.shoppingUrl,
     expectPayback: row.expectPayback,
-    endTime: row.endTime
+    endTime: timestampToDateTime(row.endTime)
   })
   editVisible.value = true;
 }
@@ -319,6 +365,26 @@ const editConfirm = () => {
     getTableData();
     editVisible.value = false;
   })
+}
+
+// 新增方案
+const addScheme = (row: any) => {
+  Object.assign(addSchemeFormData, {
+    parentId: row.commodityId,
+    endTime: timestampToDateTime(row.endTime)
+  })
+  addSchemeDeadLine.value = row.endTime;
+  addSchemeVisible.value = true;
+}
+
+const addSchemeConfirm = () => {
+  console.log(addSchemeFormData.endTime, addSchemeDeadLine.value);
+  if (dateStringToTimestamp(addSchemeFormData.endTime) > parseInt(addSchemeDeadLine.value)) {
+    MessagePlugin.error("截止时间不能大于商品截止时间");
+    addSchemeFormData.endTime = timestampToDateTime(parseInt(addSchemeDeadLine.value));
+    return;
+  }
+  MessagePlugin.warning("暂未开放");
 }
 </script>
 

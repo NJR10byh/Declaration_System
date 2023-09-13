@@ -32,7 +32,6 @@
         :columns="USER_MANAGE_TABLE_COLUMNS"
         row-key="index"
         hover
-        stripe
         table-layout="auto"
         :pagination="userManageTable.pagination"
         :loading="userManageTable.tableLoading"

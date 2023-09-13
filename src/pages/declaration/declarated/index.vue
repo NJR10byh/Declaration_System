@@ -34,7 +34,6 @@
         :columns="DECLARATED_TABLE_COLUMNS"
         row-key="index"
         hover
-        stripe
         table-content-width="1600"
         :pagination="declaratedTable.pagination"
         :loading="declaratedTable.tableLoading"
@@ -45,12 +44,14 @@
         size="small"
         style="margin-top: 10px;"
     >
-      <template #orderId="slotProps">
-        {{ slotProps.row.orderId }}
-      </template>
       <template #trackNum="slotProps">
         <t-tag theme="default">
           {{ isNotEmpty(slotProps.row.trackNum) ? slotProps.row.trackNum : "暂无" }}
+        </t-tag>
+      </template>
+      <template #schemeName="slotProps">
+        <t-tag theme="primary" variant="light-outline">
+          {{ slotProps.row.schemeName }}
         </t-tag>
       </template>
       <template #payAmount="slotProps">

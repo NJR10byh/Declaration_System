@@ -35,7 +35,14 @@ export const WAIT_APPROVAL_TABLE_COLUMNS = [
         title: "商品",
         align: "left",
         colKey: "commodity",
-        width: 150,
+        width: 120,
+        ellipsis: true
+    },
+    {
+        title: "方案",
+        align: "center",
+        colKey: "schemeName",
+        width: 80,
         ellipsis: true
     },
     {
