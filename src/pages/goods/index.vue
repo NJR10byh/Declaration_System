@@ -144,6 +144,12 @@
   >
     <template #body>
       <t-form>
+        <t-form-item label="商品名称">
+          <t-input v-model="addSchemeFormData.commodity" disabled readonly/>
+        </t-form-item>
+        <t-form-item label="商品链接">
+          <t-input v-model="addSchemeFormData.shoppingUrl" placeholder="请输入商品链接"/>
+        </t-form-item>
         <t-form-item label="方案名称">
           <t-input v-model="addSchemeFormData.schemeName" placeholder="请输入方案名称"/>
         </t-form-item>
@@ -155,9 +161,6 @@
               filterable
               clearable
           />
-        </t-form-item>
-        <t-form-item label="总金额">
-          <t-input type="number" v-model="addSchemeFormData.totalAmount" placeholder="请输入总金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="预计返款金额">
           <t-input type="number" v-model="addSchemeFormData.expectPayback" placeholder="请输入预计返款金额"
@@ -238,18 +241,21 @@ const editFormData = reactive({
   shoppingUrl: "",
   totalAmount: "",
   expectPayback: "",
-  endTime: ""
+  endTime: "",
+  parentId: "-1",
 });
 
 // 新增方案对话框
 const addSchemeVisible = ref(false);
 const addSchemeFormData = reactive({
   commodityId: null,
+  commodity: "",
   schemeName: "",
   status: 1,
-  totalAmount: "",
+  shoppingUrl: "",
   expectPayback: "",
-  endTime: ""
+  endTime: "",
+  parentId: "",
 });
 const addSchemeDeadLine = ref("");
 
@@ -327,7 +333,8 @@ const addGoodsInfo = () => {
     shoppingUrl: "",
     totalAmount: "",
     expectPayback: "",
-    endTime: ""
+    endTime: "",
+    parentId: "-1",
   })
   editVisible.value = true;
 }
@@ -370,21 +377,40 @@ const editConfirm = () => {
 // 新增方案
 const addScheme = (row: any) => {
   Object.assign(addSchemeFormData, {
+    commodityId: row.commodityId,
+    commodity: row.commodity,
+    shoppingUrl: row.shoppingUrl,
     parentId: row.commodityId,
-    endTime: timestampToDateTime(row.endTime)
+    endTime: timestampToDateTime(row.endTime),
+    schemeName: "",
+    status: 1,
+    expectPayback: "",
   })
   addSchemeDeadLine.value = row.endTime;
   addSchemeVisible.value = true;
 }
 
 const addSchemeConfirm = () => {
-  console.log(addSchemeFormData.endTime, addSchemeDeadLine.value);
   if (dateStringToTimestamp(addSchemeFormData.endTime) > parseInt(addSchemeDeadLine.value)) {
     MessagePlugin.error("截止时间不能大于商品截止时间");
     addSchemeFormData.endTime = timestampToDateTime(parseInt(addSchemeDeadLine.value));
     return;
   }
-  MessagePlugin.warning("暂未开放");
+  Object.assign(addSchemeFormData, {
+    endTime: dateStringToTimestamp(addSchemeFormData.endTime)
+  })
+  request.post({
+    url: BASE_URL.editDetail,
+    data: addSchemeFormData
+  }).then(res => {
+    console.log(res);
+    MessagePlugin.success("新增方案成功");
+  }).catch(err => {
+    MessagePlugin.error("操作失败：" + err);
+  }).finally(() => {
+    getTableData();
+    addSchemeVisible.value = false;
+  })
 }
 </script>
 
