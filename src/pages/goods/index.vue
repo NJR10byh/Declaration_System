@@ -79,7 +79,13 @@
             </template>
             复制
           </t-button>
-          <t-button theme="warning" @click="editInfo(slotProps.row)">
+          <t-button theme="warning" @click="editInfo(slotProps.row)" v-show="slotProps.row.parentId==='-1'">
+            <template #icon>
+              <t-icon name="edit"></t-icon>
+            </template>
+            编辑
+          </t-button>
+          <t-button theme="warning" @click="editScheme(slotProps.row)" v-show="slotProps.row.parentId!=='-1'">
             <template #icon>
               <t-icon name="edit"></t-icon>
             </template>
@@ -99,7 +105,7 @@
   <!--  新增、编辑对话框  -->
   <t-dialog
       v-model:visible="editVisible"
-      :header="dialogTitle"
+      :header="editGoodsDialogTitle"
       attach="body"
       :confirm-on-enter="true"
       :on-confirm="editConfirm"
@@ -135,27 +141,24 @@
     </template>
   </t-dialog>
 
-  <!--  新增方案对话框  -->
+  <!--  新增、编辑方案对话框  -->
   <t-dialog
-      v-model:visible="addSchemeVisible"
-      header="新增方案"
+      v-model:visible="editSchemeVisible"
+      :header="editSchemeDialogTitle"
       :confirm-on-enter="true"
-      :on-confirm="addSchemeConfirm"
+      :on-confirm="editSchemeConfirm"
   >
     <template #body>
       <t-form>
-        <t-form-item label="商品名称">
-          <t-input v-model="addSchemeFormData.commodity" disabled readonly/>
-        </t-form-item>
         <t-form-item label="商品链接">
-          <t-input v-model="addSchemeFormData.shoppingUrl" placeholder="请输入商品链接"/>
+          <t-input v-model="editSchemeFormData.shoppingUrl" placeholder="请输入商品链接"/>
         </t-form-item>
         <t-form-item label="方案名称">
-          <t-input v-model="addSchemeFormData.schemeName" placeholder="请输入方案名称"/>
+          <t-input v-model="editSchemeFormData.commodity" placeholder="请输入方案名称"/>
         </t-form-item>
         <t-form-item label="方案状态">
           <t-select
-              v-model="addSchemeFormData.status"
+              v-model="editSchemeFormData.status"
               placeholder="-请选择方案状态-"
               :options="goodsStatusOptions"
               filterable
@@ -163,13 +166,13 @@
           />
         </t-form-item>
         <t-form-item label="预计返款金额">
-          <t-input type="number" v-model="addSchemeFormData.expectPayback" placeholder="请输入预计返款金额"
+          <t-input type="number" v-model="editSchemeFormData.expectPayback" placeholder="请输入预计返款金额"
                    suffix="元"/>
         </t-form-item>
         <t-form-item label="截止时间">
-          <t-date-picker v-model="addSchemeFormData.endTime" enable-time-picker placeholder="请选择截止时间"
+          <t-date-picker v-model="editSchemeFormData.endTime" enable-time-picker placeholder="请选择截止时间"
                          format="YYYY-MM-DD HH:mm:ss" valueType="YYYY-MM-DD HH:mm:ss"
-                         :disable-date="{after:addSchemeFormData.endTime}"/>
+                         :disable-date="{after:editSchemeFormData.endTime}"/>
         </t-form-item>
       </t-form>
     </template>
@@ -230,7 +233,7 @@ const goodsStatusOptions = reactive([
 ])
 
 // 对话框标题
-const dialogTitle = ref("编辑商品信息");
+const editGoodsDialogTitle = ref("");
 // 编辑对话框
 const editVisible = ref(false);
 // 编辑表单
@@ -245,12 +248,12 @@ const editFormData = reactive({
   parentId: "-1",
 });
 
-// 新增方案对话框
-const addSchemeVisible = ref(false);
-const addSchemeFormData = reactive({
+// 新增、编辑方案对话框
+const editSchemeVisible = ref(false);
+const editSchemeDialogTitle = ref("")
+const editSchemeFormData = reactive({
   commodityId: null,
   commodity: "",
-  schemeName: "",
   status: 1,
   shoppingUrl: "",
   expectPayback: "",
@@ -325,7 +328,7 @@ const searchData = () => {
 }
 // 新增
 const addGoodsInfo = () => {
-  dialogTitle.value = "新增商品信息";
+  editGoodsDialogTitle.value = "新增商品信息";
   Object.assign(editFormData, {
     commodityId: null,
     commodity: "",
@@ -341,7 +344,7 @@ const addGoodsInfo = () => {
 
 // 编辑
 const editInfo = (row: any) => {
-  dialogTitle.value = "编辑商品信息";
+  editGoodsDialogTitle.value = "编辑商品信息";
   console.log(row)
   Object.assign(editFormData, {
     commodityId: row.commodityId,
@@ -365,7 +368,7 @@ const editConfirm = () => {
     data: editFormData
   }).then(res => {
     console.log(res);
-    MessagePlugin.success(dialogTitle.value + "成功");
+    MessagePlugin.success(editGoodsDialogTitle.value + "成功");
   }).catch(err => {
     MessagePlugin.error("操作失败：" + err);
   }).finally(() => {
@@ -376,41 +379,55 @@ const editConfirm = () => {
 
 // 新增方案
 const addScheme = (row: any) => {
-  Object.assign(addSchemeFormData, {
+  editSchemeDialogTitle.value = "新增方案";
+  Object.assign(editSchemeFormData, {
+    commodityId: null,
+    commodity: "",
+    shoppingUrl: row.shoppingUrl,
+    parentId: row.commodityId,
+    endTime: timestampToDateTime(row.endTime),
+    status: 1,
+    expectPayback: "",
+  })
+  addSchemeDeadLine.value = row.endTime;
+  editSchemeVisible.value = true;
+}
+const editSchemeConfirm = () => {
+  if (dateStringToTimestamp(editSchemeFormData.endTime) > parseInt(addSchemeDeadLine.value)) {
+    MessagePlugin.error("截止时间不能大于商品截止时间");
+    editSchemeFormData.endTime = timestampToDateTime(parseInt(addSchemeDeadLine.value));
+    return;
+  }
+  Object.assign(editSchemeFormData, {
+    endTime: dateStringToTimestamp(editSchemeFormData.endTime)
+  })
+  request.post({
+    url: BASE_URL.editDetail,
+    data: editSchemeFormData
+  }).then(res => {
+    MessagePlugin.success(editSchemeDialogTitle.value + "成功");
+  }).catch(err => {
+    MessagePlugin.error("操作失败：" + err);
+  }).finally(() => {
+    getTableData();
+    editSchemeVisible.value = false;
+  })
+}
+
+// 编辑方案
+const editScheme = (row: any) => {
+  editSchemeDialogTitle.value = "编辑方案";
+  Object.assign(editSchemeFormData, {
     commodityId: row.commodityId,
     commodity: row.commodity,
     shoppingUrl: row.shoppingUrl,
     parentId: row.commodityId,
     endTime: timestampToDateTime(row.endTime),
-    schemeName: "",
-    status: 1,
-    expectPayback: "",
+    status: row.status,
+    expectPayback: row.expectPayback,
   })
   addSchemeDeadLine.value = row.endTime;
-  addSchemeVisible.value = true;
-}
-
-const addSchemeConfirm = () => {
-  if (dateStringToTimestamp(addSchemeFormData.endTime) > parseInt(addSchemeDeadLine.value)) {
-    MessagePlugin.error("截止时间不能大于商品截止时间");
-    addSchemeFormData.endTime = timestampToDateTime(parseInt(addSchemeDeadLine.value));
-    return;
-  }
-  Object.assign(addSchemeFormData, {
-    endTime: dateStringToTimestamp(addSchemeFormData.endTime)
-  })
-  request.post({
-    url: BASE_URL.editDetail,
-    data: addSchemeFormData
-  }).then(res => {
-    console.log(res);
-    MessagePlugin.success("新增方案成功");
-  }).catch(err => {
-    MessagePlugin.error("操作失败：" + err);
-  }).finally(() => {
-    getTableData();
-    addSchemeVisible.value = false;
-  })
+  editSchemeVisible.value = true;
 }
 </script>
 
