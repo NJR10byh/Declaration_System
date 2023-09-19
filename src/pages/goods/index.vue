@@ -130,9 +130,6 @@
         <t-form-item label="总金额">
           <t-input type="number" v-model="editFormData.totalAmount" placeholder="请输入总金额" suffix="元"/>
         </t-form-item>
-        <t-form-item label="预计返款金额">
-          <t-input type="number" v-model="editFormData.expectPayback" placeholder="请输入预计返款金额" suffix="元"/>
-        </t-form-item>
         <t-form-item label="截止时间">
           <t-date-picker v-model="editFormData.endTime" enable-time-picker placeholder="请选择截止时间"
                          format="YYYY-MM-DD HH:mm:ss" valueType="YYYY-MM-DD HH:mm:ss"/>
@@ -243,7 +240,6 @@ const editFormData = reactive({
   status: 1,
   shoppingUrl: "",
   totalAmount: "",
-  expectPayback: "",
   endTime: "",
   parentId: "-1",
 });
@@ -404,7 +400,7 @@ const editSchemeConfirm = () => {
   request.post({
     url: BASE_URL.editDetail,
     data: editSchemeFormData
-  }).then(res => {
+  }).then(() => {
     MessagePlugin.success(editSchemeDialogTitle.value + "成功");
   }).catch(err => {
     MessagePlugin.error("操作失败：" + err);

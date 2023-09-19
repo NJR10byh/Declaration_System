@@ -64,11 +64,6 @@
                 :foot-data="payDetailTable.footData"
                 size="small"
             >
-              <template #orderId="slotProps">
-                <t-tag theme="primary" variant="light-outline">
-                  {{ slotProps.row.orderId }}
-                </t-tag>
-              </template>
             </t-table>
           </t-col>
         </t-row>

@@ -101,13 +101,13 @@ export const ALL_DECLARATION_TABLE_COLUMNS = [
         title: "下单图",
         align: "center",
         colKey: "orderPic",
-        width: 80
+        width: 120
     },
     {
         title: "完成图",
         align: "center",
         colKey: "finishPic",
-        width: 80
+        width: 120
     },
     {
         title: "操作",

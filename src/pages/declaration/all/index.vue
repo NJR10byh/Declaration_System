@@ -62,7 +62,8 @@
         :columns="ALL_DECLARATION_TABLE_COLUMNS"
         row-key="index"
         hover
-        table-content-width="1600"
+        table-layout="auto"
+        :table-content-width="tableContentWidth"
         :pagination="allDeclarationTable.pagination"
         :loading="allDeclarationTable.tableLoading"
         :header-affixed-top="{ offsetTop, container: getContainer }"
@@ -71,6 +72,7 @@
         @page-change="allDeclarationTablePageChange"
         size="small"
         style="margin-top: 10px;"
+        v-resize="resize"
     >
       <template #trackNum="slotProps">
         <t-tag theme="default">
@@ -193,6 +195,7 @@ const offsetTop = computed(() => {
 const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
+const tableContentWidth = ref("1500px");
 
 // 报单日期范围
 const reportDateRange = ref([])
@@ -269,6 +272,15 @@ onMounted(async () => {
 /**
  * 操作钩子
  */
+// 监听容器宽高变化
+const resize = (resizeValue: any) => {
+  console.log(resizeValue[0].contentRect);
+  if (resizeValue[0].contentRect.width > 1500) {
+    tableContentWidth.value = resizeValue[0].contentRect.width + "px";
+  } else {
+    tableContentWidth.value = "1500px";
+  }
+};
 // 分页钩子
 const allDeclarationTablePageChange = (curr: any) => {
   console.log("分页变化", curr);

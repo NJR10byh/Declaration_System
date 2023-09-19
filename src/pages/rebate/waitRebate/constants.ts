@@ -59,14 +59,14 @@ export const PAY_DETAIL_TABLE_COLUMNS = [
         title: "订单号",
         align: "center",
         colKey: "orderId",
-        width: 80,
+        width: 120,
         ellipsis: true
     },
     {
         title: "商品",
         align: "left",
         colKey: "commodity",
-        width: 150,
+        width: 120,
         ellipsis: true
     },
     {
