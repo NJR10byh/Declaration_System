@@ -85,13 +85,13 @@
         </t-tag>
       </template>
       <template #payAmount="slotProps">
-        {{ slotProps.row.payAmount + "元" }}
+        {{ isNotEmpty(slotProps.row.payAmount) ? slotProps.row.payAmount + "元" : '' }}
       </template>
       <template #expectPayback="slotProps">
-        {{ slotProps.row.expectPayback + "元" }}
+        {{ isNotEmpty(slotProps.row.expectPayback) ? slotProps.row.expectPayback + "元" : '' }}
       </template>
       <template #actualPayback="slotProps">
-        {{ slotProps.row.actualPayback + "元" }}
+        {{ isNotEmpty(slotProps.row.actualPayback) ? slotProps.row.actualPayback + "元" : '' }}
       </template>
       <template #orderPic="slotProps">
         <t-image
