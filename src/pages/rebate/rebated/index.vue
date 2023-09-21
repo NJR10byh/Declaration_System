@@ -53,7 +53,7 @@
   <!-- 返款详情Dialog -->
   <t-dialog
       v-model:visible="rebatedDetailVisible"
-      width="1000px"
+      width="1200px"
       header="返款详情"
       attach="body"
       :footer="false"

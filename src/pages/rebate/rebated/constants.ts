@@ -65,14 +65,21 @@ export const REBATED_DETAIL_TABLE_COLUMNS = [
         title: "订单号",
         align: "center",
         colKey: "orderId",
-        width: 120,
+        width: 80,
         ellipsis: true
     },
     {
         title: "商品",
         align: "left",
         colKey: "commodity",
-        width: 120,
+        width: 100,
+        ellipsis: true
+    },
+    {
+        title: "方案",
+        align: "left",
+        colKey: "schemeName",
+        width: 100,
         ellipsis: true
     },
     {
