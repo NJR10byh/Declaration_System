@@ -54,7 +54,7 @@ const transform: AxiosTransform = {
         }
 
         if (code === 401) {
-            window.location.href = "http://120.77.168.106:3000/#/login";
+            window.location.href = "http://120.24.253.160:3000/#/login";
         } else {
             throw new Error(data.msg);
         }
