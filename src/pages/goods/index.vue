@@ -140,7 +140,8 @@
           />
         </t-form-item>
         <t-form-item label="总金额">
-          <t-input type="number" v-model="editFormData.totalAmount" placeholder="请输入总金额" suffix="元"/>
+          <t-input type="number" v-model="editFormData.totalAmount" placeholder="请输入总金额" suffix="元"
+                   :disabled="editGoodsDialogTitle==='编辑商品信息'"/>
         </t-form-item>
         <t-form-item label="截止时间">
           <t-date-picker v-model="editFormData.endTime" enable-time-picker placeholder="请选择截止时间"
