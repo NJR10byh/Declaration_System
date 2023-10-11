@@ -3,7 +3,7 @@
   "version": "0.8.0",
   "scripts": {
     "dev": "vite --open --mode development",
-    "build": "vite build && node ./build.js"
+    "build": "vite build"
   },
   "dependencies": {
     "@types/nprogress": "^0.2.0",

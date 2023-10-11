@@ -97,6 +97,18 @@
             </template>
             新增方案
           </t-button>
+          <t-button theme="success" @click="changeFlag(slotProps.row)"
+                    v-show="slotProps.row.parentId==='-1' && slotProps.row.flag === 1">
+            <template #icon>
+              <t-icon name="check"></t-icon>
+            </template>
+          </t-button>
+          <t-button theme="danger" @click="changeFlag(slotProps.row)"
+                    v-show="slotProps.row.parentId==='-1' && slotProps.row.flag === 0">
+            <template #icon>
+              <t-icon name="round"></t-icon>
+            </template>
+          </t-button>
         </div>
       </template>
     </t-enhanced-table>
@@ -424,6 +436,23 @@ const editScheme = (row: any) => {
   })
   addSchemeDeadLine.value = row.endTime;
   editSchemeVisible.value = true;
+}
+
+const changeFlag = (row: any) => {
+  goodsInfoTable.tableLoading = true;
+  request.post({
+    url: BASE_URL.changeFlag,
+    data: {
+      commodityId: parseInt(row.commodityId),
+      flag: row.flag === 0 ? 1 : 0
+    }
+  }).then(() => {
+    MessagePlugin.success("操作成功");
+  }).catch(err => {
+    MessagePlugin.error("操作失败：" + err);
+  }).finally(() => {
+    getTableData();
+  })
 }
 </script>
 
