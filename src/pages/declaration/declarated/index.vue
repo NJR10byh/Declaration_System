@@ -129,8 +129,6 @@
               v-model="editFormData.status"
               placeholder="-请选择状态-"
               :options="statusOptions"
-              readonly
-              disabled
           />
         </t-form-item>
         <t-form-item label="订单号">

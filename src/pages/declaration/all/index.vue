@@ -143,7 +143,11 @@
           <t-input v-model="editFormData.commodity" readonly disabled/>
         </t-form-item>
         <t-form-item label="状态">
-          <t-input v-model="editFormData.status" readonly disabled/>
+          <t-select
+              v-model="editFormData.status"
+              placeholder="-请选择状态-"
+              :options="statusOptions"
+          />
         </t-form-item>
         <t-form-item label="订单号">
           <t-input v-model="editFormData.orderId" placeholder="请输入订单号"/>
@@ -364,14 +368,14 @@ const exportPic = (picFlag: number) => {
   console.log(currRequestBody)
   let reportParams = {
     orderId: currRequestBody.orderId,
-    commodity: currRequestBody.commodity,
+    commodityId: currRequestBody.commodityId,
     reporter: currRequestBody.reporter,
     startTime: isNotEmpty(currRequestBody.startTime) ? currRequestBody.startTime : "",
     endTime: isNotEmpty(currRequestBody.endTime) ? currRequestBody.endTime : "",
     status: isNotEmpty(currRequestBody.status) ? currRequestBody.status : "",
     picFlag: picFlag
   }
-  downloadFile(setObjToUrlParams(BASE_URL.downloadPic, reportParams))
+  window.open("http://120.24.253.160:6700/smartReport" + setObjToUrlParams(BASE_URL.downloadPic, reportParams));
 }
 
 // 图片预览

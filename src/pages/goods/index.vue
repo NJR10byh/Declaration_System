@@ -123,7 +123,7 @@
       :on-confirm="editConfirm"
   >
     <template #body>
-      <t-form>
+      <t-form :rules="editGoodsFormDataRule">
         <t-form-item label="商品">
           <t-input v-model="editFormData.commodity" placeholder="请输入商品名称"/>
         </t-form-item>
@@ -139,9 +139,8 @@
               clearable
           />
         </t-form-item>
-        <t-form-item label="总金额">
-          <t-input type="number" v-model="editFormData.totalAmount" placeholder="请输入总金额" suffix="元"
-                   :disabled="editGoodsDialogTitle==='编辑商品信息'"/>
+        <t-form-item label="总金额" name="totalAmount">
+          <t-input type="number" v-model="editFormData.totalAmount" placeholder="请输入总金额" suffix="元"/>
         </t-form-item>
         <t-form-item label="截止时间">
           <t-date-picker v-model="editFormData.endTime" enable-time-picker placeholder="请选择截止时间"
@@ -256,6 +255,17 @@ const editFormData = reactive({
   endTime: "",
   parentId: "-1",
 });
+const totalAmountValidator = (val: any) => {
+  if (!/^\d+(\.\d{1,2})?$/.test(val)) {
+    return {result: false, message: '总金额不合法', type: 'error'};
+  }
+  if (parseFloat(val) < 10000) {
+    return {result: false, message: '总金额必须小于10000元', type: 'error'};
+  }
+};
+const editGoodsFormDataRule = reactive({
+  totalAmount: [{required: false, type: 'error'}, {validator: totalAmountValidator}],
+})
 
 // 新增、编辑方案对话框
 const editSchemeVisible = ref(false);
@@ -368,6 +378,16 @@ const editInfo = (row: any) => {
 }
 
 const editConfirm = () => {
+  console.log(editFormData.totalAmount)
+  console.log(parseFloat(editFormData.totalAmount) < 100000);
+  if (!/^\d+(\.\d{1,2})?$/.test(editFormData.totalAmount)) {
+    MessagePlugin.error("总金额不合法");
+    return;
+  }
+  if (parseFloat(editFormData.totalAmount) >= 100000) {
+    MessagePlugin.error("总金额必须小于100000元");
+    return;
+  }
   Object.assign(editFormData, {
     endTime: dateStringToTimestamp(editFormData.endTime)
   })
