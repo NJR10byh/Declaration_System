@@ -6,7 +6,6 @@
         :value="active"
         :collapsed="collapsed"
         :default-expanded="defaultExpanded"
-        expand-mutex
     >
       <template #logo>
         <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome" class="header-logo-container">
