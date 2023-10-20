@@ -10,7 +10,7 @@
       <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
       <t-select
           class="inputStyle"
-          v-model="currRequestBody.commodity"
+          v-model="currRequestBody.commodityId"
           placeholder="-请选择商品-"
           :options="goodsOptions"
           filterable
@@ -225,6 +225,7 @@ const currRequestBody = reactive({
   pageNo: 1, // 页
   pageItems: 20, // 条数
   orderId: "", // 订单号
+  commodityId: "",// 商品id
   commodity: "",// 商品名称
   reporter: "",// 报单人
   startTime: null,
@@ -302,10 +303,10 @@ const getAllCommodity = async () => {
     url: BASE_URL.listCommodity
   }).then(res => {
     console.log(res);
-    res.map((item: { commodityName: any; }) => {
+    res.map((item: { commodityName: any; commodityId: any; }) => {
       goodsOptions.value.push({
         label: item.commodityName,
-        value: item.commodityName
+        value: item.commodityId
       })
     })
   }).catch(err => {

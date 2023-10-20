@@ -75,7 +75,7 @@
     <template #body>
       <t-form>
         <t-form-item label="手机号码">
-          <t-input v-model="editFormData.phoneNum" placeholder="请输入手机号" disabled readonly/>
+          <t-input v-model="editFormData.phoneNum" placeholder="请输入手机号"/>
         </t-form-item>
         <t-form-item label="姓名">
           <t-input v-model="editFormData.name" placeholder="请输入姓名" clearable/>
