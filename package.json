@@ -1,6 +1,6 @@
 {
   "name": "智慧报单系统",
-  "version": "0.8.0",
+  "version": "1.0.1",
   "scripts": {
     "dev": "vite --open --mode development",
     "build": "vite build"
